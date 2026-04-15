@@ -350,7 +350,7 @@ svg.curve { display: block; width: 100%; height: auto; }
         <div class="value-big">18.16<span class="u">&euro;</span></div>
         <div style="font-size:9pt; color:var(--text-muted); margin-top:6px;">
           90d-Median: 18.15 &euro;<br/>
-          Page-1-Median: 18.9 &euro;
+          Page-1-Median: 20.32 &euro;
         </div>
       </div>
     </div>
@@ -460,7 +460,7 @@ svg.curve { display: block; width: 100%; height: auto; }
 <script>
 // --- Input data ---
 const CURRENT_PRICE = 18.16;
-const PAGE1_MEDIAN = 18.9;
+const PAGE1_MEDIAN = 20.32;
 const REFERRAL_PCT = 0.1498;
 const FBA_FEE = 2.99;
 // SP-API Fee-Map pro Preispunkt: {"18.16": {"fba": 2.99, "ref_pct": 0.1498}, ...}
@@ -655,16 +655,16 @@ function drawChart(cogs, tacos, be) {
   // Break-even vertical
   const beX = X(be);
 
-  // Optimal range (margin >= 20% * price AND price in [page1-10%, page1+5%])
+  // Optimal range dynamisch: margin >= 20% AND price <= page1*1.05
+  // Wir scannen die xs-Punkte und nehmen das zusammenhaengende Segment der "optimalen" Preise
   let optRects = '';
-  if (PAGE1_MEDIAN) {
-    const oMin = PAGE1_MEDIAN * 0.90;
-    const oMax = PAGE1_MEDIAN * 1.05;
-    if (oMin < maxP && oMax > minP) {
-      const x1 = Math.max(X(oMin), padL);
-      const x2 = Math.min(X(oMax), W - padR);
-      optRects = `<rect x="${x1}" y="${padT}" width="${x2-x1}" height="${H-padB-padT}" fill="rgba(120,224,165,0.08)" />`;
-    }
+  const optPoints = xs.filter(x => x.pct >= 0.20 && (!PAGE1_MEDIAN || x.price <= PAGE1_MEDIAN * 1.05));
+  if (optPoints.length > 0) {
+    const oMin = Math.min(...optPoints.map(p => p.price));
+    const oMax = Math.max(...optPoints.map(p => p.price));
+    const x1 = Math.max(X(oMin), padL);
+    const x2 = Math.min(X(oMax), W - padR);
+    optRects = `<rect x="${x1}" y="${padT}" width="${x2-x1}" height="${H-padB-padT}" fill="rgba(120,224,165,0.10)" />`;
   }
 
   // Current price vertical
