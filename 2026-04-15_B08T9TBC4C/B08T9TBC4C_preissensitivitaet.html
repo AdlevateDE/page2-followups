@@ -350,7 +350,7 @@ svg.curve { display: block; width: 100%; height: auto; }
         <div class="value-big">18.16<span class="u">&euro;</span></div>
         <div style="font-size:9pt; color:var(--text-muted); margin-top:6px;">
           90d-Median: 18.15 &euro;<br/>
-          Page-1-Median: 18.66 &euro;
+          Page-1-Median: 18.9 &euro;
         </div>
       </div>
     </div>
@@ -392,7 +392,7 @@ svg.curve { display: block; width: 100%; height: auto; }
     <div class="stat" style="background: rgba(120,224,165,0.08); border-color: rgba(120,224,165,0.3);">
       <div class="s-label" style="color: var(--green);">Optimal-Range</div>
       <div class="s-value" id="optimalRangeOut" style="font-size: 14pt;">&mdash;</div>
-      <div class="s-sub">&ge; 20 % Marge &amp; &plusmn;Page-1</div>
+      <div class="s-sub">&ge; 20 % Marge &amp; &le; Page-1 +5 %</div>
     </div>
   </div>
 
@@ -460,12 +460,12 @@ svg.curve { display: block; width: 100%; height: auto; }
 <script>
 // --- Input data ---
 const CURRENT_PRICE = 18.16;
-const PAGE1_MEDIAN = 18.66;
+const PAGE1_MEDIAN = 18.9;
 const REFERRAL_PCT = 0.1498;
 const FBA_FEE = 2.99;
 // SP-API Fee-Map pro Preispunkt: {"18.16": {"fba": 2.99, "ref_pct": 0.1498}, ...}
 // Leer wenn SP-API nicht verfuegbar -> Fallback auf globale REFERRAL_PCT + FBA_FEE
-const SP_FEE_MAP = {"15.44": {"fba": 2.99, "ref_pct": 0.1503}, "16.34": {"fba": 2.99, "ref_pct": 0.1499}, "17.25": {"fba": 2.99, "ref_pct": 0.1501}, "18.16": {"fba": 2.99, "ref_pct": 0.1498}, "19.07": {"fba": 2.99, "ref_pct": 0.15}, "19.98": {"fba": 2.99, "ref_pct": 0.1502}, "20.88": {"fba": 3.13, "ref_pct": 0.1499}};
+const SP_FEE_MAP = {"12.71": {"fba": 2.99, "ref_pct": 0.1503}, "13.62": {"fba": 2.99, "ref_pct": 0.1498}, "14.53": {"fba": 2.99, "ref_pct": 0.15}, "15.44": {"fba": 2.99, "ref_pct": 0.1503}, "16.34": {"fba": 2.99, "ref_pct": 0.1499}, "17.25": {"fba": 2.99, "ref_pct": 0.1501}, "18.16": {"fba": 2.99, "ref_pct": 0.1498}, "19.07": {"fba": 2.99, "ref_pct": 0.15}, "19.98": {"fba": 2.99, "ref_pct": 0.1502}, "20.88": {"fba": 3.13, "ref_pct": 0.1499}};
 const ASIN = "B08T9TBC4C";
 const KEYWORD = "magnesium kapseln";
 const COMPANY = "Bodylab24";
@@ -540,7 +540,7 @@ function recalc() {
     const vsP1 = PAGE1_MEDIAN ? (price - PAGE1_MEDIAN) / PAGE1_MEDIAN : null;
     const isCurrent = d === 0;
     const isBE = price <= be;
-    const isOptimal = m.pct >= 0.20 && vsP1 !== null && vsP1 >= -0.10 && vsP1 <= 0.05;
+    const isOptimal = m.pct >= 0.20 && (vsP1 === null || vsP1 <= 0.05);
     return { d, price, m, vsP1, isCurrent, isBE, isOptimal };
   });
   LAST_ROWS = rows; LAST_COGS = cogs; LAST_TACOS = tacos; LAST_BE = be;
