@@ -352,7 +352,7 @@ svg.curve { display: block; width: 100%; height: auto; }
         <div class="value-big">59.99<span class="u">&euro;</span></div>
         <div style="font-size:9pt; color:var(--text-muted); margin-top:6px;">
           90d-Median: 52.23 &euro;<br/>
-          Page-1-Median: 38.24 &euro;
+          Page-1-Median: 43.99 &euro;
         </div>
       </div>
     </div>
@@ -391,10 +391,10 @@ svg.curve { display: block; width: 100%; height: auto; }
       <div class="s-value" id="currMarginOut">24,85<span class="u">&euro;</span></div>
       <div class="s-sub" id="currMarginPctOut">41% von Preis</div>
     </div>
-    <div class="stat" style="background: rgba(120,224,165,0.08); border-color: rgba(120,224,165,0.3);">
-      <div class="s-label" style="color: var(--green);">Optimal-Range</div>
+    <div class="stat" id="optimalStat" style="background: rgba(120,224,165,0.08); border-color: rgba(120,224,165,0.3);">
+      <div class="s-label" id="optimalLabel" style="color: var(--green);">Optimal-Range</div>
       <div class="s-value" id="optimalRangeOut" style="font-size: 14pt;">&mdash;</div>
-      <div class="s-sub">&ge; 20 % Marge &amp; &le; Page-1 +5 %</div>
+      <div class="s-sub" id="optimalSub">Market: Marge &ge; 20 % &amp; Preis &le; Median +5 % &mdash; Premium: Marge &ge; 25 % &amp; Preis &le; Median +25 %</div>
     </div>
   </div>
 
@@ -462,7 +462,7 @@ svg.curve { display: block; width: 100%; height: auto; }
 <script>
 // --- Input data ---
 const CURRENT_PRICE = 59.99;
-const PAGE1_MEDIAN = 38.24;
+const PAGE1_MEDIAN = 43.99;
 const REFERRAL_PCT = 0.15;
 const FBA_FEE = 7.14;
 // SP-API Fee-Map pro Preispunkt: {"18.16": {"fba": 2.99, "ref_pct": 0.1498}, ...}
@@ -471,7 +471,7 @@ const SP_FEE_MAP = {"41.99": {"fba": 7.14, "ref_pct": 0.15}, "44.99": {"fba": 7.
 const ASIN = "B0B25MXDSY";
 const KEYWORD = "hundebett waschbar";
 const COMPANY = "Juskys";
-const DELTAS = [-25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25];
+const DELTAS = [-30, -25, -20, -15, -10, -5, 0, 5, 10, 15];
 
 const cogsSlider = document.getElementById('cogsSlider');
 const cogsOut = document.getElementById('cogsOut');
@@ -585,6 +585,8 @@ function recalc() {
   const marketRows = rows.filter(r => r.isMarketOptimal);
   const premiumRows = rows.filter(r => r.isPremiumOptimal);
   const optOut = document.getElementById('optimalRangeOut');
+  const optStat = document.getElementById('optimalStat');
+  const optLabel = document.getElementById('optimalLabel');
   const fmtRange = rs => {
     const lo = Math.min(...rs.map(r => r.price));
     const hi = Math.max(...rs.map(r => r.price));
@@ -594,6 +596,9 @@ function recalc() {
   };
   if (marketRows.length === 0 && premiumRows.length === 0) {
     optOut.innerHTML = '&mdash;<span class="u" style="font-size:9pt;"> keine</span>';
+    optStat.style.background = 'rgba(224,138,90,0.08)';
+    optStat.style.borderColor = 'rgba(224,138,90,0.3)';
+    optLabel.style.color = 'var(--red)';
   } else {
     const parts = [];
     if (marketRows.length > 0) {
@@ -603,6 +608,16 @@ function recalc() {
       parts.push(`<span style="color:var(--amber);">${fmtRange(premiumRows)}<span class="u">&euro;</span></span><span class="u" style="font-size:8pt;">&nbsp;Premium</span>`);
     }
     optOut.innerHTML = parts.join('<br/>');
+    // Box-Farbe: Gruen wenn Market (primaer), Amber wenn nur Premium
+    if (marketRows.length > 0) {
+      optStat.style.background = 'rgba(120,224,165,0.08)';
+      optStat.style.borderColor = 'rgba(120,224,165,0.3)';
+      optLabel.style.color = 'var(--green)';
+    } else {
+      optStat.style.background = 'rgba(224,201,122,0.08)';
+      optStat.style.borderColor = 'rgba(224,201,122,0.3)';
+      optLabel.style.color = 'var(--amber)';
+    }
   }
 
   drawChart(cogs, tacos, be);
