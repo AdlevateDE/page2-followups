@@ -231,6 +231,7 @@ h3.section {
 .sens-table tr.current { background: rgba(91,197,200,0.08); }
 .sens-table tr.current td { color: #fff; font-weight: 700; }
 .sens-table tr.optimal td { background: var(--green-bg); }
+.sens-table tr.premium-optimal td { background: var(--amber-bg); }
 .sens-table tr.below-be td { color: var(--red); }
 .badge {
   display: inline-block;
@@ -242,6 +243,7 @@ h3.section {
   text-transform: uppercase;
 }
 .badge.optimal { background: var(--green-bg); color: var(--green); }
+.badge.premium { background: var(--amber-bg); color: var(--amber); }
 .badge.current { background: var(--teal-glow); color: var(--teal); }
 .badge.break-even { background: var(--red-bg); color: var(--red); }
 .badge.ok { background: var(--green-bg); color: var(--green); }
@@ -350,7 +352,7 @@ svg.curve { display: block; width: 100%; height: auto; }
         <div class="value-big">59.99<span class="u">&euro;</span></div>
         <div style="font-size:9pt; color:var(--text-muted); margin-top:6px;">
           90d-Median: 52.23 &euro;<br/>
-          Page-1-Median: 43.99 &euro;
+          Page-1-Median: 38.24 &euro;
         </div>
       </div>
     </div>
@@ -460,12 +462,12 @@ svg.curve { display: block; width: 100%; height: auto; }
 <script>
 // --- Input data ---
 const CURRENT_PRICE = 59.99;
-const PAGE1_MEDIAN = 43.99;
+const PAGE1_MEDIAN = 38.24;
 const REFERRAL_PCT = 0.15;
 const FBA_FEE = 7.14;
 // SP-API Fee-Map pro Preispunkt: {"18.16": {"fba": 2.99, "ref_pct": 0.1498}, ...}
 // Leer wenn SP-API nicht verfuegbar -> Fallback auf globale REFERRAL_PCT + FBA_FEE
-const SP_FEE_MAP = {"41.99": {"fba": 7.14, "ref_pct": 0.15}, "44.99": {"fba": 7.14, "ref_pct": 0.15}, "47.99": {"fba": 7.14, "ref_pct": 0.15}, "53.99": {"fba": 7.14, "ref_pct": 0.15}, "56.99": {"fba": 7.14, "ref_pct": 0.15}, "59.99": {"fba": 7.14, "ref_pct": 0.15}, "65.99": {"fba": 7.14, "ref_pct": 0.15}, "68.99": {"fba": 7.14, "ref_pct": 0.15}};
+const SP_FEE_MAP = {"41.99": {"fba": 7.14, "ref_pct": 0.15}, "44.99": {"fba": 7.14, "ref_pct": 0.15}, "47.99": {"fba": 7.14, "ref_pct": 0.15}, "50.99": {"fba": 7.14, "ref_pct": 0.15}, "53.99": {"fba": 7.14, "ref_pct": 0.15}, "56.99": {"fba": 7.14, "ref_pct": 0.15}, "59.99": {"fba": 7.14, "ref_pct": 0.15}, "62.99": {"fba": 7.14, "ref_pct": 0.15}, "65.99": {"fba": 7.14, "ref_pct": 0.15}, "68.99": {"fba": 7.14, "ref_pct": 0.15}};
 const ASIN = "B0B25MXDSY";
 const KEYWORD = "hundebett waschbar";
 const COMPANY = "Juskys";
@@ -540,17 +542,25 @@ function recalc() {
     const vsP1 = PAGE1_MEDIAN ? (price - PAGE1_MEDIAN) / PAGE1_MEDIAN : null;
     const isCurrent = d === 0;
     const isBE = price <= be;
-    const isOptimal = m.pct >= 0.20 && (vsP1 === null || vsP1 <= 0.05);
-    return { d, price, m, vsP1, isCurrent, isBE, isOptimal };
+    // Tier 1 — Market-Competitive: Marge >= 20% UND Preis <= Median + 5%
+    const isMarketOptimal = m.pct >= 0.20 && (vsP1 === null || vsP1 <= 0.05);
+    // Tier 2 — Premium-Optimal: Marge >= 25% UND Preis <= Median + 25% (nur wenn nicht schon Market)
+    const isPremiumOptimal = !isMarketOptimal && m.pct >= 0.25 && (vsP1 === null || vsP1 <= 0.25);
+    const isOptimal = isMarketOptimal || isPremiumOptimal;
+    return { d, price, m, vsP1, isCurrent, isBE, isOptimal, isMarketOptimal, isPremiumOptimal };
   });
   LAST_ROWS = rows; LAST_COGS = cogs; LAST_TACOS = tacos; LAST_BE = be;
 
   sensBody.innerHTML = rows.map(r => {
-    const cls = r.isCurrent ? 'current' : (r.isOptimal ? 'optimal' : (r.isBE ? 'below-be' : ''));
+    const cls = r.isCurrent ? 'current'
+      : (r.isMarketOptimal ? 'optimal'
+        : (r.isPremiumOptimal ? 'premium-optimal'
+          : (r.isBE ? 'below-be' : '')));
     const status = r.isBE
       ? '<span class="badge break-even">Verlust</span>'
-      : (r.isOptimal ? '<span class="badge optimal">Optimal</span>'
-        : (r.isCurrent ? '<span class="badge current">Aktuell</span>' : ''));
+      : (r.isMarketOptimal ? '<span class="badge optimal">Optimal</span>'
+        : (r.isPremiumOptimal ? '<span class="badge premium">Premium-Optimal</span>'
+          : (r.isCurrent ? '<span class="badge current">Aktuell</span>' : '')));
     const delta = r.isCurrent ? '—' : (r.d > 0 ? '+' + r.d + '%' : r.d + '%');
     const vsp1 = r.vsP1 === null ? '—' : (r.vsP1 > 0 ? '+' : '') + (r.vsP1*100).toFixed(1).replace('.', ',') + '%';
     const f = feesFor(r.price);
@@ -571,17 +581,28 @@ function recalc() {
     </tr>`;
   }).join('');
 
-  // Live Optimal-Range: min/max Preis aus Zeilen mit isOptimal
-  const optRows = rows.filter(r => r.isOptimal);
+  // Live Optimal-Range: market-tier + premium-tier getrennt ausweisen
+  const marketRows = rows.filter(r => r.isMarketOptimal);
+  const premiumRows = rows.filter(r => r.isPremiumOptimal);
   const optOut = document.getElementById('optimalRangeOut');
-  if (optRows.length === 0) {
+  const fmtRange = rs => {
+    const lo = Math.min(...rs.map(r => r.price));
+    const hi = Math.max(...rs.map(r => r.price));
+    return lo === hi
+      ? `${lo.toFixed(2).replace('.', ',')}`
+      : `${lo.toFixed(2).replace('.', ',')}&ndash;${hi.toFixed(2).replace('.', ',')}`;
+  };
+  if (marketRows.length === 0 && premiumRows.length === 0) {
     optOut.innerHTML = '&mdash;<span class="u" style="font-size:9pt;"> keine</span>';
   } else {
-    const lo = Math.min(...optRows.map(r => r.price));
-    const hi = Math.max(...optRows.map(r => r.price));
-    optOut.innerHTML = lo === hi
-      ? `${fmtEUR(lo)}<span class="u">&euro;</span>`
-      : `${lo.toFixed(2).replace('.', ',')}&ndash;${hi.toFixed(2).replace('.', ',')}<span class="u">&euro;</span>`;
+    const parts = [];
+    if (marketRows.length > 0) {
+      parts.push(`<span style="color:var(--green);">${fmtRange(marketRows)}<span class="u">&euro;</span></span><span class="u" style="font-size:8pt;">&nbsp;Market</span>`);
+    }
+    if (premiumRows.length > 0) {
+      parts.push(`<span style="color:var(--amber);">${fmtRange(premiumRows)}<span class="u">&euro;</span></span><span class="u" style="font-size:8pt;">&nbsp;Premium</span>`);
+    }
+    optOut.innerHTML = parts.join('<br/>');
   }
 
   drawChart(cogs, tacos, be);
@@ -655,16 +676,29 @@ function drawChart(cogs, tacos, be) {
   // Break-even vertical
   const beX = X(be);
 
-  // Optimal range dynamisch: margin >= 20% AND price <= page1*1.05
-  // Wir scannen die xs-Punkte und nehmen das zusammenhaengende Segment der "optimalen" Preise
+  // Tier-Overlays: Premium zuerst (hinten), Market drueber (vorne — bei Ueberlapp dominiert Gruen)
   let optRects = '';
-  const optPoints = xs.filter(x => x.pct >= 0.20 && (!PAGE1_MEDIAN || x.price <= PAGE1_MEDIAN * 1.05));
-  if (optPoints.length > 0) {
-    const oMin = Math.min(...optPoints.map(p => p.price));
-    const oMax = Math.max(...optPoints.map(p => p.price));
+  // Premium-Tier: margin >= 25% AND price <= page1*1.25, aber NICHT schon market-optimal
+  const premiumPoints = xs.filter(x => {
+    const isMarket = x.pct >= 0.20 && (!PAGE1_MEDIAN || x.price <= PAGE1_MEDIAN * 1.05);
+    const isPremium = x.pct >= 0.25 && (!PAGE1_MEDIAN || x.price <= PAGE1_MEDIAN * 1.25);
+    return !isMarket && isPremium;
+  });
+  if (premiumPoints.length > 0) {
+    const pMin = Math.min(...premiumPoints.map(p => p.price));
+    const pMax = Math.max(...premiumPoints.map(p => p.price));
+    const x1 = Math.max(X(pMin), padL);
+    const x2 = Math.min(X(pMax), W - padR);
+    optRects += `<rect x="${x1}" y="${padT}" width="${x2-x1}" height="${H-padB-padT}" fill="rgba(224,201,122,0.10)" />`;
+  }
+  // Market-Tier
+  const marketPoints = xs.filter(x => x.pct >= 0.20 && (!PAGE1_MEDIAN || x.price <= PAGE1_MEDIAN * 1.05));
+  if (marketPoints.length > 0) {
+    const oMin = Math.min(...marketPoints.map(p => p.price));
+    const oMax = Math.max(...marketPoints.map(p => p.price));
     const x1 = Math.max(X(oMin), padL);
     const x2 = Math.min(X(oMax), W - padR);
-    optRects = `<rect x="${x1}" y="${padT}" width="${x2-x1}" height="${H-padB-padT}" fill="rgba(120,224,165,0.10)" />`;
+    optRects += `<rect x="${x1}" y="${padT}" width="${x2-x1}" height="${H-padB-padT}" fill="rgba(120,224,165,0.10)" />`;
   }
 
   // Current price vertical
@@ -709,8 +743,8 @@ exportBtn.addEventListener('click', exportCSV);
 
 // Tooltip-Logik
 const TOOLTIPS = {
-  fba: '<strong style="color:var(--teal);">FBA Fee (Fulfillment by Amazon)</strong><br/><br/>Amazon berechnet Lager- und Versandgebuehren basierend auf Groesse, Gewicht und Preis. Bei Low-Price-FBA (&lt; 11&nbsp;€ DE) aendert sich die Gebuehrenstruktur &mdash; daher sind die Werte hier <strong>pro Preispunkt live ueber die Amazon SP-API gezogen</strong>.<br/><br/><span class="fee-src-sp">SP-API</span> = direkt aus Amazons Selling Partner API fuer deine ASIN.<br/><span class="fee-src-est">EST</span> = Kategorie-Schaetzung (API-Fallback).',
-  ref: '<strong style="color:var(--teal);">Amazon Referral Fee</strong><br/><br/>Prozentsatz vom Verkaufspreis, den Amazon pro Verkauf einbehaelt. Kategorie-abhaengig (meist 15%, manche 8-10%). Minimum 0.30&nbsp;€.<br/><br/>Werte kommen <strong>live aus der Amazon SP-API</strong> fuer deine ASIN &mdash; nicht pauschal geraten.',
+  fba: '<strong style="color:var(--teal);">FBA Fee (Fulfillment by Amazon)</strong><br/><br/>Primaer dimension-/gewichtsbasiert &mdash; d.h. innerhalb eines normalen Preis-Sweeps meist konstant. Zwei preisabhaengige Ausnahmen:<br/>&bull; <strong>Low-Price-FBA</strong> (ab Jan 2026: &lt; 20&nbsp;€ inkl. MwSt in den meisten Kategorien; 11&nbsp;€ in 7 Kategorien wie Beauty/Grocery/Buecher) &mdash; reduzierte Fee fuer kleine, leichte Artikel.<br/>&bull; <strong>Peak-Season-Aufschlag</strong> ~0,19&nbsp;€/Einheit (Oct 15 &ndash; Jan 14).<br/><br/>Werte hier sind <strong>pro Preispunkt live ueber die Amazon SP-API</strong> gezogen &mdash; falls eine Schwelle im Sweep ueberschritten wird, siehst du die Stufung in der Spalte.<br/><br/><span class="fee-src-sp">SP-API</span> = direkt aus Amazons Selling Partner API fuer deine ASIN.<br/><span class="fee-src-est">EST</span> = Kategorie-Schaetzung (API-Fallback).',
+  ref: '<strong style="color:var(--teal);">Amazon Referral Fee</strong><br/><br/>Prozentsatz vom Verkaufspreis, den Amazon pro Verkauf einbehaelt. Meist flat 15%, aber <strong>11 DE-Kategorien sind tiered</strong> (2026): Furniture (15%&rarr;10% ab 200&nbsp;€), Home (8%&rarr;15% ab 20&nbsp;€), Clothing, Electronics Accessories (15%&rarr;8% ab 100&nbsp;€), Jewelry, Grocery, Vitamins, Pet Clothing &amp; Food, Baby, Beauty/Health, Automotive. <strong>Minimum 0,30&nbsp;€/Einheit.</strong><br/><br/>Werte kommen <strong>live aus der Amazon SP-API</strong> fuer deine ASIN &mdash; nicht pauschal geraten. Wenn der Sweep eine Tier-Schwelle kreuzt, siehst du die Stufung in der Spalte.',
 };
 const tooltipBox = document.getElementById('tooltipBox');
 document.addEventListener('mouseover', (e) => {
