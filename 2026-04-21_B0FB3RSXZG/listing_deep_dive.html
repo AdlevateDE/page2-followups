@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Listing Deep Dive -- eltabia vs Top 5 Competitors</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1419; color: #d4d4d4; line-height: 1.5; font-size: 13px; }
+.container { max-width: 2400px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 28px; color: #5BC5C8; margin: 0 0 8px 0; font-weight: 600; }
+.subtitle { color: #888; font-size: 13px; margin-bottom: 24px; }
+.legend { background: #1a2128; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; color: #a0a0a0; border-left: 3px solid #5BC5C8; }
+.legend strong { color: #d4d4d4; }
+.grid { display: grid; grid-template-columns: repeat(6, minmax(300px, 1fr)); gap: 16px; }
+.col { background: #1a2128; border: 1px solid #2a3138; border-radius: 10px; padding: 16px; position: relative; overflow: hidden; }
+.col.client { border: 2px solid #5BC5C8; background: #15242a; }
+.badge-client { position: absolute; top: 0; right: 0; background: #5BC5C8; color: #0f1419; font-weight: 700; font-size: 10px; padding: 4px 12px; border-radius: 0 8px 0 8px; letter-spacing: 1px; }
+.header { margin-bottom: 12px; }
+.brand { font-weight: 600; color: #5BC5C8; font-size: 14px; }
+.label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.main-img { background: #fff; border-radius: 6px; padding: 8px; margin-bottom: 12px; height: 220px; display: flex; align-items: center; justify-content: center; }
+.main-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; padding: 10px; background: #0f1419; border-radius: 6px; }
+.metrics > div { text-align: center; }
+.metrics .highlight { background: #5BC5C815; border-radius: 4px; padding: 2px; }
+.rating-row { display: flex; align-items: center; gap: 6px; padding: 8px 10px; margin-bottom: 12px; background: #0f1419; border-radius: 6px; font-size: 12px; }
+.stars { color: #FFB100; letter-spacing: 1px; font-size: 14px; }
+.star-empty { color: #3a3f45; }
+.rating-val { color: #e0e0e0; font-weight: 600; }
+.review-count { color: #888; font-size: 11px; }
+.rating-empty { color: #666; font-style: italic; justify-content: center; font-size: 11px; }
+.m-label { display: block; color: #888; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.m-val { display: block; color: #e0e0e0; font-weight: 600; font-size: 13px; }
+.highlight .m-val { color: #5BC5C8; font-size: 14px; }
+.row-label { color: #666; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 600; }
+.title-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.title-text { color: #d4d4d4; font-size: 12px; line-height: 1.4; }
+.bullets-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; min-height: 120px; }
+.bullets { list-style: none; padding: 0; margin: 0; }
+.bullets li { color: #b8b8b8; font-size: 11px; padding: 4px 0 4px 12px; position: relative; line-height: 1.4; }
+.bullets li::before { content: "-"; position: absolute; left: 0; color: #5BC5C8; }
+.bullets li.empty { color: #555; font-style: italic; }
+.sec-img-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.sec-img-box img { width: 100%; height: 180px; object-fit: contain; background: #fff; border-radius: 6px; padding: 6px; }
+.usp-strat { padding-top: 4px; }
+.usp-text { color: #d4d4d4; font-size: 11px; line-height: 1.5; }
+.tag-green { color: #4ade80; }
+.proposal { margin-top: 40px; padding: 24px; background: #15242a; border: 2px solid #5BC5C8; border-radius: 12px; }
+.proposal h2 { color: #5BC5C8; margin: 0 0 16px 0; font-size: 22px; }
+.proposal-intro { color: #d4d4d4; margin-bottom: 20px; }
+.mockup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.mockup-card { background: #1a2128; border-radius: 8px; padding: 12px; }
+.mockup-label { color: #5BC5C8; font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+.mockup-card img { width: 100%; border-radius: 6px; margin-bottom: 10px; }
+.mockup-desc { color: #b8b8b8; font-size: 12px; }
+.subsection { color: #5BC5C8; font-size: 16px; font-weight: 600; margin: 24px 0 8px 0; padding-top: 12px; }
+.subsection:first-of-type { margin-top: 4px; padding-top: 0; }
+.subsection-intro { color: #b8b8b8; font-size: 12px; margin-bottom: 14px; font-style: italic; }
+.amazon-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding: 10px 14px; background: linear-gradient(180deg, #FFD257 0%, #F9B82E 100%); color: #111; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid #E69A1A; transition: all 0.15s ease; letter-spacing: 0.2px; }
+.amazon-btn:hover { background: linear-gradient(180deg, #FFDB6E 0%, #FFC043 100%); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(255,184,46,0.3); }
+.amazon-btn svg { flex-shrink: 0; }
+.new-title-box { margin-top: 24px; padding: 16px; background: #1a2128; border-radius: 8px; }
+.new-title-box h3 { color: #5BC5C8; margin: 0 0 12px 0; font-size: 14px; }
+.compare-row { display: grid; grid-template-columns: 100px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2a3138; align-items: flex-start; }
+.compare-row:last-child { border-bottom: none; }
+.compare-row .rlabel { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding-top: 3px; }
+.compare-row .val { color: #d4d4d4; font-size: 12px; line-height: 1.5; }
+.compare-row .old { color: #e0a800; }
+.compare-row .new { color: #4ade80; font-weight: 500; }
+.footer { margin-top: 40px; padding: 20px; text-align: center; color: #666; font-size: 11px; border-top: 1px solid #2a3138; }
+@media (max-width: 1800px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 1000px) { .grid { grid-template-columns: 1fr 1fr; } .mockup-grid { grid-template-columns: 1fr; } }
+.main-img img, .sec-img-box img, .mockup-card img { cursor: zoom-in; transition: transform 0.15s ease; }
+.main-img img:hover, .sec-img-box img:hover, .mockup-card img:hover { transform: scale(1.02); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; backdrop-filter: blur(4px); }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 60px rgba(0,0,0,0.6); background: #fff; }
+.lightbox-close { position: absolute; top: 24px; right: 24px; background: #1a2128; color: #fff; border: 1px solid #3a3f45; width: 44px; height: 44px; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.lightbox-close:hover { background: #2a3138; }
+.lightbox-caption { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #d4d4d4; background: rgba(26,33,40,0.9); padding: 10px 20px; border-radius: 6px; font-size: 13px; max-width: 80vw; text-align: center; }
+
+.dl-btn { position: fixed; top: 24px; right: 24px; z-index: 100; display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: linear-gradient(135deg, #5BC5C8 0%, #4aa8ab 100%); color: #0f1419; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid #5BC5C8; box-shadow: 0 4px 16px rgba(91,197,200,0.35); transition: all 0.2s ease; letter-spacing: 0.3px; }
+.dl-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(91,197,200,0.5); background: linear-gradient(135deg, #6ad3d6 0%, #56c2c5 100%); }
+.dl-btn svg { flex-shrink: 0; }
+.dl-btn .dl-count { background: rgba(15,20,25,0.25); padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+
+</style>
+</head><body>
+<a class="dl-btn" href="B0FB3RSXZG_mockups.zip" download title="6 Vorschlagsbilder (3 Main + 3 Secondary) als ZIP herunterladen">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>
+  <span>Vorschlagsbilder</span>
+  <span class="dl-count">6&nbsp;Bilder &middot; ZIP</span>
+</a>
+
+<div class="container">
+  <h1>Listing Deep Dive -- eltabia vs Top 5 Competitors</h1>
+  <div class="subtitle">Keyword: "magnesium kapseln" &middot; Page 1 DE &middot; 2026-04-23</div>
+  <div class="legend">
+    <strong>Wie zu lesen:</strong> KLIENT-Spalte links (blau umrandet). Daneben die 5 staerksten Page-1-Competitors. Vergleiche Main-Image, EUR/Kapsel, Titel, Bullets und die beste Secondary (USP-Slot). USP-Strategie-Zeile fasst zusammen was jedes Listing als Haupt-Verkaufsargument inszeniert.
+  </div>
+
+  <div class="grid">
+    <div class="col client">
+      <div class="badge-client">KLIENT</div>
+      <div class="header">
+        <div class="brand">eltabia</div>
+        <div class="label">eltabia (Klient)</div>
+      </div>
+      <div class="main-img"><img src="images/eltabia_1000er_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">59.99 EUR</span></div>
+        <div><span class="m-label">Kapseln</span> <span class="m-val">1000</span></div>
+        <div class="highlight"><span class="m-label">EUR/Kapsel</span> <span class="m-val">0.0600</span></div>
+      </div>
+      <div class="rating-row"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;<span class="star-empty"></span></span> <span class="rating-val">5.0</span> <span class="review-count">&middot; 1 Reviews</span></div>
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Magnesiumcitrat Kapseln 1000 Stück | Hochdosiert 300mg Tagesdosis elementares Magnesium | Tri-Magnesiumdicitrat">Magnesiumcitrat Kapseln 1000 Stück | Hochdosiert 300mg Tagesdosis elementares Magnesium | Tri-Magnesiumdicitrat</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets"><li>Magnesiumcitrat Kapseln - Hoch bioverfügbar, vegan und gut verträglich. In hochreinen HPMC-Kapseln – natürlich, rein und ideal für eine bewusste Lebensweise.</li><li>Eine natürliche Unterstützung für Muskeln, Nerven und täglichen Energieboost.</li><li>Alle Mischungen bestehen aus ausgewählten Einzelrohstoffen, ohne unnötige Zusätze. Abfüllung nach höchsten Standards (HACCP, GMP, ISO 22000:2018) in Deutschland und der EU</li><li>Premium-Wirkstoffe als Reinsubstanzen – nur die besten Rohstoffe für höchste Qualität. Exklusive Spezialanfertigungen für Reinheit und geprüfte Qualität.</li></ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/eltabia_1000er_img04.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Trust-Icons + Brand Story <br/><span style="color:#e0a800">WARN: Packungsgroesse-USP visuell FEHLT</span></div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0FB3RSXZG" target="_blank" rel="noopener noreferrer" title="Auf Amazon.de oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    <div class="col">
+      
+      <div class="header">
+        <div class="brand">SUNDAY NATURAL</div>
+        <div class="label">Sunday Natural 240er</div>
+      </div>
+      <div class="main-img"><img src="images/comp1_sundaynatural_240_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">16.05 EUR</span></div>
+        <div><span class="m-label">Kapseln</span> <span class="m-val">240</span></div>
+        <div class="highlight"><span class="m-label">EUR/Kapsel</span> <span class="m-val">0.0669</span></div>
+      </div>
+      <div class="rating-row"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;<span class="star-empty"></span></span> <span class="rating-val">4.6</span> <span class="review-count">&middot; 1.019 Reviews</span></div>
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="SUNDAY NATURAL® Magnesium Komplex – 240 Kapseln - 400mg pro Tag - aus 7 Verbindungen: Magnesium Bisglycinat, Citrat, Malat, Laktat, Ascorbat, Oxid, Lysinat - Vegan, laborgeprüft">SUNDAY NATURAL® Magnesium Komplex – 240 Kapseln - 400mg pro Tag - aus 7 Verbindungen: Magnesium Bisglycinat, Citrat, Mal...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets"><li>7 PREMIUM-VERBINDUNGEN: Synergie aus Magnesium Citrate, Magnesium Oxid, Magnesium Malat, Magnesium Glycinat, Magnesiumlaktat, Magnesiumlysinat und Magnesiumascorbat – Wir setzen auf besonders viel Mag...</li><li>MAGNESIUM ALLROUNDER: 400 mg Magnesium pro Tagesdosis - Zweimal täglich 1 Kapsel liefern 400 mg reines Magnesium, das entspricht 107% des empfohlene Tagesbedarfs. Magnesium trägt zu einer normalen Mus...</li><li>MAGENSCHONEND &amp; FLEXIBEL EINNEHMBAR: Gut verträglich dank organischer Verbindungen wie Magnesium-, Glycinat, -Malat und -Ascorbat – Die Magnesium Kapseln lassen sich bei Bedarf öffnen und das Pulver i...</li><li>4 MONATE-VORRAT: 240 Magnesium Kapseln reichen für 4 volle Monate bei täglicher Einnahme von 2 Kapseln – für eine langfristige, ausgewogene Magnesiumversorgung aus 7 hochwertigen Verbindungen, für seh...</li><li>TRUE CLEAN LABEL PIONIER IN DEUTSCHLAND: Freiwillige Deklaration aller Inhaltsstoffe – auch der nicht kennzeichnungspflichtigen. Jede Charge laborgeprüft in Deutschland. Unser Magnesiumkomplex ist fre...</li></ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp1_sundaynatural_240_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">7 Magnesium-Formen (Breite)<br/><span class="tag-green">+ "4 Monate Vorrat" im Text</span></div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0FMS3V43J" target="_blank" rel="noopener noreferrer" title="Auf Amazon.de oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    <div class="col">
+      
+      <div class="header">
+        <div class="brand">ProFuel</div>
+        <div class="label">ProFuel Jahresvorrat 365</div>
+      </div>
+      <div class="main-img"><img src="images/comp3_jahresvorrat_365_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">16.95 EUR</span></div>
+        <div><span class="m-label">Kapseln</span> <span class="m-val">365</span></div>
+        <div class="highlight"><span class="m-label">EUR/Kapsel</span> <span class="m-val">0.0464</span></div>
+      </div>
+      <div class="rating-row"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;<span class="star-empty"></span></span> <span class="rating-val">4.6</span> <span class="review-count">&middot; 2.626 Reviews</span></div>
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Magnesium Kapseln 365x (1 Jahr) - 668 mg Mag.-Oxid, davon 400 mg elementares Magnesium pro Kapsel - sehr hoher Mag.-Gehalt (60%) - optimal hochdosiert - Laborgeprüft mit Zertifikat - 100% vegan">Magnesium Kapseln 365x (1 Jahr) - 668 mg Mag.-Oxid, davon 400 mg elementares Magnesium pro Kapsel - sehr hoher Mag.-Geha...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets"><li>MAGNESIUM HOCHDOSIERT: Jede Magnesium Kapsel beinhaltet 668 mg hochwertiges Magnesium-Oxid, eine Magnesium-Form mit einem sehr hohen Magnesium-Gehalt von 60%. Die Tagesportion besteht aus einer Kapsel...</li><li>TOP PREIS-LEISTUNGSVERHÄLTNIS: Die Magnesium Kapseln kommen in einer XXL-Vorratsdose mit 365 Kapseln. Wir empfehlen, täglich eine Kapsel mit ausreichend Flüssigkeit einzunehmen - eine Dose MAGNESIUM K...</li><li>MAGNESIUM FÜR MEHR VITALITÄT: Der Mineralstoff hat ein vielfältiges Wirkungsspektrum im Körper. Magnesium trägt einerseits zu einer normalen Muskelfunktion und einer Verringerung von Müdigkeit und Erm...</li><li>IDEAL FÜR SPORTLER: Durch regelmäßige körperliche Aktivität verliert der Körper über den Schweiß wertvolle Mineralstoffe wie Magnesium - der tägliche Bedarf an Magnesium erhöht sich entsprechend. Spor...</li><li>VEGAN, MADE IN GERMANY &amp; LABORGEPRÜFT: Unsere Magnesium Kapseln werden in Deutschland hergestellt und beinhalten keinerlei Zutaten aus tierischer Herkunft. Im Rahmen unserer Qualitätssicherung lassen ...</li></ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp3_jahresvorrat_365_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Jahresvorrat prominent<br/><span class="tag-green">+ Benchmark fuer eltabia</span></div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0CFM3PXFB" target="_blank" rel="noopener noreferrer" title="Auf Amazon.de oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    <div class="col">
+      
+      <div class="header">
+        <div class="brand">Feel Natural</div>
+        <div class="label">Feel Natural 365</div>
+      </div>
+      <div class="main-img"><img src="images/comp4_hochdos_jahresvorrat_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">19.99 EUR</span></div>
+        <div><span class="m-label">Kapseln</span> <span class="m-val">365</span></div>
+        <div class="highlight"><span class="m-label">EUR/Kapsel</span> <span class="m-val">0.0548</span></div>
+      </div>
+      <div class="rating-row"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;<span class="star-empty"></span></span> <span class="rating-val">4.6</span> <span class="review-count">&middot; 23.418 Reviews</span></div>
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Magnesium hochdosiert Kapseln - 350 g Stück (Jahresvorrat) - 664mg je Kapsel, davon 400mg elementares Magnesium - höherer Gehalt als andere Magnesiumformen - Laborgeprüft &amp; Vegan">Magnesium hochdosiert Kapseln - 350 g Stück (Jahresvorrat) - 664mg je Kapsel, davon 400mg elementares Magnesium - höhere...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets"><li>DAS ALLROUND MINERAL I Eine Tagesdosis (1 Kapsel) enthält 664 mg marines Magnesium, davon 400 mg elementares Magnesium, aus marinen Quellen gewonnen und sorgfältig verarbeitet, um eine hochwertige Zus...</li><li>DEPOT I Wir nutzen Magnesium in Oxid-Form, weil es so sehr gut vom Körper gespeichert werden kann und langfristige Reserven schafft. Magnesiumoxid hat zudem mit ca. 60% den höchsten Magnesiumanteil al...</li><li>MEER FÜR DICH DRIN I 365 vegane Kapseln reichen für deinen hochdosierten Magnesium-Jahresvorrat. Wir gewinnen das wertvolle Mineral aus den natürlichsten Quellen für dieses wertvolle Mineral, um dir e...</li><li>ENTWICKELT IN DEUTSCHLAND | Unser Magnesium wird von Expert:innen auf wissenschaftlicher Basis in Deutschland entwickelt. Es ist frei von unnötigen Zusatzstoffen wie Gelatine, Trennmitteln (z.B. Magne...</li><li>PREIS-LEISTUNGS-VERHÄLTNIS I Wir finden, Qualität muss bezahlbar sein. Deshalb bieten wir hochwertige Nährstoffe zu einem fairen Preis an – die perfekte Kombi aus hoher Qualität und tollem Preis-Leist...</li></ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp4_hochdos_jahresvorrat_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Hochdosiert + Premium-Design<br/><span class="tag-green">+ 9-Symbol Wirkungs-Wheel</span></div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B07BFG9HT5" target="_blank" rel="noopener noreferrer" title="Auf Amazon.de oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    <div class="col">
+      
+      <div class="header">
+        <div class="brand">ProFuel</div>
+        <div class="label">ProFuel Komplex 180</div>
+      </div>
+      <div class="main-img"><img src="images/comp2_komplex_180_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">9.95 EUR</span></div>
+        <div><span class="m-label">Kapseln</span> <span class="m-val">180</span></div>
+        <div class="highlight"><span class="m-label">EUR/Kapsel</span> <span class="m-val">0.0553</span></div>
+      </div>
+      <div class="rating-row"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;<span class="star-empty"></span></span> <span class="rating-val">4.6</span> <span class="review-count">&middot; 4.824 Reviews</span></div>
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Magnesium Komplex 180 Kapseln, 400 mg elementares Magnesium pro Tag, 5 hochwertige Formen: Mag.-Oxid, Citrat, Bisglycinat, Malat &amp; Ascorbat, laborgeprüft mit Zertifikat, Vorrat für 3 Monate">Magnesium Komplex 180 Kapseln, 400 mg elementares Magnesium pro Tag, 5 hochwertige Formen: Mag.-Oxid, Citrat, Bisglycina...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets"><li>5 HOCHWERTIGE MAGNESIUM-QUELLEN: Magnesium-Kapseln mit einem Magnesium-Komplex aus 5 Magnesium-Formen: Magnesium-Oxid, Magnesium-Citrat, Magnesium-Bisglycinat, Magnesium-Malat &amp; Magnesium-Ascorbat. Di...</li><li>400 MG ELEMENTARES MAGNESIUM: Jede Magnesium Kapsel liefert 200 mg elementares Magnesium. Wir empfehlen, täglich 2 Kapseln einzunehmen, um auf diese Weise dem Körper 400 mg wertvolles Magnesium zuzufü...</li><li>AUFGABE &amp; FUNKTION: Der Mineralstoff Magnesium trägt zu einem normalen Energiestoffwechsel und zu einer normalen Muskelfunktion bei. Darüber hinaus trägt Magnesium auch zur normalen psychischen Funkti...</li><li>VORRAT FÜR 3 MONATE: Eine Dose ProFuel Magnesium 400mg Complex enthält 180 Magnesium Kapseln und reicht bei einer empfohlenen Tagesdosis von 2 Magnesium-Kapseln für insgesamt 90 Tage.</li><li>ZERTIFIZIERTE QUALITÄT &amp; LABORKONTROLLEN: Die Herstellung erfolgt in einer modernen, nach IFS Food 7 zertifizierten Produktionsstätte – einem weltweit anerkannten Standard für höchste Anforderungen an...</li></ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp2_komplex_180_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Preis-Fokus + 5 Quellen<br/><span class="tag-green">+ Icon-Wheel + Lab-Zertifikat</span></div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B082VJ2ZLH" target="_blank" rel="noopener noreferrer" title="Auf Amazon.de oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    <div class="col">
+      
+      <div class="header">
+        <div class="brand">natural elements</div>
+        <div class="label">Natural Elements Premium</div>
+      </div>
+      <div class="main-img"><img src="images/comp5_natural_elements_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">22.99 EUR</span></div>
+        <div><span class="m-label">Kapseln</span> <span class="m-val">180</span></div>
+        <div class="highlight"><span class="m-label">EUR/Kapsel</span> <span class="m-val">0.1277</span></div>
+      </div>
+      <div class="rating-row"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;<span class="star-empty"></span></span> <span class="rating-val">4.7</span> <span class="review-count">&middot; 10.099 Reviews</span></div>
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="natural elements Magnesium Komplex - Premium: Aus 5 hochwertigen Verbindungen - 400mg elementares Magnesium pro Tagesdosis - Laborgeprüft, vegan, hochdosiert">natural elements Magnesium Komplex - Premium: Aus 5 hochwertigen Verbindungen - 400mg elementares Magnesium pro Tagesdos...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets"><li>💪 5-FACHE POWER | Unser Komplex kombiniert 5 Magnesiumformen: Tri-Magnesiumdicitrat, Magnesiumbisglycinat, Magnesiummalat, Magnesiumascorbat und Magnesiumoxid. Versorgt dich mit wertvollem Magnesium f...</li><li>⚡️HOCHWERTIGE 400 mg | Der menschliche Körper kann den Mineralstoff Magnesium nicht selbst herstellen. Dieses Produkt enthält 5 verschiedene Magnesiumformen, die dir insgesamt 400 mg elemetares Magnes...</li><li>🔋 STARKER 3-MONATS-VORRAT | 180 Kapseln für ein ganzes Quartal. Nur 2 Kapseln am Tag (je 1 morgens und abends) enthalten insgesamt 400mg elementares Magnesium. So bist du bestens für deinen Tag gewapp...</li><li>🙌🏼 ELEMENTAR EFFEKTIV | *Magnesium trägt zur Verringerung von Müdigkeit und Ermüdung, zum normalen Energiestoffwechsel, zum Elektrolytgleichgewicht, zum normalen Eiweißstoffwechsel, zur normalen Funkt...</li><li>💡 ELEMENTAR GEDACHT | Nur drin, was reingehört: Unser Produkt kommt ohne Aromen aus und ist frei von unnötigen Zusätzen wie Farbstoffen, Gelatine, Stabilisatoren oder Trennmitteln wie Magnesiumstearat...</li></ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp5_natural_elements_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Natural Elements Premium Brand<br/><span class="tag-green">+ Komplex-Positioning</span></div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B07NS4RX11" target="_blank" rel="noopener noreferrer" title="Auf Amazon.de oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="proposal">
+    <h2>Vorschlag: neue Secondary Images fuer eltabia</h2>
+    <div class="proposal-intro">
+      eltabia's groesstes Verkaufsargument -- die <strong>1000er-Packung (0,06 EUR/Kap)</strong> -- wird aktuell in KEINEM Bild visualisiert. Die 3 Mockups unten schliessen die Luecke und sind Amazon-konform (keine Markennamen, keine Superlative, keine Disease-Claims).
+    </div>
+    
+    <h3 class="subsection">Main Image Varianten (Image-to-Image, Amazon-compliant)</h3>
+    <div class="subsection-intro">
+      Dezenter gelber Kraftpapier-Tag am Pouch + 4-6 weisse Kapseln unten rechts -- exakt das Pattern das Sunday Natural und Natural Elements auf Page 1 nutzen. Pouch-Design bleibt unveraendert. 3 USP-Varianten zum A/B Testen.
+    </div>
+    <div class="mockup-grid">
+      <div class="mockup-card">
+        <div class="mockup-label">Main V1 -- "Jahresvorrat / 1000 Kapseln"</div>
+        <img src="images/main_v1_jahresvorrat.jpg"/>
+        <div class="mockup-desc">Pack-USP direkt sichtbar. Ideal fuer Jahresvorrat-Keyword-Targeting.</div>
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-label">Main V2 -- "300 mg elementar pro Tag"</div>
+        <img src="images/main_v2_hochdosiert.jpg"/>
+        <div class="mockup-desc">Dosis-Fokus. Fuer Zielgruppe die gezielt nach Wirkstoff-Menge sucht.</div>
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-label">Main V3 -- "Made in Germany" Siegel</div>
+        <img src="images/main_v3_made_in_germany.jpg"/>
+        <div class="mockup-desc">Rundes Qualitaetssiegel mit Deutschland-Silhouette + Flagge (analog Feel Natural). Trust-Fokus, kompensiert niedrige Review-Anzahl durch Herkunfts-Signal.</div>
+      </div>
+    </div>
+
+    <h3 class="subsection">Secondary-Image Mockups (Slot 2-4)</h3>
+    <div class="mockup-grid">
+      <div class="mockup-card">
+        <div class="mockup-label">Slot 2 -- Jahresvorrat-Kalender</div>
+        <img src="images/mockup_slot2_jahresvorrat.jpg"/>
+        <div class="mockup-desc">1000 Kapseln = 333 Tage Versorgung. Kalender-Grid macht Packungsgroesse in 2 Sek sichtbar.</div>
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-label">Slot 3 -- EUR/Kapsel-Vergleich</div>
+        <img src="images/mockup_slot3_pro_kapsel_vergleich.jpg"/>
+        <div class="mockup-desc">Anonyme Container-Silhouetten. eltabia rechts mit gruenem Rahmen: 0,06 EUR/Kap vs Markt.</div>
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-label">Slot 4 -- 300mg Wirkungs-Wheel</div>
+        <img src="images/mockup_slot4_300mg_wirkung.jpg"/>
+        <div class="mockup-desc">8 EFSA-konforme Wirkungs-Icons um Kapsel mit 300mg-Banderole. Kompensiert fehlende Brand-Power.</div>
+      </div>
+    </div>
+    <div class="new-title-box">
+      <h3>Zusaetzliche Title- &amp; Bullets-Empfehlung</h3>
+      <div class="compare-row">
+        <div class="rlabel">Title heute</div>
+        <div class="val old">Magnesiumcitrat Kapseln 1000 Stueck | Hochdosiert 300mg Tagesdosis elementares Magnesium | Tri-Magnesiumdicitrat</div>
+      </div>
+      <div class="compare-row">
+        <div class="rlabel">Title neu</div>
+        <div class="val new">Magnesium Kapseln Hochdosiert | <strong>1000 Kapseln Jahresvorrat</strong> &middot; 300mg elementar pro Tag | Magnesiumcitrat &middot; Vegan &middot; Made in Germany</div>
+      </div>
+      <div class="compare-row">
+        <div class="rlabel">Bullet 1 heute</div>
+        <div class="val old">Magnesiumcitrat Kapseln - Hoch bioverfuegbar, vegan und gut vertraeglich...</div>
+      </div>
+      <div class="compare-row">
+        <div class="rlabel">Bullet 1 neu</div>
+        <div class="val new"><strong>1000 KAPSELN = 333 TAGE VERSORGUNG</strong> -- bei 3 Kapseln taeglich. Nur 0,06 EUR pro Kapsel. Einmal kaufen, fast ein Jahr versorgt.</div>
+      </div>
+      <div class="compare-row">
+        <div class="rlabel">Bullet 2 neu</div>
+        <div class="val new"><strong>300 MG ELEMENTARES MAGNESIUM</strong> pro Tagesdosis (= 80% NRV) aus hoch-bioverfuegbarem Magnesiumcitrat. Traegt bei zu Muskelfunktion, Nervensystem, Energiestoffwechsel.</div>
+      </div>
+      <div class="compare-row">
+        <div class="rlabel">Bullet 3 neu</div>
+        <div class="val new"><strong>ABFUELLUNG IN DEUTSCHLAND</strong> nach HACCP, GMP und ISO 22000:2018. DEKRA-zertifiziert. Ohne Magnesium-Stearat, ohne Farbstoffe, ohne unnoetige Fuellstoffe.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">ADLEVATE &middot; Listing Deep Dive fuer eltabia &middot; 2026-04-23 &middot; benjamin@adlevate.de</div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <img id="lightboxImg" alt=""/>
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script>
+(function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbCap = document.getElementById('lightboxCaption');
+  const lbClose = document.getElementById('lightboxClose');
+  const sels = ['.main-img img', '.sec-img-box img', '.mockup-card img'];
+  document.querySelectorAll(sels.join(', ')).forEach(img => {
+    img.addEventListener('click', e => {
+      e.stopPropagation();
+      lbImg.src = img.src;
+      const col = img.closest('.col');
+      const brand = col ? col.querySelector('.brand').innerText : '';
+      const labelEl = col ? col.querySelector('.label') : null;
+      const label = labelEl ? labelEl.innerText : '';
+      const slotType = img.closest('.main-img') ? 'Main Image' :
+                       img.closest('.sec-img-box') ? 'Best Secondary (USP-Slot)' :
+                       img.closest('.mockup-card') ? (img.closest('.mockup-card').querySelector('.mockup-label').innerText) :
+                       '';
+      lbCap.innerText = brand ? `${brand} - ${label} - ${slotType}` : slotType;
+      lb.classList.add('active');
+    });
+  });
+  function close() { lb.classList.remove('active'); lbImg.src = ''; }
+  lb.addEventListener('click', close);
+  lbClose.addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
+</script>
+</body></html>
