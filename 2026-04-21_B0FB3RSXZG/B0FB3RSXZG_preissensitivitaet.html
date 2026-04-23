@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preissensitivitaets-Analyse &mdash; eltabia GmbH / B0FB3RSXZG</title>
+<style>
+:root {
+  --bg:          #0f1419;
+  --bg-card:    #1a2332;
+  --bg-card-2:  #111823;
+  --border:     rgba(91,197,200,0.12);
+  --border-strong: rgba(91,197,200,0.35);
+  --teal:       #5BC5C8;
+  --teal-glow:  rgba(91,197,200,0.25);
+  --green:      #78e0a5;
+  --green-bg:   rgba(120,224,165,0.12);
+  --amber:      #e0c97a;
+  --amber-bg:   rgba(224,201,122,0.12);
+  --red:        #e08a5a;
+  --red-bg:     rgba(224,138,90,0.12);
+  --text:       #e8eaed;
+  --text-muted: #8a939e;
+  --text-dim:   #5a6470;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.55;
+  min-height: 100vh;
+}
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 28px 48px;
+}
+
+/* HEADER */
+.brandbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+.brandmark {
+  font-size: 11pt;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--teal);
+}
+.brandmark .dot { color: var(--text); font-weight: 300; }
+.back-link {
+  color: var(--text-muted);
+  font-size: 9pt;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+}
+.back-link:hover { color: var(--teal); }
+
+.accent-line { width: 60px; height: 3px; background: var(--teal); margin-bottom: 16px; }
+
+/* HERO */
+.hero-label {
+  color: var(--teal);
+  font-size: 9pt;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+h1 {
+  font-size: 32pt;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
+  color: #fff;
+  line-height: 1.05;
+}
+.hero-sub { color: var(--text-muted); font-size: 12pt; margin-bottom: 32px; max-width: 80%; }
+
+/* CONTROL PANEL */
+.controls {
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 22px 24px;
+  margin-bottom: 28px;
+}
+.controls h2 {
+  color: var(--teal);
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.control-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+.control-group label {
+  display: block;
+  font-size: 8pt;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.control-group .value-big {
+  font-size: 24pt;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.control-group .value-big .u { font-size: 13pt; color: var(--teal); font-weight: 600; margin-left: 3px; }
+input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 5px;
+  background: var(--bg-card-2);
+  border-radius: 3px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px; height: 20px;
+  background: var(--teal);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 0 4px var(--teal-glow);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px; height: 20px;
+  background: var(--teal);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 0 4px var(--teal-glow);
+}
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8pt;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* STAT ROW */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.stat {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 16px 18px;
+}
+.stat.hi { border-color: var(--teal); background: linear-gradient(135deg, var(--bg-card) 0%, rgba(91,197,200,0.06) 100%); }
+.stat .s-label {
+  font-size: 8pt;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+.stat .s-value {
+  font-size: 18pt;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.stat .s-value .u { font-size: 11pt; color: var(--text-muted); font-weight: 500; }
+.stat .s-sub { font-size: 8pt; color: var(--text-muted); margin-top: 4px; }
+
+/* SECTION */
+h3.section {
+  color: var(--teal);
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin: 28px 0 14px;
+}
+
+/* TABLE */
+.sens-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+}
+.sens-table thead th {
+  background: var(--bg-card-2);
+  color: var(--text-muted);
+  font-size: 8pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 12px 14px;
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+}
+.sens-table thead th:first-child { text-align: left; }
+.sens-table td {
+  padding: 11px 14px;
+  text-align: right;
+  font-size: 10pt;
+  border-bottom: 1px solid var(--border);
+}
+.sens-table td:first-child { text-align: left; font-weight: 500; }
+.sens-table tr:last-child td { border-bottom: none; }
+.sens-table tr.current { background: rgba(91,197,200,0.08); }
+.sens-table tr.current td { color: #fff; font-weight: 700; }
+.sens-table tr.optimal td { background: var(--green-bg); }
+.sens-table tr.premium-optimal td { background: var(--amber-bg); }
+.sens-table tr.below-be td { color: var(--red); }
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 7.5pt;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.badge.optimal { background: var(--green-bg); color: var(--green); }
+.badge.premium { background: var(--amber-bg); color: var(--amber); }
+.badge.current { background: var(--teal-glow); color: var(--teal); }
+.badge.break-even { background: var(--red-bg); color: var(--red); }
+.badge.ok { background: var(--green-bg); color: var(--green); }
+.badge.warn { background: var(--amber-bg); color: var(--amber); }
+.badge.bad { background: var(--red-bg); color: var(--red); }
+
+/* CHART */
+.chart-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px 24px;
+  margin-top: 14px;
+}
+svg.curve { display: block; width: 100%; height: auto; }
+.chart-legend {
+  display: flex;
+  gap: 20px;
+  font-size: 8.5pt;
+  color: var(--text-muted);
+  margin-top: 10px;
+  justify-content: center;
+}
+.chart-legend .dot {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* CTA */
+.cta-block {
+  margin-top: 40px;
+  background: linear-gradient(135deg, rgba(91,197,200,0.08) 0%, rgba(91,197,200,0.02) 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 22px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+.cta-block .txt {
+  font-size: 11pt;
+  color: var(--text);
+  max-width: 70%;
+}
+.cta-block .txt strong { color: #fff; }
+.cta-button {
+  background: var(--teal);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 10pt;
+  padding: 12px 22px;
+  border-radius: 3px;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 8pt;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="brandbar">
+    <div class="brandmark">ADLEVATE<span class="dot"> · </span>PRICE SENSITIVITY</div>
+    <a class="back-link" href="B0FB3RSXZG_onepager.html">← Zurueck zum OnePager</a>
+  </div>
+
+  <div class="accent-line"></div>
+  <div class="hero-label">PREISSENSITIVITAETS-ANALYSE</div>
+  <h1>B0FB3RSXZG &mdash; magnesium kapseln</h1>
+  <div class="hero-sub">
+    <div style="background:rgba(255,200,100,0.08); border-left:3px solid #e0a800; padding:12px 16px; margin:12px 0; font-size:10pt; color:#d4b860;"><strong>Hinweis zur Optimal-Range:</strong> Deine 1000er-Packung tritt gegen 90-240er Wettbewerber an. Die Range wirkt weit (17&ndash;111&nbsp;&euro;) weil deine COGS (3,50&nbsp;&euro;/1000 Stk.) sehr niedrig ist und der Median hochgerechnet sehr hoch. Eigentlicher Hebel ist nicht der Preis, sondern Keyword-Positioning &mdash; siehe OnePager Hebel&nbsp;02.</div>
+    Ziehe den <strong style="color:var(--teal)">COGS-Slider</strong>, um deine echten Selbstkosten zu setzen &mdash;
+    Break-Even, Optimal-Range und Margen rechnen sich live neu.
+  </div>
+
+  <div class="controls">
+    <h2>Input-Parameter &mdash; live adjustable</h2>
+    <div class="control-row" style="grid-template-columns: 1fr 1fr 1fr;">
+      <div class="control-group">
+        <label>COGS pro Einheit</label>
+        <div class="value-big"><span id="cogsOut">3.5</span><span class="u">&euro;</span></div>
+        <input type="range" id="cogsSlider" min="0.5" max="36.0" step="0.10" value="3.5" />
+        <div class="range-labels"><span>0,50 &euro;</span><span>36.0 &euro;</span></div>
+      </div>
+      <div class="control-group">
+        <label>Target TACoS (Ad Cost / Revenue)</label>
+        <div class="value-big"><span id="tacosOut">15</span><span class="u">%</span></div>
+        <input type="range" id="tacosSlider" min="0" max="40" step="1" value="15" />
+        <div class="range-labels"><span>0%</span><span>40%</span></div>
+      </div>
+      <div class="control-group">
+        <label>Aktueller Preis (Keepa, fix)</label>
+        <div class="value-big">59.99<span class="u">&euro;</span></div>
+        <div style="font-size:9pt; color:var(--text-muted); margin-top:6px;">
+          90d-Median: 59.99 &euro;<br/>
+          Page-1-Median: 19.9 &euro;
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div style="background: rgba(120,224,165,0.08); border: 1px solid rgba(120,224,165,0.3); color: var(--green); padding: 8px 14px; border-radius: 4px; margin-bottom: 14px; font-size: 9pt; display: flex; align-items: center; gap: 8px;">
+    <span style="font-weight: 700; letter-spacing: 0.5px;">&#10003; LIVE AUS AMAZON SP-API</span>
+    <span style="color: var(--text-muted);">&mdash; Referral + FBA Fee direkt von Amazon fuer deine ASIN abgefragt (nicht geschaetzt).</span>
+  </div>
+  
+
+  <div class="stat-row" style="grid-template-columns: repeat(6, 1fr);">
+    <div class="stat">
+      <div class="s-label">Referral Fee <span style="color:var(--green); font-size:7pt;">&#10003; SP-API</span></div>
+      <div class="s-value">15.0<span class="u">%</span></div>
+      <div class="s-sub">9.0 &euro; absolut</div>
+    </div>
+    <div class="stat">
+      <div class="s-label">FBA Fee <span style="color:var(--green); font-size:7pt;">&#10003; SP-API</span></div>
+      <div class="s-value">4.5<span class="u">&euro;</span></div>
+      <div class="s-sub">ASIN-spezifisch</div>
+    </div>
+    <div class="stat">
+      <div class="s-label">Ad Cost / Einheit</div>
+      <div class="s-value" id="adCostOut">0,00<span class="u">&euro;</span></div>
+      <div class="s-sub">bei <span id="adCostTacos">15</span>% TACoS</div>
+    </div>
+    <div class="stat hi">
+      <div class="s-label">Break-Even-Preis</div>
+      <div class="s-value" id="beOut">11.43<span class="u">&euro;</span></div>
+      <div class="s-sub">COGS + Fees + Ads</div>
+    </div>
+    <div class="stat hi">
+      <div class="s-label">Aktuelle Netto-Marge</div>
+      <div class="s-value" id="currMarginOut">33,99<span class="u">&euro;</span></div>
+      <div class="s-sub" id="currMarginPctOut">56% von Preis</div>
+    </div>
+    <div class="stat" id="optimalStat" style="background: rgba(120,224,165,0.08); border-color: rgba(120,224,165,0.3);">
+      <div class="s-label" id="optimalLabel" style="color: var(--green);">Optimal-Range</div>
+      <div class="s-value" id="optimalRangeOut" style="font-size: 14pt;">&mdash;</div>
+      <div class="s-sub" id="optimalSub">Market: Marge &ge; 20 % &amp; Preis &le; Median +5 % &mdash; Premium: Marge &ge; 25 % &amp; Preis &le; Median +25 %</div>
+    </div>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:baseline; margin: 28px 0 14px;">
+    <h3 class="section" style="margin:0;">Sensitivitaets-Tabelle</h3>
+    <button id="exportBtn" style="background:var(--teal); color:var(--bg); border:none; font-weight:700; font-size:9pt; padding:8px 16px; border-radius:3px; cursor:pointer; letter-spacing:0.3px;">↓ Export als CSV/XLSX</button>
+  </div>
+  <table class="sens-table" id="sensTable">
+    <thead>
+      <tr>
+        <th>Preis</th>
+        <th>Delta</th>
+        <th>vs Page-1</th>
+        <th>
+          FBA Fee
+          <span class="info-btn" data-tip="fba">ⓘ</span>
+        </th>
+        <th>
+          Referral
+          <span class="info-btn" data-tip="ref">ⓘ</span>
+        </th>
+        <th>Ad Cost</th>
+        <th>Netto-Marge €</th>
+        <th>Marge %</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="sensBody"></tbody>
+  </table>
+  <div class="tooltip-box" id="tooltipBox" style="display:none; position:absolute; background: var(--bg-card-2); border: 1px solid var(--teal); border-radius: 4px; padding: 10px 14px; font-size: 8.5pt; max-width: 340px; z-index: 100; color: var(--text); line-height: 1.5; box-shadow: 0 4px 20px rgba(0,0,0,0.4);"></div>
+
+  <style>
+    .info-btn { display: inline-block; width: 14px; height: 14px; line-height: 14px; text-align: center; border-radius: 50%; background: var(--teal-glow); color: var(--teal); font-size: 9pt; cursor: help; margin-left: 4px; font-weight: 700; }
+    .info-btn:hover { background: var(--teal); color: var(--bg); }
+    .fee-src-sp { color: var(--green); font-size: 7pt; margin-left: 3px; font-weight: 700; letter-spacing: 0.3px; }
+    .fee-src-est { color: var(--amber); font-size: 7pt; margin-left: 3px; font-weight: 700; letter-spacing: 0.3px; }
+  </style>
+
+  <h3 class="section">Marge &mdash; Preis-Kurve</h3>
+  <div class="chart-wrap">
+    <svg class="curve" viewBox="0 0 800 280" id="chart">
+      <!-- rendered via JS -->
+    </svg>
+    <div class="chart-legend">
+      <span><span class="dot" style="background:var(--teal)"></span>Marge-Kurve</span>
+      <span><span class="dot" style="background:var(--red)"></span>Break-Even-Linie</span>
+      <span><span class="dot" style="background:var(--green)"></span>Optimal-Range</span>
+      <span><span class="dot" style="background:#fff"></span>Aktueller Preis</span>
+    </div>
+  </div>
+
+  <div class="cta-block">
+    <div class="txt">
+      <strong>Das war nur die Preis-Dimension.</strong> PPC, Listing-Optimierung, Competitor-Monitoring &mdash;
+      alles laeuft bei mir automatisiert fuer 5 Kunden parallel. Aktuell <strong style="color:var(--teal)">2 Spots frei</strong>.
+    </div>
+    <a class="cta-button" href="https://calendly.com/kundenservice-adlevate/101">→ 15-Min Call buchen</a>
+  </div>
+
+  <div class="footer">
+    ADLEVATE &middot; Benjamin Yueksel &middot; benjamin@adlevate.de &middot; Ex-Amazon &middot; BAFA-akkreditiert
+  </div>
+</div>
+
+<script>
+// --- Input data ---
+const CURRENT_PRICE = 59.99;
+const PAGE1_MEDIAN = 105.32; // pro 1000 Kapseln - Page-1 Median 0.1053 EUR/Kapsel hochgerechnet (eltabia: 1000er Packung)
+const REFERRAL_PCT = 0.15;
+const FBA_FEE = 4.5;
+// SP-API Fee-Map pro Preispunkt: {"18.16": {"fba": 2.99, "ref_pct": 0.1498}, ...}
+// Leer wenn SP-API nicht verfuegbar -> Fallback auf globale REFERRAL_PCT + FBA_FEE
+const SP_FEE_MAP = {"12.0": {"fba": 3.2, "ref_pct": 0.15}, "15.0": {"fba": 3.2, "ref_pct": 0.15}, "18.0": {"fba": 3.2, "ref_pct": 0.15}, "21.0": {"fba": 3.2, "ref_pct": 0.15}, "24.0": {"fba": 3.2, "ref_pct": 0.15}, "27.0": {"fba": 3.2, "ref_pct": 0.15}, "30.0": {"fba": 3.2, "ref_pct": 0.15}, "32.99": {"fba": 3.2, "ref_pct": 0.15}, "35.99": {"fba": 3.2, "ref_pct": 0.15}, "38.99": {"fba": 3.2, "ref_pct": 0.15}, "41.99": {"fba": 3.2, "ref_pct": 0.15}, "44.99": {"fba": 3.2, "ref_pct": 0.15}, "47.99": {"fba": 3.2, "ref_pct": 0.15}, "50.99": {"fba": 3.2, "ref_pct": 0.15}, "53.99": {"fba": 3.2, "ref_pct": 0.15}, "56.99": {"fba": 3.2, "ref_pct": 0.15}, "62.99": {"fba": 3.2, "ref_pct": 0.15}, "65.99": {"fba": 3.2, "ref_pct": 0.15}, "68.99": {"fba": 3.2, "ref_pct": 0.15}};
+const ASIN = "B0FB3RSXZG";
+const KEYWORD = "magnesium kapseln";
+const COMPANY = "eltabia GmbH";
+const DELTAS = [-80, -75, -70, -65, -60, -55, -50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15];
+
+const cogsSlider = document.getElementById('cogsSlider');
+const cogsOut = document.getElementById('cogsOut');
+const tacosSlider = document.getElementById('tacosSlider');
+const tacosOut = document.getElementById('tacosOut');
+const adCostOut = document.getElementById('adCostOut');
+const adCostTacos = document.getElementById('adCostTacos');
+const beOut = document.getElementById('beOut');
+const currMarginOut = document.getElementById('currMarginOut');
+const currMarginPctOut = document.getElementById('currMarginPctOut');
+const sensBody = document.getElementById('sensBody');
+const chart = document.getElementById('chart');
+const exportBtn = document.getElementById('exportBtn');
+
+let LAST_ROWS = [];
+let LAST_COGS = 0, LAST_TACOS = 0, LAST_BE = 0;
+
+const fmtEUR = v => (v==null||isNaN(v)) ? '—' : v.toFixed(2).replace('.', ',') + ' €';
+const fmtEURraw = v => (v==null||isNaN(v)) ? '' : v.toFixed(2).replace('.', ',');
+
+// Nearest-match fee lookup: Wenn SP-API Fees fuer diesen (oder nahen) Preis vorliegen,
+// diese nutzen — sonst Fallback auf globale REFERRAL_PCT + FBA_FEE.
+function feesFor(price) {
+  const keys = Object.keys(SP_FEE_MAP);
+  if (keys.length === 0) return { fba: FBA_FEE, ref_pct: REFERRAL_PCT, source: "estimate" };
+  // Finde naechstgelegenen Preis-Key
+  let best = keys[0], bestDiff = Math.abs(parseFloat(best) - price);
+  for (const k of keys) {
+    const diff = Math.abs(parseFloat(k) - price);
+    if (diff < bestDiff) { best = k; bestDiff = diff; }
+  }
+  // Nur nutzen wenn Differenz < 0.50 EUR (sonst Fallback)
+  if (bestDiff > 0.50) return { fba: FBA_FEE, ref_pct: REFERRAL_PCT, source: "estimate" };
+  return { fba: SP_FEE_MAP[best].fba, ref_pct: SP_FEE_MAP[best].ref_pct, source: "sp_api" };
+}
+
+function margin(price, cogs, tacos) {
+  const f = feesFor(price);
+  const fees = price * f.ref_pct + f.fba + price * tacos;
+  const m = price - cogs - fees;
+  return { abs: m, pct: price > 0 ? m/price : 0, adCost: price * tacos, fba: f.fba, refPct: f.ref_pct };
+}
+function breakEven(cogs, tacos) {
+  const f = feesFor(CURRENT_PRICE);
+  const deduction = f.ref_pct + tacos;
+  if (deduction >= 1) return 0;
+  return (cogs + f.fba) / (1 - deduction);
+}
+
+function recalc() {
+  const cogs = parseFloat(cogsSlider.value);
+  const tacos = parseFloat(tacosSlider.value) / 100;
+  cogsOut.textContent = cogs.toFixed(2).replace('.', ',');
+  tacosOut.textContent = (tacos*100).toFixed(0);
+  adCostTacos.textContent = (tacos*100).toFixed(0);
+
+  const be = breakEven(cogs, tacos);
+  beOut.innerHTML = be.toFixed(2).replace('.', ',') + '<span class="u">&euro;</span>';
+
+  const cm = margin(CURRENT_PRICE, cogs, tacos);
+  currMarginOut.innerHTML = cm.abs.toFixed(2).replace('.', ',') + '<span class="u">&euro;</span>';
+  currMarginPctOut.textContent = (cm.pct*100).toFixed(0) + '% von Preis';
+  adCostOut.innerHTML = cm.adCost.toFixed(2).replace('.', ',') + '<span class="u">&euro;</span>';
+
+  const rows = DELTAS.map(d => {
+    const price = Math.round(CURRENT_PRICE * (1 + d/100) * 100) / 100;
+    const m = margin(price, cogs, tacos);
+    const vsP1 = PAGE1_MEDIAN ? (price - PAGE1_MEDIAN) / PAGE1_MEDIAN : null;
+    const isCurrent = d === 0;
+    const isBE = price <= be;
+    // Tier 1 — Market-Competitive: Marge >= 20% UND Preis <= Median + 5%
+    const isMarketOptimal = m.pct >= 0.20 && (vsP1 === null || vsP1 <= 0.05);
+    // Tier 2 — Premium-Optimal: Marge >= 25% UND Preis <= Median + 25% (nur wenn nicht schon Market)
+    const isPremiumOptimal = !isMarketOptimal && m.pct >= 0.25 && (vsP1 === null || vsP1 <= 0.25);
+    const isOptimal = isMarketOptimal || isPremiumOptimal;
+    return { d, price, m, vsP1, isCurrent, isBE, isOptimal, isMarketOptimal, isPremiumOptimal };
+  });
+  LAST_ROWS = rows; LAST_COGS = cogs; LAST_TACOS = tacos; LAST_BE = be;
+
+  sensBody.innerHTML = rows.map(r => {
+    const cls = r.isCurrent ? 'current'
+      : (r.isMarketOptimal ? 'optimal'
+        : (r.isPremiumOptimal ? 'premium-optimal'
+          : (r.isBE ? 'below-be' : '')));
+    const status = r.isBE
+      ? '<span class="badge break-even">Verlust</span>'
+      : (r.isMarketOptimal ? '<span class="badge optimal">Optimal</span>'
+        : (r.isPremiumOptimal ? '<span class="badge premium">Premium-Optimal</span>'
+          : (r.isCurrent ? '<span class="badge current">Aktuell</span>' : '')));
+    const delta = r.isCurrent ? '—' : (r.d > 0 ? '+' + r.d + '%' : r.d + '%');
+    const vsp1 = r.vsP1 === null ? '—' : (r.vsP1 > 0 ? '+' : '') + (r.vsP1*100).toFixed(1).replace('.', ',') + '%';
+    const f = feesFor(r.price);
+    const srcBadge = f.source === "sp_api"
+      ? '<span class="fee-src-sp">SP-API</span>'
+      : '<span class="fee-src-est">EST</span>';
+    const refPctDisp = (f.ref_pct * 100).toFixed(1).replace('.', ',') + '%';
+    return `<tr class="${cls}">
+      <td>${fmtEUR(r.price)}</td>
+      <td>${delta}</td>
+      <td>${vsp1}</td>
+      <td>${fmtEUR(f.fba)}${srcBadge}</td>
+      <td>${refPctDisp}<span style="color:var(--text-muted); font-size:8pt;"> · ${fmtEUR(r.price * f.ref_pct)}</span></td>
+      <td>${fmtEUR(r.m.adCost)}</td>
+      <td>${fmtEUR(r.m.abs)}</td>
+      <td>${(r.m.pct*100).toFixed(0)}%</td>
+      <td>${status}</td>
+    </tr>`;
+  }).join('');
+
+  // Live Optimal-Range: market-tier + premium-tier getrennt ausweisen
+  const marketRows = rows.filter(r => r.isMarketOptimal);
+  const premiumRows = rows.filter(r => r.isPremiumOptimal);
+  const optOut = document.getElementById('optimalRangeOut');
+  const optStat = document.getElementById('optimalStat');
+  const optLabel = document.getElementById('optimalLabel');
+  const fmtRange = rs => {
+    const lo = Math.min(...rs.map(r => r.price));
+    const hi = Math.max(...rs.map(r => r.price));
+    return lo === hi
+      ? `${lo.toFixed(2).replace('.', ',')}`
+      : `${lo.toFixed(2).replace('.', ',')}&ndash;${hi.toFixed(2).replace('.', ',')}`;
+  };
+  if (marketRows.length === 0 && premiumRows.length === 0) {
+    optOut.innerHTML = '&mdash;<span class="u" style="font-size:9pt;"> keine</span>';
+    optStat.style.background = 'rgba(224,138,90,0.08)';
+    optStat.style.borderColor = 'rgba(224,138,90,0.3)';
+    optLabel.style.color = 'var(--red)';
+  } else {
+    const parts = [];
+    if (marketRows.length > 0) {
+      parts.push(`<span style="color:var(--green);">${fmtRange(marketRows)}<span class="u">&euro;</span></span><span class="u" style="font-size:8pt;">&nbsp;Market</span>`);
+    }
+    if (premiumRows.length > 0) {
+      parts.push(`<span style="color:var(--amber);">${fmtRange(premiumRows)}<span class="u">&euro;</span></span><span class="u" style="font-size:8pt;">&nbsp;Premium</span>`);
+    }
+    optOut.innerHTML = parts.join('<br/>');
+    // Box-Farbe: Gruen wenn Market (primaer), Amber wenn nur Premium
+    if (marketRows.length > 0) {
+      optStat.style.background = 'rgba(120,224,165,0.08)';
+      optStat.style.borderColor = 'rgba(120,224,165,0.3)';
+      optLabel.style.color = 'var(--green)';
+    } else {
+      optStat.style.background = 'rgba(224,201,122,0.08)';
+      optStat.style.borderColor = 'rgba(224,201,122,0.3)';
+      optLabel.style.color = 'var(--amber)';
+    }
+  }
+
+  drawChart(cogs, tacos, be);
+}
+
+function exportCSV() {
+  const header = [
+    `Adlevate Preissensitivitaet — ${COMPANY} / ${ASIN} / "${KEYWORD}"`,
+    `Export vom ${new Date().toLocaleString('de-DE')}`,
+    `COGS: ${LAST_COGS.toFixed(2).replace('.', ',')} €`,
+    `Target TACoS: ${(LAST_TACOS*100).toFixed(0)}%`,
+    `Referral Fee: ${(REFERRAL_PCT*100).toFixed(0)}%`,
+    `FBA Fee: ${FBA_FEE.toFixed(2).replace('.', ',')} €`,
+    `Break-Even: ${LAST_BE.toFixed(2).replace('.', ',')} €`,
+    `Page-1 Median: ${PAGE1_MEDIAN ? PAGE1_MEDIAN.toFixed(2).replace('.', ',') + ' €' : '—'}`,
+    '',
+    'Preis;Delta;vs Page-1;FBA Fee;FBA Quelle;Referral %;Referral EUR;Ad Cost;Netto-Marge EUR;Marge %;Status',
+  ];
+  const dataRows = LAST_ROWS.map(r => {
+    const f = feesFor(r.price);
+    return [
+      fmtEURraw(r.price),
+      r.isCurrent ? 'aktuell' : (r.d > 0 ? '+' + r.d + '%' : r.d + '%'),
+      r.vsP1 === null ? '' : ((r.vsP1 > 0 ? '+' : '') + (r.vsP1*100).toFixed(1).replace('.', ',') + '%'),
+      fmtEURraw(f.fba),
+      f.source === 'sp_api' ? 'SP-API' : 'Estimate',
+      (f.ref_pct*100).toFixed(1).replace('.', ',') + '%',
+      fmtEURraw(r.price * f.ref_pct),
+      fmtEURraw(r.m.adCost),
+      fmtEURraw(r.m.abs),
+      (r.m.pct*100).toFixed(0) + '%',
+      r.isBE ? 'Verlust' : (r.isOptimal ? 'Optimal' : (r.isCurrent ? 'Aktuell' : '')),
+    ].join(';');
+  });
+  const csv = '\uFEFF' + header.concat(dataRows).join('\r\n'); // BOM fuer Excel-Umlaute
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${ASIN}_preissensitivitaet_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function drawChart(cogs, tacos, be) {
+  const W = 800, H = 280, padL = 60, padR = 30, padT = 20, padB = 40;
+  const xs = [];
+  for (let d = -30; d <= 30; d += 1) {
+    const price = CURRENT_PRICE * (1 + d/100);
+    const m = margin(price, cogs, tacos);
+    xs.push({ price, margin: m.abs, pct: m.pct });
+  }
+  const minP = Math.min(...xs.map(x => x.price));
+  const maxP = Math.max(...xs.map(x => x.price));
+  const minM = Math.min(0, ...xs.map(x => x.margin));
+  const maxM = Math.max(...xs.map(x => x.margin));
+  const rangeM = maxM - minM || 1;
+
+  const X = p => padL + (p - minP) / (maxP - minP) * (W - padL - padR);
+  const Y = m => H - padB - (m - minM) / rangeM * (H - padT - padB);
+
+  // Build path
+  const path = xs.map((x, i) => (i === 0 ? 'M' : 'L') + X(x.price).toFixed(1) + ',' + Y(x.margin).toFixed(1)).join(' ');
+
+  // Area below curve (filled)
+  const area = path + ` L${X(maxP).toFixed(1)},${Y(0).toFixed(1)} L${X(minP).toFixed(1)},${Y(0).toFixed(1)} Z`;
+
+  // Zero-line (x axis for margin=0)
+  const zeroY = Y(0);
+
+  // Break-even vertical
+  const beX = X(be);
+
+  // Tier-Overlays: Premium zuerst (hinten), Market drueber (vorne — bei Ueberlapp dominiert Gruen)
+  let optRects = '';
+  // Premium-Tier: margin >= 25% AND price <= page1*1.25, aber NICHT schon market-optimal
+  const premiumPoints = xs.filter(x => {
+    const isMarket = x.pct >= 0.20 && (!PAGE1_MEDIAN || x.price <= PAGE1_MEDIAN * 1.05);
+    const isPremium = x.pct >= 0.25 && (!PAGE1_MEDIAN || x.price <= PAGE1_MEDIAN * 1.25);
+    return !isMarket && isPremium;
+  });
+  if (premiumPoints.length > 0) {
+    const pMin = Math.min(...premiumPoints.map(p => p.price));
+    const pMax = Math.max(...premiumPoints.map(p => p.price));
+    const x1 = Math.max(X(pMin), padL);
+    const x2 = Math.min(X(pMax), W - padR);
+    optRects += `<rect x="${x1}" y="${padT}" width="${x2-x1}" height="${H-padB-padT}" fill="rgba(224,201,122,0.10)" />`;
+  }
+  // Market-Tier
+  const marketPoints = xs.filter(x => x.pct >= 0.20 && (!PAGE1_MEDIAN || x.price <= PAGE1_MEDIAN * 1.05));
+  if (marketPoints.length > 0) {
+    const oMin = Math.min(...marketPoints.map(p => p.price));
+    const oMax = Math.max(...marketPoints.map(p => p.price));
+    const x1 = Math.max(X(oMin), padL);
+    const x2 = Math.min(X(oMax), W - padR);
+    optRects += `<rect x="${x1}" y="${padT}" width="${x2-x1}" height="${H-padB-padT}" fill="rgba(120,224,165,0.10)" />`;
+  }
+
+  // Current price vertical
+  const cpX = X(CURRENT_PRICE);
+
+  // Axis ticks
+  const xTicks = [minP, CURRENT_PRICE * 0.9, CURRENT_PRICE, CURRENT_PRICE * 1.1, maxP].map(p =>
+    `<g><line x1="${X(p)}" y1="${H-padB}" x2="${X(p)}" y2="${H-padB+5}" stroke="#5a6470"/>
+     <text x="${X(p)}" y="${H-padB+18}" fill="#8a939e" font-size="10" text-anchor="middle">${p.toFixed(2).replace('.',',')}€</text></g>`
+  ).join('');
+
+  const yTicks = [minM, 0, maxM/2, maxM].map(m =>
+    `<g><line x1="${padL-5}" y1="${Y(m)}" x2="${padL}" y2="${Y(m)}" stroke="#5a6470"/>
+     <text x="${padL-8}" y="${Y(m)+4}" fill="#8a939e" font-size="10" text-anchor="end">${m.toFixed(1).replace('.',',')}€</text></g>`
+  ).join('');
+
+  chart.innerHTML = `
+    ${optRects}
+    <line x1="${padL}" y1="${zeroY}" x2="${W-padR}" y2="${zeroY}" stroke="#e08a5a" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
+    <line x1="${beX}" y1="${padT}" x2="${beX}" y2="${H-padB}" stroke="#e08a5a" stroke-width="1" stroke-dasharray="3,3" opacity="0.7"/>
+    <line x1="${cpX}" y1="${padT}" x2="${cpX}" y2="${H-padB}" stroke="#ffffff" stroke-width="1" stroke-dasharray="2,2" opacity="0.5"/>
+    <text x="${beX}" y="${padT-6}" fill="#e08a5a" font-size="10" text-anchor="middle">BE</text>
+    <text x="${cpX}" y="${padT-6}" fill="#fff" font-size="10" text-anchor="middle">Aktuell</text>
+    <path d="${area}" fill="url(#grad)" opacity="0.25"/>
+    <path d="${path}" fill="none" stroke="#5BC5C8" stroke-width="2.5"/>
+    <line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#5a6470" stroke-width="1"/>
+    <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#5a6470" stroke-width="1"/>
+    ${xTicks}
+    ${yTicks}
+    <defs>
+      <linearGradient id="grad" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="#5BC5C8"/>
+        <stop offset="100%" stop-color="#5BC5C8" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+  `;
+}
+
+cogsSlider.addEventListener('input', recalc);
+tacosSlider.addEventListener('input', recalc);
+exportBtn.addEventListener('click', exportCSV);
+
+// Tooltip-Logik
+const TOOLTIPS = {
+  fba: '<strong style="color:var(--teal);">FBA Fee (Fulfillment by Amazon)</strong><br/><br/>Primaer dimension-/gewichtsbasiert &mdash; d.h. innerhalb eines normalen Preis-Sweeps meist konstant. Zwei preisabhaengige Ausnahmen:<br/>&bull; <strong>Low-Price-FBA</strong> (ab Jan 2026: &lt; 20&nbsp;€ inkl. MwSt in den meisten Kategorien; 11&nbsp;€ in 7 Kategorien wie Beauty/Grocery/Buecher) &mdash; reduzierte Fee fuer kleine, leichte Artikel.<br/>&bull; <strong>Peak-Season-Aufschlag</strong> ~0,19&nbsp;€/Einheit (Oct 15 &ndash; Jan 14).<br/><br/>Werte hier sind <strong>pro Preispunkt live ueber die Amazon SP-API</strong> gezogen &mdash; falls eine Schwelle im Sweep ueberschritten wird, siehst du die Stufung in der Spalte.<br/><br/><span class="fee-src-sp">SP-API</span> = direkt aus Amazons Selling Partner API fuer deine ASIN.<br/><span class="fee-src-est">EST</span> = Kategorie-Schaetzung (API-Fallback).',
+  ref: '<strong style="color:var(--teal);">Amazon Referral Fee</strong><br/><br/>Prozentsatz vom Verkaufspreis, den Amazon pro Verkauf einbehaelt. Meist flat 15%, aber <strong>11 DE-Kategorien sind tiered</strong> (2026): Furniture (15%&rarr;10% ab 200&nbsp;€), Home (8%&rarr;15% ab 20&nbsp;€), Clothing, Electronics Accessories (15%&rarr;8% ab 100&nbsp;€), Jewelry, Grocery, Vitamins, Pet Clothing &amp; Food, Baby, Beauty/Health, Automotive. <strong>Minimum 0,30&nbsp;€/Einheit.</strong><br/><br/>Werte kommen <strong>live aus der Amazon SP-API</strong> fuer deine ASIN &mdash; nicht pauschal geraten. Wenn der Sweep eine Tier-Schwelle kreuzt, siehst du die Stufung in der Spalte.',
+};
+const tooltipBox = document.getElementById('tooltipBox');
+document.addEventListener('mouseover', (e) => {
+  const btn = e.target.closest('.info-btn');
+  if (!btn) return;
+  const tipKey = btn.getAttribute('data-tip');
+  if (!TOOLTIPS[tipKey]) return;
+  tooltipBox.innerHTML = TOOLTIPS[tipKey];
+  tooltipBox.style.display = 'block';
+  const r = btn.getBoundingClientRect();
+  tooltipBox.style.top = (window.scrollY + r.bottom + 6) + 'px';
+  tooltipBox.style.left = Math.min(window.scrollX + r.left - 10, window.innerWidth - 360) + 'px';
+});
+document.addEventListener('mouseout', (e) => {
+  if (e.target.closest('.info-btn')) tooltipBox.style.display = 'none';
+});
+
+recalc();
+</script>
+</body>
+</html>
