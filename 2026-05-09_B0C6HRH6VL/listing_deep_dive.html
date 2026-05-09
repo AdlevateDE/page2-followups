@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Listing Deep Dive -- KNERST vs Top 5 Competitors</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1419; color: #d4d4d4; line-height: 1.5; font-size: 13px; }
+.container { max-width: 2400px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 28px; color: #5BC5C8; margin: 0 0 8px 0; font-weight: 600; }
+.subtitle { color: #888; font-size: 13px; margin-bottom: 24px; }
+.legend { background: #1a2128; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; color: #a0a0a0; border-left: 3px solid #5BC5C8; }
+.legend strong { color: #d4d4d4; }
+.grid { display: grid; grid-template-columns: repeat(6, minmax(300px, 1fr)); gap: 16px; }
+.col { background: #1a2128; border: 1px solid #2a3138; border-radius: 10px; padding: 16px; position: relative; overflow: hidden; }
+.col.client { border: 2px solid #5BC5C8; background: #15242a; }
+.badge-client { position: absolute; top: 0; right: 0; background: #5BC5C8; color: #0f1419; font-weight: 700; font-size: 10px; padding: 4px 12px; border-radius: 0 8px 0 8px; letter-spacing: 1px; }
+.header { margin-bottom: 12px; }
+.brand { font-weight: 600; color: #5BC5C8; font-size: 14px; }
+.label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.main-img { background: #fff; border-radius: 6px; padding: 8px; margin-bottom: 12px; height: 220px; display: flex; align-items: center; justify-content: center; }
+.main-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; padding: 10px; background: #0f1419; border-radius: 6px; }
+.metrics > div { text-align: center; }
+.metrics .highlight { background: #5BC5C815; border-radius: 4px; padding: 2px; }
+.m-label { display: block; color: #888; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.m-val { display: block; color: #e0e0e0; font-weight: 600; font-size: 13px; }
+.highlight .m-val { color: #5BC5C8; font-size: 14px; }
+.rating-row { display: flex; align-items: center; gap: 6px; padding: 8px 10px; margin-bottom: 12px; background: #0f1419; border-radius: 6px; font-size: 12px; }
+.stars { color: #FFB100; letter-spacing: 1px; font-size: 14px; }
+.star-empty { color: #3a3f45; }
+.rating-val { color: #e0e0e0; font-weight: 600; }
+.review-count { color: #888; font-size: 11px; }
+.rating-empty { color: #666; font-style: italic; justify-content: center; font-size: 11px; }
+.row-label { color: #666; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 600; }
+.title-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.title-text { color: #d4d4d4; font-size: 12px; line-height: 1.4; }
+.bullets-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; min-height: 120px; }
+.bullets { list-style: none; padding: 0; margin: 0; }
+.bullets li { color: #b8b8b8; font-size: 11px; padding: 4px 0 4px 12px; position: relative; line-height: 1.4; }
+.bullets li::before { content: "-"; position: absolute; left: 0; color: #5BC5C8; }
+.bullets li.empty { color: #555; font-style: italic; }
+.sec-img-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.sec-img-box img { width: 100%; height: 180px; object-fit: contain; background: #fff; border-radius: 6px; padding: 6px; }
+.usp-strat { padding-top: 4px; }
+.usp-text { color: #d4d4d4; font-size: 11px; line-height: 1.5; }
+.tag-green { color: #4ade80; }
+.tag-warn { color: #e0a800; }
+.amazon-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding: 10px 14px; background: linear-gradient(180deg, #FFD257 0%, #F9B82E 100%); color: #111; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid #E69A1A; transition: all 0.15s ease; letter-spacing: 0.2px; }
+.amazon-btn:hover { background: linear-gradient(180deg, #FFDB6E 0%, #FFC043 100%); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(255,184,46,0.3); }
+.amazon-btn svg { flex-shrink: 0; }
+.proposal { margin-top: 40px; padding: 24px; background: #15242a; border: 2px solid #5BC5C8; border-radius: 12px; }
+.proposal h2 { color: #5BC5C8; margin: 0 0 16px 0; font-size: 22px; }
+.proposal-intro { color: #d4d4d4; margin-bottom: 20px; }
+.subsection { color: #5BC5C8; font-size: 16px; font-weight: 600; margin: 24px 0 8px 0; padding-top: 12px; }
+.subsection:first-of-type { margin-top: 4px; padding-top: 0; }
+.subsection-intro { color: #b8b8b8; font-size: 12px; margin-bottom: 14px; font-style: italic; }
+.mockup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.mockup-card { background: #1a2128; border-radius: 8px; padding: 12px; }
+.mockup-label { color: #5BC5C8; font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+.mockup-card img { width: 100%; border-radius: 6px; margin-bottom: 10px; cursor: zoom-in; }
+.mockup-desc { color: #b8b8b8; font-size: 12px; }
+.new-title-box { margin-top: 24px; padding: 16px; background: #1a2128; border-radius: 8px; }
+.new-title-box h3 { color: #5BC5C8; margin: 0 0 12px 0; font-size: 14px; }
+.compare-row { display: grid; grid-template-columns: 100px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2a3138; align-items: flex-start; }
+.compare-row:last-child { border-bottom: none; }
+.compare-row .rlabel { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding-top: 3px; }
+.compare-row .val { color: #d4d4d4; font-size: 12px; line-height: 1.5; }
+.compare-row .old { color: #e0a800; }
+.compare-row .new { color: #4ade80; font-weight: 500; }
+.footer { margin-top: 40px; padding: 20px; text-align: center; color: #666; font-size: 11px; border-top: 1px solid #2a3138; }
+.main-img img, .sec-img-box img, .mockup-card img { cursor: zoom-in; transition: transform 0.15s ease; }
+.main-img img:hover, .sec-img-box img:hover, .mockup-card img:hover { transform: scale(1.02); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; backdrop-filter: blur(4px); }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 60px rgba(0,0,0,0.6); background: #fff; }
+.lightbox-close { position: absolute; top: 24px; right: 24px; background: #1a2128; color: #fff; border: 1px solid #3a3f45; width: 44px; height: 44px; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.lightbox-close:hover { background: #2a3138; }
+.lightbox-caption { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #d4d4d4; background: rgba(26,33,40,0.9); padding: 10px 20px; border-radius: 6px; font-size: 13px; max-width: 80vw; text-align: center; }
+.dl-btn { position: fixed; top: 24px; right: 24px; z-index: 100; display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: linear-gradient(135deg, #5BC5C8 0%, #4aa8ab 100%); color: #0f1419; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid #5BC5C8; box-shadow: 0 4px 16px rgba(91,197,200,0.35); transition: all 0.2s ease; letter-spacing: 0.3px; }
+.dl-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(91,197,200,0.5); background: linear-gradient(135deg, #6ad3d6 0%, #56c2c5 100%); }
+.dl-btn svg { flex-shrink: 0; }
+.dl-btn .dl-count { background: rgba(15,20,25,0.25); padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+@media (max-width: 1800px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 1000px) { .grid { grid-template-columns: 1fr 1fr; } .mockup-grid { grid-template-columns: 1fr; } }
+</style>
+</head><body>
+
+<a class="dl-btn" href="B0C6HRH6VL_mockups.zip" download title="Alle Vorschlagsbilder als ZIP herunterladen">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>
+  <span>Vorschlagsbilder</span>
+  <span class="dl-count">3&nbsp;Bilder &middot; ZIP</span>
+</a>
+
+<div class="container">
+  <h1>Listing Deep Dive -- KNERST vs Top 5 Competitors</h1>
+  <div class="subtitle">Keyword: "kopfkissen" &middot; DE &middot; 2026-05-09</div>
+  <div class="legend">
+    <strong>Wie zu lesen:</strong> KLIENT-Spalte links (blau umrandet). Daneben die 5 staerksten Page-1-Competitors. Vergleiche Main-Image, Rating/Reviews, EUR/KISSEN, Titel, Bullets und die beste Secondary (USP-Slot). USP-Strategie-Zeile fasst zusammen was jedes Listing als Haupt-Verkaufsargument inszeniert.
+  </div>
+
+  <div class="grid">
+    
+    <div class="col client">
+      <div class="badge-client">KLIENT</div>
+      <div class="header">
+        <div class="brand">KNERST</div>
+        <div class="label">knerst</div>
+      </div>
+      <div class="main-img"><img src="images/knerst_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">69.99 EUR</span></div>
+        <div><span class="m-label">Daunenkissen</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/KISSEN</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.3</span>
+          <span class="review-count">&middot; 1.415 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="KNERST Made in Germany Daunenkissen 80x80 cm - 3-Kammer Daunenkissen - Kopfkissen 80x80 Daunen & Federn Kissen 80x80 ÖKO-TEX Top Hotelqualität Kopfkissen">KNERST Made in Germany Daunenkissen 80x80 cm - 3-Kammer Daunenkissen - Kopfkissen 80x80 Daunen & Federn Kissen 80x80 ÖKO...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>DEUTSCHE HANDWERKSKUNST - Unser 3-Kammer Daunenkissen kombiniert sanfte Gemütlichkeit mit angenehmer Unterstützung, für eine Reise ins Traumland.</li><li>SORGENFREIER SCHLAF - Genießen Sie unübertroffenen Schlafkomfort - unser Kissen ist mit verantwortungsvoll beschafften Daunen gefüllt und garantiert Tierwohl sowie Nachhaltigkeit.</li><li>HYPOALLERGENE SCHLAFUMGEBUNG - Speziell entwickelt für empfindliche Haut und Allergiker, bietet unser Daunenkissen eine sichere und gesunde Schlafumgebung ohne Kompromisse bei Komfort.</li><li>ENDLOSER KOMFORT - Waschbar bei 60°C, sodass der luxuriöse Komfort des Kissen immer und immer wieder genießbar ist. Zertifiziert durch Nomite und Daunasan Siegel.</li><li>FÜR JEDEN SCHLAFTYP - Erleben Sie die ultimative Balance aus Weichheit und Stützkraft, die Ihnen hilft, schneller einzuschlafen und tiefer durchzuschlafen – jede Nacht.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/knerst_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Premium Made-in-Germany mit 120-Jahre-Tradition + 3-Kammer + DownPass — eleganteste Bildwelt, aber 2 leere Slots (Vergleich + Service) wo Premium-Peers differenzieren. Main Image hat 3 Compliance-Risiken.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0C6HRH6VL" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">LILENO HOME</div>
+        <div class="label">comp1</div>
+      </div>
+      <div class="main-img"><img src="images/comp1_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">14.91 EUR</span></div>
+        <div><span class="m-label">Daunenkissen</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/KISSEN</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.5</span>
+          <span class="review-count">&middot; 14.082 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="LILENO HOME Allergiker Kopfkissen 80x80 (1er Set) – 95°C waschbar, Oeko-Tex & Made in DE – Kissen 80x80 anpassbar für himmlischen Schlaf – Haut schmeichelndes & geruchsfreies Pillow">LILENO HOME Allergiker Kopfkissen 80x80 (1er Set) – 95°C waschbar, Oeko-Tex & Made in DE – Kissen 80x80 anpassbar für hi...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>✅ ALLERGIKERFREUNDLICH - Unser Schlafkissen 80 x 80 sorgt dank allergikerfreundlicher Mikrofaser für maximale Keim- und Milbenfreiheit. Zudem kann es bei bis zu 95 °C gewaschen werden und ist nach Oek...</li><li>✅ HIMMLISCHER SCHLAF – Unsere Kissen 80x80 passen sich perfekt der natürlichen Körperform an und bieten dank ihrer einzigartigen Elastizität optimale Entlastung der Druckstellen, egal ob Seiten-, Rück...</li><li>✅ INDIVIDUELL ANPASSBAR – Das Lileno Home Allergiker Kissen 80x80 ist ideal für Ihre individuellen Bedürfnisse. Unsere Bett Kissen sind mit einem praktischen Reißverschluss ausgestattet, sodass Sie di...</li><li>✅ MADE IN GERMANY – Unsere Kopfkissen groß werden in Deutschland unter höchsten Qualitätsstandards gefertigt, um Ihnen langlebigen Komfort zu bieten. Die zertifizierte Flocken-Füllung bleibt immer for...</li><li>✅ LILENO HOME VERSPRECHEN – Da wir 100 % in unsere Qualität vertrauen, möchten wir Ihnen eine absolut risikolose Bestellung ermöglichen: Sollten Sie mit Ihrem Kauf nicht voll zufrieden sein, erhalten ...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp1_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Volume-Champion via Authority-Stacking (1 Mio Kunden + Oeko-Tex + Made-in-Germany im Main) und Reissverschluss-Anpassbarkeit als USP. Anti-Schmerz-Slot ist Pos-1-Hebel.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B085LPS65F" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">KNERST</div>
+        <div class="label">comp2</div>
+      </div>
+      <div class="main-img"><img src="images/comp2_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">33.99 EUR</span></div>
+        <div><span class="m-label">Daunenkissen</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/KISSEN</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.5</span>
+          <span class="review-count">&middot; 937 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="KNERST Traumkissen zum Reinkuscheln - Made in Germany Kissen 40x80 - Kopfkissen 40x80 cm für verführerisch weiche Nächte - ergonomisches Schlafkissen ideal für Jede Schlafposition - Öko-Tex Polster">KNERST Traumkissen zum Reinkuscheln - Made in Germany Kissen 40x80 - Kopfkissen 40x80 cm für verführerisch weiche Nächte...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>MADE IN GERMANY QUALITÄT - Genießen Sie exzellenten Schlafkomfort mit unserem Kopfkissen, gefertigt nach höchsten deutschen Qualitätsstandards – für eine unübertroffene Langlebigkeit und Verarbeitung.</li><li>INDIVIDUELL ANPASSBAR - Dank des praktischen Reißverschlusses lässt sich die Füllmenge vom Kopfpolster perfekt an Ihre persönlichen Schlafbedürfnisse anpassen – ideal für Seitenschläfer, Rückenschläfe...</li><li>ULTRAWEICHES SCHLAFERLEBNIS - Unser Bettkissen kombiniert die Weichheit hochwertiger Baumwolle mit der stützenden Eigenschaft der Duo-Hohlfaserfüllung, für ein weiches, dennoch stützendes Liegegefühl.</li><li>ATMUNGSAKTIV & WÄRMEREGULIEREND - Die spezielle Struktur des Baumwollbezugs fördert die Luftzirkulation, sorgt für optimale Wärmeableitung und hält Sie die ganze Nacht über angenehm trocken.</li><li>PFLEGELEICHT & HYGIENISCH - Unser Schlafkissen ist nicht nur luxuriös, sondern auch einfach zu reinigen – waschbar bis 40 Grad für eine stets frische und hygienische Schlafumgebung.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp2_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Brand-Wiedererkennung via teal/cyan CI, eigene 'FitForm Technology' als Marken-Asset, Cloud-Mood. Schwaechere Bildwelt als KNERST 80x80.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0BNQVL4W8" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">KNERST</div>
+        <div class="label">comp3</div>
+      </div>
+      <div class="main-img"><img src="images/comp3_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">33.99 EUR</span></div>
+        <div><span class="m-label">Daunenkissen</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/KISSEN</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.3</span>
+          <span class="review-count">&middot; 377 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="KNERST® Kissen 40x80 cm Made in Germany - Kopfkissen 40 x 80 gegen Nackenschmerzen & Verspannungen - Bettkissen für gesunden & erholsamen Schlaf - Öko-Tex - Pillow - Polster - Schlafkissen">KNERST® Kissen 40x80 cm Made in Germany - Kopfkissen 40 x 80 gegen Nackenschmerzen & Verspannungen - Bettkissen für gesu...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>Erleben Sie eine tiefe und erholsame Nachtruhe dank unserem kuschelweichen Kopfkissen, das sich perfekt an Ihre individuellen Bedürfnisse anpasst und Nackenverspannungen löst.</li><li>Entdecken Sie das Geheimnis luxuriösen Schlafumgebung mit unserem Schlafkissen aus hochwertigem, hypoallergenem Material, das Ihnen ein weiches, kuscheliges Gefühl verleiht und gleichzeitig gesundheit...</li><li>Verwandeln Sie Ihr Schlafzimmer in einen Ort der Ruhe und Entspannung mit unserem einzigartigen Allergiker Kissen, das dank seiner atmungsaktiven Materialien und feuchtigkeitsregulierenden Eigenschaft...</li><li>Der Schlüssel zu einem guten Schlaf. Unser Kopfkissen 40x80 bietet Ihnen die perfekte Balance aus Weichheit und Unterstützung, um eine bequeme Schlafposition zu fördern - ideal für eine erholsame und ...</li><li>Schenken Sie sich selbst und Ihrer Gesundheit die Aufmerksamkeit, die Sie verdienen, indem Sie sich für unser Polster entscheiden, das nicht nur unvergleichlichen Komfort und Unterstützung bietet, son...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp3_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Identische KNERST-Brand-DNA wie 80x80, klarere Spec-Numerik (600g, Vegan 100%, Mako-Baumwolle) und Reissverschluss-Anpassbarkeit als USP.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0BYCW43DR" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">DormiGood</div>
+        <div class="label">comp4</div>
+      </div>
+      <div class="main-img"><img src="images/comp4_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">49.99 EUR</span></div>
+        <div><span class="m-label">Daunenkissen</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/KISSEN</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.3</span>
+          <span class="review-count">&middot; 623 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="DormiGood Daunenkissen 40x80 - Made in Germany 3 Kammer Kopfkissen 40x80cm - Außenkammer aus 100% Daune - Federkissen 40 x 80 Allergiker geeignet - Kopfkissen 40x80 Federn und Daunen Füllung">DormiGood Daunenkissen 40x80 - Made in Germany 3 Kammer Kopfkissen 40x80cm - Außenkammer aus 100% Daune - Federkissen 40...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>Optimiertes 3-Kammer-Design – Außen mit 100g reiner europäischer Landdaune, innen mit 484g stützendem Federn-Daunen-Mix gefüllt (ca. 584g Gesamtgewicht) - weich, formstabil und ideal für jede Schlafpo...</li><li>Tierwohl hat Priorität – Unsere Daunen stammen garantiert nicht aus Lebendrupf. Früher mit Traumpass, heute mit dem DOWNPASS-Siegel ausgezeichnet, stammen sie aus nachhaltiger, kontrollierter und tier...</li><li>Hygienisch und pflegeleicht – Das Kissen ist bei 60 °C waschbar, trocknergeeignet und hat eine atmungsaktive, anschmiegsame Baumwollhülle. Dank Trage- und Aufbewahrungstasche lässt sich das Kissen pla...</li><li>Zertifizierte Qualität Made in Germany – Das Nomite- und OEKO-TEX-Siegel garantieren Allergikerfreundlichkeit und höchste Produktsicherheit. Unsere Kissen 40x80 Daunen werden vollständig in Deutschlan...</li><li>30 Nächte Probeschlafen – Testen Sie unser Kissen Daunen 40x80 risikofrei im eigenen Bett – bei Nichtgefallen kostenlos zurückschicken und volle Erstattung erhalten.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp4_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Premium-Defense via 3rd-Party-Trust (Dermatest 2025 + DownPass) + Service-Stack (30 Naechte + Garantie + Founder + 80k Kunden) + Spec-Numerik. Direkter Premium-Threat fuer KNERST 80x80.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B08BX3JJBR" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Slaapspeciaal</div>
+        <div class="label">comp5</div>
+      </div>
+      <div class="main-img"><img src="images/comp5_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">29.95 EUR</span></div>
+        <div><span class="m-label">Daunenkissen</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/KISSEN</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.5</span>
+          <span class="review-count">&middot; 29 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Slaapspeciaal Kopfkissen 60x70cm - Kissen aus Baumwolle-Bezug [2er Set], Ergonomisches Schlafkissen mittlere Festigkeit [Stützt Kopf und Nacken] - Aktive Luftzirkulation">Slaapspeciaal Kopfkissen 60x70cm - Kissen aus Baumwolle-Bezug [2er Set], Ergonomisches Schlafkissen mittlere Festigkeit ...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>Andere Kopfkissen bieten oft nicht genug Höhe oder stützen den Nacken schlecht → Nackenschmerzen oder Verspannungen. Unser Set aus zwei Kissen mit 60×70 cm und mittlerer Festigkeit bringt optimale Unt...</li><li>Baumwoll-Bezug sorgt für natürlichen Komfort und gute Luftzirkulation, sodass du nachts schwitzt weniger. Das verhindert Hitzestau und macht auch in warmen Sommernächten angenehmes, kühles Schlafen mö...</li><li>Selbst bei längerer Nutzung behalten die Kissen ihre Form. Die Füllung aus weicher Microfaser verteilt sich gleichmäßig, sodass kein Kissen plattgedrückt wird und du jede Nacht den selben Komfort spür...</li><li>Für jede Schlafposition: Rücken-, Seiten- oder Bauchschläfer – dieses Kissen-Duett passt sich deinem Stil an. Die mittlere Festigkeit und das Design sorgen dafür, dass Halswirbelsäule und Nacken stabi...</li><li>Kennst du das? Dein Kissen ist zu dünn oder zu weich, der Kopf sinkt weg und du wachst verspannt auf? Damit ist Schluss! Dieses Kopfkissenset bietet die perfekte Balance: Unterstützung ohne Härte, Wei...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp5_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Hotel-Comfort + Doppelpack als Wert-Argument; schwache Bildqualitaet, NL-Texte teils, 29 Reviews — kein Defense-Risk.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0FS1S53LM" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+  </div>
+
+  
+  <div class="proposal">
+    <h2>Vorschlag: Listing-Bildstrategie fuer KNERST</h2>
+    <div class="proposal-intro">Basierend auf der Competitor-Analyse: hier sind vorgeschlagene Listing-Verbesserungen, die exakt dem Pattern der Top-Seller folgen und Amazon-Guidelines respektieren.</div>
+
+    
+    <h3 class="subsection">Main Image Varianten (Image-to-Image, Amazon-compliant)</h3>
+    <div class="subsection-intro">
+      Dezenter Tag/Siegel am Produkt + Kapseln unten rechts -- exakt das Pattern das Top-Seller auf Page 1 nutzen. Hauptprodukt-Design bleibt unveraendert. 3 USP-Varianten zum A/B Testen.
+    </div>
+    <div class="mockup-grid">
+      
+      <div class="mockup-card">
+        <div class="mockup-label">Main 1 -- "V1 Fuellung"</div>
+        <img src="images/main_v1_fuellung.jpg"/>
+        <div class="mockup-desc">Dezenter Tag am Produkt + Kapseln unten rechts. Amazon-kompliant.</div>
+      </div>
+      
+      <div class="mockup-card">
+        <div class="mockup-label">Main 2 -- "V2 3Kammer"</div>
+        <img src="images/main_v2_3kammer.jpg"/>
+        <div class="mockup-desc">Dezenter Tag am Produkt + Kapseln unten rechts. Amazon-kompliant.</div>
+      </div>
+      
+      <div class="mockup-card">
+        <div class="mockup-label">Main 3 -- "V3 Germany"</div>
+        <img src="images/main_v3_germany.jpg"/>
+        <div class="mockup-desc">Dezenter Tag am Produkt + Kapseln unten rechts. Amazon-kompliant.</div>
+      </div>
+      
+    </div>
+    
+
+    
+
+    
+    <div class="new-title-box">
+      <h3>Title- &amp; Bullets-Empfehlung</h3>
+      
+      <div class="compare-row">
+        <div class="rlabel">Title alt</div>
+        <div class="val old">-</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Title neu</div>
+        <div class="val new">KNERST Premium Daunenkissen 80x80 cm | 3-Kammer-System mit 1.100 g Fuellung | 100% Daunen Aussenkammer + Stuetzfedern | Made in Germany seit 120 Jahren | DownPass-zertifiziert | Allergikergeeignet</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Bullet 1</div>
+        <div class="val new">**3-KAMMER-SYSTEM MIT 1.100 G FUELLUNG**: Aussenkammern aus 100% weichen Daunen umhuellen eine Innenkammer mit stuetzenden Federn — der Kopf sinkt sanft ein, der Nacken bleibt ergonomisch gestuetzt. Das 80x80 cm Format mit deutlich hoeherer Fuellmenge als Standardkissen.</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Bullet 2</div>
+        <div class="val new">**MADE IN GERMANY SEIT 120 JAHREN**: Verarbeitet in deutscher Manufaktur mit DownPass-Zertifikat fuer tierfreundliche Daunen-Herkunft, Daunasan-Hygiene-Standard EN 12935 und Nomite-Siegel fuer Hausstauballergiker. Doppelnaht mit eleganter Biese als Qualitaetsmerkmal.</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Bullet 3</div>
+        <div class="val new">**PFLEGELEICHT & LANGLEBIG**: Bei 60C waschbar, trocknergeeignet — bleibt nach jedem Waschgang flauschig und formstabil. Atmungsaktiv durch natuerliche Fuellung, kein Verklumpen, anpassungsfaehig fuer Rueckenschlaefer, Seitenschlaefer und Bauchschlaefer gleichermassen.</div>
+      </div>
+      
+    </div>
+    
+  </div>
+  
+
+  <div class="footer">ADLEVATE &middot; Listing Deep Dive &middot; 2026-05-09 &middot; benjamin@adlevate.de</div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <img id="lightboxImg" alt=""/>
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script>
+(function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbCap = document.getElementById('lightboxCaption');
+  const lbClose = document.getElementById('lightboxClose');
+  const sels = ['.main-img img', '.sec-img-box img', '.mockup-card img'];
+  document.querySelectorAll(sels.join(', ')).forEach(img => {
+    img.addEventListener('click', e => {
+      e.stopPropagation();
+      lbImg.src = img.src;
+      const col = img.closest('.col');
+      const brand = col ? col.querySelector('.brand').innerText : '';
+      const labelEl = col ? col.querySelector('.label') : null;
+      const label = labelEl ? labelEl.innerText : '';
+      const slotType = img.closest('.main-img') ? 'Main Image' :
+                       img.closest('.sec-img-box') ? 'Best Secondary (USP-Slot)' :
+                       img.closest('.mockup-card') ? (img.closest('.mockup-card').querySelector('.mockup-label').innerText) :
+                       '';
+      lbCap.innerText = brand ? `${brand} - ${label} - ${slotType}` : slotType;
+      lb.classList.add('active');
+    });
+  });
+  function close() { lb.classList.remove('active'); lbImg.src = ''; }
+  lb.addEventListener('click', close);
+  lbClose.addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
+</script>
+</body></html>
