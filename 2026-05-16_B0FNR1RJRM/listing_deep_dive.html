@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Listing Deep Dive -- Fudajo vs Top 5 Competitors</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1419; color: #d4d4d4; line-height: 1.5; font-size: 13px; }
+.container { max-width: 2400px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 28px; color: #5BC5C8; margin: 0 0 8px 0; font-weight: 600; }
+.subtitle { color: #888; font-size: 13px; margin-bottom: 24px; }
+.legend { background: #1a2128; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; color: #a0a0a0; border-left: 3px solid #5BC5C8; }
+.legend strong { color: #d4d4d4; }
+.grid { display: grid; grid-template-columns: repeat(6, minmax(300px, 1fr)); gap: 16px; }
+.col { background: #1a2128; border: 1px solid #2a3138; border-radius: 10px; padding: 16px; position: relative; overflow: hidden; }
+.col.client { border: 2px solid #5BC5C8; background: #15242a; }
+.badge-client { position: absolute; top: 0; right: 0; background: #5BC5C8; color: #0f1419; font-weight: 700; font-size: 10px; padding: 4px 12px; border-radius: 0 8px 0 8px; letter-spacing: 1px; }
+.header { margin-bottom: 12px; }
+.brand { font-weight: 600; color: #5BC5C8; font-size: 14px; }
+.label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.main-img { background: #fff; border-radius: 6px; padding: 8px; margin-bottom: 12px; height: 220px; display: flex; align-items: center; justify-content: center; }
+.main-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; padding: 10px; background: #0f1419; border-radius: 6px; }
+.metrics > div { text-align: center; }
+.metrics .highlight { background: #5BC5C815; border-radius: 4px; padding: 2px; }
+.m-label { display: block; color: #888; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.m-val { display: block; color: #e0e0e0; font-weight: 600; font-size: 13px; }
+.highlight .m-val { color: #5BC5C8; font-size: 14px; }
+.rating-row { display: flex; align-items: center; gap: 6px; padding: 8px 10px; margin-bottom: 12px; background: #0f1419; border-radius: 6px; font-size: 12px; }
+.stars { color: #FFB100; letter-spacing: 1px; font-size: 14px; }
+.star-empty { color: #3a3f45; }
+.rating-val { color: #e0e0e0; font-weight: 600; }
+.review-count { color: #888; font-size: 11px; }
+.rating-empty { color: #666; font-style: italic; justify-content: center; font-size: 11px; }
+.row-label { color: #666; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 600; }
+.title-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.title-text { color: #d4d4d4; font-size: 12px; line-height: 1.4; }
+.bullets-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; min-height: 120px; }
+.bullets { list-style: none; padding: 0; margin: 0; }
+.bullets li { color: #b8b8b8; font-size: 11px; padding: 4px 0 4px 12px; position: relative; line-height: 1.4; }
+.bullets li::before { content: "-"; position: absolute; left: 0; color: #5BC5C8; }
+.bullets li.empty { color: #555; font-style: italic; }
+.sec-img-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.sec-img-box img { width: 100%; height: 180px; object-fit: contain; background: #fff; border-radius: 6px; padding: 6px; }
+.usp-strat { padding-top: 4px; }
+.usp-text { color: #d4d4d4; font-size: 11px; line-height: 1.5; }
+.tag-green { color: #4ade80; }
+.tag-warn { color: #e0a800; }
+.amazon-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding: 10px 14px; background: linear-gradient(180deg, #FFD257 0%, #F9B82E 100%); color: #111; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid #E69A1A; transition: all 0.15s ease; letter-spacing: 0.2px; }
+.amazon-btn:hover { background: linear-gradient(180deg, #FFDB6E 0%, #FFC043 100%); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(255,184,46,0.3); }
+.amazon-btn svg { flex-shrink: 0; }
+.proposal { margin-top: 40px; padding: 24px; background: #15242a; border: 2px solid #5BC5C8; border-radius: 12px; }
+.proposal h2 { color: #5BC5C8; margin: 0 0 16px 0; font-size: 22px; }
+.proposal-intro { color: #d4d4d4; margin-bottom: 20px; }
+.subsection { color: #5BC5C8; font-size: 16px; font-weight: 600; margin: 24px 0 8px 0; padding-top: 12px; }
+.subsection:first-of-type { margin-top: 4px; padding-top: 0; }
+.subsection-intro { color: #b8b8b8; font-size: 12px; margin-bottom: 14px; font-style: italic; }
+.mockup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.mockup-card { background: #1a2128; border-radius: 8px; padding: 12px; }
+.mockup-label { color: #5BC5C8; font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+.mockup-card img { width: 100%; border-radius: 6px; margin-bottom: 10px; cursor: zoom-in; }
+.mockup-desc { color: #b8b8b8; font-size: 12px; }
+.new-title-box { margin-top: 24px; padding: 16px; background: #1a2128; border-radius: 8px; }
+.new-title-box h3 { color: #5BC5C8; margin: 0 0 12px 0; font-size: 14px; }
+.compare-row { display: grid; grid-template-columns: 100px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2a3138; align-items: flex-start; }
+.compare-row:last-child { border-bottom: none; }
+.compare-row .rlabel { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding-top: 3px; }
+.compare-row .val { color: #d4d4d4; font-size: 12px; line-height: 1.5; }
+.compare-row .old { color: #e0a800; }
+.compare-row .new { color: #4ade80; font-weight: 500; }
+.footer { margin-top: 40px; padding: 20px; text-align: center; color: #666; font-size: 11px; border-top: 1px solid #2a3138; }
+.main-img img, .sec-img-box img, .mockup-card img { cursor: zoom-in; transition: transform 0.15s ease; }
+.main-img img:hover, .sec-img-box img:hover, .mockup-card img:hover { transform: scale(1.02); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; backdrop-filter: blur(4px); }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 60px rgba(0,0,0,0.6); background: #fff; }
+.lightbox-close { position: absolute; top: 24px; right: 24px; background: #1a2128; color: #fff; border: 1px solid #3a3f45; width: 44px; height: 44px; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.lightbox-close:hover { background: #2a3138; }
+.lightbox-caption { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #d4d4d4; background: rgba(26,33,40,0.9); padding: 10px 20px; border-radius: 6px; font-size: 13px; max-width: 80vw; text-align: center; }
+.dl-btn { position: fixed; top: 24px; right: 24px; z-index: 100; display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: linear-gradient(135deg, #5BC5C8 0%, #4aa8ab 100%); color: #0f1419; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid #5BC5C8; box-shadow: 0 4px 16px rgba(91,197,200,0.35); transition: all 0.2s ease; letter-spacing: 0.3px; }
+.dl-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(91,197,200,0.5); background: linear-gradient(135deg, #6ad3d6 0%, #56c2c5 100%); }
+.dl-btn svg { flex-shrink: 0; }
+.dl-btn .dl-count { background: rgba(15,20,25,0.25); padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+@media (max-width: 1800px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 1000px) { .grid { grid-template-columns: 1fr 1fr; } .mockup-grid { grid-template-columns: 1fr; } }
+</style>
+</head><body>
+
+<div class="container">
+  <h1>Listing Deep Dive -- Fudajo vs Top 5 Competitors</h1>
+  <div class="subtitle">Keyword: "kratzbaum" &middot; DE &middot; 2026-05-16</div>
+  <div class="legend">
+    <strong>Wie zu lesen:</strong> KLIENT-Spalte links (blau umrandet). Daneben die 5 staerksten Page-1-Competitors. Vergleiche Main-Image, Rating/Reviews, EUR/ETAGE, Titel, Bullets und die beste Secondary (USP-Slot). USP-Strategie-Zeile fasst zusammen was jedes Listing als Haupt-Verkaufsargument inszeniert.
+  </div>
+
+  <div class="grid">
+    
+    <div class="col client">
+      <div class="badge-client">KLIENT</div>
+      <div class="header">
+        <div class="brand">Fudajo</div>
+        <div class="label">fudajo</div>
+      </div>
+      <div class="main-img"><img src="images/fudajo_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">133.99 EUR</span></div>
+        <div><span class="m-label">cm Hoehe</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/ETAGE</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.4</span>
+          <span class="review-count">&middot; 589 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Fudajo Designer Kratzbaum mit 3 Mulden, Katzenkratzbaum Ø 59 cm und 125 cm Höhe, Katzenbaum bis max. 15 kg mit Sisal und Plüsch, Katzenmöbel mit 3 Etagen">Fudajo Designer Kratzbaum mit 3 Mulden, Katzenkratzbaum Ø 59 cm und 125 cm Höhe, Katzenbaum bis max. 15 kg mit Sisal und...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>[Design und Platzersparnis] - Der Designer Kratzbaum von Fudajo kombiniert modernes Design mit kompakter Bauweise und passt selbst in kleinere Wohnungen. Mit einem Außenmaß von Ø 59 x H 125 cm fügt si...</li><li>[Komfort auf mehreren Ebenen] - Drei Etagen mit bequemen Mulden bieten Ihrer Katze viel Raum zum Ausruhen und Beobachten. Die Mulden sind mit weichem PV-Plüsch bezogen und mit Schaumstoff- sowie PP-Fü...</li><li>[Stabile Konstruktion] - Ein zentrales Metallrohr sorgt für ausgezeichnete Stabilität des Kratzbaums und ist zusätzlich mit Sisal umwickelt. Ihre Katze kann an dieser robusten Säule ausgiebig kratzen ...</li><li>[Ideal für große Katzen] - Mit einer Belastbarkeit von bis zu 15 kg ist der Kratzbaum für große Katzen ebenso geeignet wie für kleinere Stubentiger. Die einzelnen Ebenen sind leicht erreichbar und erm...</li><li>[Vielseitige Kratz- und Spielfläche] - Der Kratzbaum mit großer Liegefläche bietet abwechslungsreiche Möglichkeiten zum Spielen, Beobachten und Krallenwetzen. Der Katzenkratzbaum ist ein ideales Katze...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/fudajo_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Premium Designer-Skulptur (Bonsai-Tree-Aesthetik) fuer Stil-bewusste Katzenbesitzer — verkauft Aesthetik als Hauptwert, aber Material-/Funktions-Trust ist unterdokumentiert. Risiko: Premium-Preis ohne sichtbare Premium-Beweise.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0FNR1RJRM" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Feandrea</div>
+        <div class="label">comp1</div>
+      </div>
+      <div class="main-img"><img src="images/comp1_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">64.50 EUR</span></div>
+        <div><span class="m-label">cm Hoehe</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/ETAGE</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;<span class="star-empty"></span></span>
+          <span class="rating-val">4.6</span>
+          <span class="review-count">&middot; 11.405 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Feandrea Kratzbaum groß, 203,5 cm hoch, XXL Katzenbaum, mit 13 Kratzsäulen, 2 Plattformen, 2 Höhlen, Korb, Hängematte, Plüschbälle, mehrstöckiger Katzenkratzbaum, beige PCT190M01">Feandrea Kratzbaum groß, 203,5 cm hoch, XXL Katzenbaum, mit 13 Kratzsäulen, 2 Plattformen, 2 Höhlen, Korb, Hängematte, P...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>203,5 cm hoch, endloser Kletterspaß: 203,5 cm hoch. 5 Stufen. Kurze Abstände (30-40 cm) zwischen den Stufen. Dieser Kratzbaum erleichtert das Auf- und Absteigen und ist perfekt für Kletterprofi</li><li>All-in-one-Spielplatz: 2 gut gepolsterte Plattformen, 2 kuschelige Höhlen, 1 flauschiger Korb, 2 Plüschbälle und 1 Hängematte – Jede Katze findet einen Lieblingsplatz auf diesem mehrstöckigen Katzenba...</li><li>Stabil, sicher & geschützt: Dank Premium-Holzspan, einer großen Basis mit verstärkten Bodenleisten sowie einem Kippschutz ist dieser stabile Kratzbaum für bis zu 6 große Katzen (jeweils 5 kg) geeignet</li><li>13 Kratzsäulen & 1 Kratzrampe aus Sisalseil: Mit Kratzflächen auf jeder Ebene können Ihre Katzen nach Herzenslust kratzen! Außerdem hilft die Kratzrampe Kätzchen und ältere Katzen beim Hinaufklettern</li><li>Einfache Montage: Dank der simplen Struktur, einer klaren Anleitung und der gekennzeichneten Teile wird der Aufbau dieses Katzenturms zum Kinderspiel</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp1_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Volume-Marktfuehrer: Maximale Feature-Dichte (14 Kratzplaetze, 4 Etagen, 5 Resting-Zonen, 6 Katzen-Kapazitaet) zum mittleren Preis — verkauft 'mehr fuer weniger'. Brand-getrieben (Feandrea/SONGMICS-Logo, Wandbefestigung als Trust-Marker).</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0BQ2XZB1H" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">HOMIDEC</div>
+        <div class="label">comp2</div>
+      </div>
+      <div class="main-img"><img src="images/comp2_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">24.99 EUR</span></div>
+        <div><span class="m-label">cm Hoehe</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/ETAGE</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.3</span>
+          <span class="review-count">&middot; 3.838 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Kratzbaum, 112 cm Katzenbaum Stabil Katzenkratzbaum, Aktivitätskratzbäume mit Kratzsäule Großer Plattform Katzenhaus Plüschbälle, Grau">Kratzbaum, 112 cm Katzenbaum Stabil Katzenkratzbaum, Aktivitätskratzbäume mit Kratzsäule Großer Plattform Katzenhaus Plü...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>【Multifunktionales Aktivitätszentrum】 Vier Sprungplattformen bieten komfortable Klettermöglichkeiten für Ihr aktives Kätzchen, die dem Kletterverhalten Ihrer Katze entgegenkommen. Die runde Plattform ...</li><li>【Vielseitiger Spielspaß】 Federbelastete Kugel, lustige Schnüre und hängende Bälle verbessern die Spielmöglichkeiten des Kratzbaums und sorgen für endlosen Spaß und Unterhaltung für Ihre Katze.</li><li>【Robuster und stabiler Katzenbaum】 Die Katzen baum ist dank der verstärkten Basis von 40 cm x 40 cm und der dickeren Säule besonders stabil. Die dreieckig angeordneten Säulen an der Unterseite erhöhen...</li><li>【Hochwertiges Material】 Hergestellt aus hochwertigen Spanplatten, robust und langlebig. Innen und außen wird hautfreundlicher Fleece-Stoff verwendet, um Ihrer lieben Katze den ultimativen Komfort zu b...</li><li>【Kratzsäule】 Der Katzenkratzbaum ist mit natürlichem Sisalmaterial überzogen, das unbedenklich und langlebig ist und nicht nur den Kratzinstinkt von Katzen befriedigt, sondern auch teure Möbel vor dem...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp2_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Budget-Volumen mit Multi-Funktion (Hoehle + Plattform + Hammock) bei 25 EUR — verkauft 'Vollausstattung guenstig'. Material-Trust (Spanplatte, Sisal-Closeups) trotz Budget-Preis.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0F7XXK1KK" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">HOMIDEC</div>
+        <div class="label">comp3</div>
+      </div>
+      <div class="main-img"><img src="images/comp3_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">33.98 EUR</span></div>
+        <div><span class="m-label">cm Hoehe</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/ETAGE</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.4</span>
+          <span class="review-count">&middot; 1.924 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="HOMIDEC Katzen Kratzbaum, 145 cm Katzenbaum Kletterturm, Kletterbaum Aktivitätskratzbäum mit Säulen vollständig mit Sisal umwickelt, Katzenspielzeug, Höhle, Plattformen, Liegemulde, Hellgrau">HOMIDEC Katzen Kratzbaum, 145 cm Katzenbaum Kletterturm, Kletterbaum Aktivitätskratzbäum mit Säulen vollständig mit Sisa...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>Katzen Kratzbaum: Dieser Kratzbaum mit Dicke Säulen vollständig mit Sisal umwickelt bietet Ihrer Katze viel Platz zum Schärfen Sie die Krallen und halten Sie die Nägel gesund, befreit die Kratznatur d...</li><li>Stabiler Kratzbaum für Katzen: Durch die verstärkte große Standfläche mit einer Breite von 43 cm x 43 cm und den dicken Säulen ist der Katzen Kletterbaum besonders stabil und fällt auch beim Rennen un...</li><li>Bequemer Katzenbaum: Die vergrößerte Plattform bietet ein luxuriöses Schlaferlebnis, und diese Plattform mit erhöhter Kante bietet Katzen zusätzliche Sicherheit und Komfort. Das geräumige Katzen Höhle...</li><li>2 Abnehmbare Katzenspielzeuge: Dieser Katzenbaum hat 2 abnehmbare Katzenspielzeuge. Mit dem lustigen interaktiven Katzenspielzeug können Sie mit Katzen spielen und Vertrauen und Kameradschaft zwischen...</li><li>Leichte Montage und Reinigung: Dank bebilderter Anleitung und einfachem Aufbau gelingt dir die Montage schnell und unkompliziert. Mit einer Fusselrolle oder einem Staubsauger kannst du Fell, Schmutz u...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp3_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Mid-Tier-Multifunktion mit Sisal-Dicke (7cm) als Trust-Anker — verkauft 'haltbar + viele Plaetze' fuer mittleres Geld, US/EU Markt-tauglich durch cm+inch-Bemassung.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0BNVLBJ88" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Fobyfurny</div>
+        <div class="label">comp4</div>
+      </div>
+      <div class="main-img"><img src="images/comp4_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">22.99 EUR</span></div>
+        <div><span class="m-label">cm Hoehe</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/ETAGE</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">3.8</span>
+          <span class="review-count">&middot; 18 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Fobyfurny Kratzbaum Klein, 75 cm Hoch Katzenbaum Klein, Katzenkratzbaum mit 2 Sisal-Kratzsäulen, Gemütlichen Höhlen, Ruheplattform, Aussichtsplattform Oben, Pompons, Hellgrau und Weiß FPMS009FG1">Fobyfurny Kratzbaum Klein, 75 cm Hoch Katzenbaum Klein, Katzenkratzbaum mit 2 Sisal-Kratzsäulen, Gemütlichen Höhlen, Ruh...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>Multifunktionales Katzen Kratzbaum: Ein durchdachtes multifunktionales Gerät, das Springen und Spielen, bequemes Ausruhen, Kratzen und interaktive Aktivitäten kombiniert. Es deckt die täglichen Aktivi...</li><li>Geräumige Katzenwohnung: Der Innenraum dieses mehrstöckigen kratzbäume ist 40 x 30 x 28 cm groß, geräumig und offen und eignet sich für die meisten Katzengrößen. Katzen können sich leicht umdrehen, hi...</li><li>Kratz- und Spielbereich: Ein kratzbaum katze mit zwei stabilen Kratzstämmen, die vollständig mit Sisal umwickelt sind, erfüllt die täglichen Kratz- und Kletterbedürfnisse der Katze. Zusätzlich sorgen ...</li><li>Doppelte Plattform: Der katzenkratzbaum verfügt über eine spezielle Aussichtsplattform und eine bequeme Ruheplattform, die den doppelten Bedürfnissen der Katze gerecht werden: Klettern, um die Aussich...</li><li>Einfache Montage: Unser Katzenspielturm wird mit montagewerkzeug und einer detaillierten Anleitung für eine einfache und unkomplizierte Montage geliefert – es sind keine komplizierten Werkzeuge erford...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp4_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Small-Size/Single-Cat fuer Apartment-Besitzer — verkauft 'kompakt + suess' (Pfoten-Icons, Cartoon-Cats, English+German Hybrid-Texts). Kein Premium-Anspruch.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0G4HZG78N" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Kerbl Pet</div>
+        <div class="label">comp5</div>
+      </div>
+      <div class="main-img"><img src="images/comp5_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">122.95 EUR</span></div>
+        <div><span class="m-label">cm Hoehe</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/ETAGE</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.4</span>
+          <span class="review-count">&middot; 996 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Kerbl Pet Kratzbaum Dolomit Tower, Ø38cm Höhe 187cm, beige">Kerbl Pet Kratzbaum Dolomit Tower, Ø38cm Höhe 187cm, beige</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>massive Kratzsäule: ø 22 cm</li><li>Plüschkissen: ø 46 cm mit Klettband, abnehmbar</li><li>Kissen waschbar bei 30 °C</li><li>Grundplatte: ø 38 cm mit Kunststofffüßen</li><li>Sisalteppich an den Säulen, dauerhaft verklebt für hohe Widerstandsfähigkeit und langlebigen Kratzschutz.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp5_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Premium-Peer mit Wandmontage-Skulpturalitaet — verkauft 'Marken-Heritage (Kerbl), abnehmbare/waschbare Kissen, Plywood-Konstruktion'. Schwaeche: Branding-Pink wirkt Veterinaer-Look statt Lifestyle.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B07XGKP8PN" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+  </div>
+
+  
+
+  <div class="footer">ADLEVATE &middot; Listing Deep Dive &middot; 2026-05-16 &middot; benjamin@adlevate.de</div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <img id="lightboxImg" alt=""/>
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script>
+(function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbCap = document.getElementById('lightboxCaption');
+  const lbClose = document.getElementById('lightboxClose');
+  const sels = ['.main-img img', '.sec-img-box img', '.mockup-card img'];
+  document.querySelectorAll(sels.join(', ')).forEach(img => {
+    img.addEventListener('click', e => {
+      e.stopPropagation();
+      lbImg.src = img.src;
+      const col = img.closest('.col');
+      const brand = col ? col.querySelector('.brand').innerText : '';
+      const labelEl = col ? col.querySelector('.label') : null;
+      const label = labelEl ? labelEl.innerText : '';
+      const slotType = img.closest('.main-img') ? 'Main Image' :
+                       img.closest('.sec-img-box') ? 'Best Secondary (USP-Slot)' :
+                       img.closest('.mockup-card') ? (img.closest('.mockup-card').querySelector('.mockup-label').innerText) :
+                       '';
+      lbCap.innerText = brand ? `${brand} - ${label} - ${slotType}` : slotType;
+      lb.classList.add('active');
+    });
+  });
+  function close() { lb.classList.remove('active'); lbImg.src = ''; }
+  lb.addEventListener('click', close);
+  lbClose.addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
+</script>
+</body></html>
