@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Listing Deep Dive -- IronMaxx vs Top 5 Competitors</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1419; color: #d4d4d4; line-height: 1.5; font-size: 13px; }
+.container { max-width: 2400px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 28px; color: #5BC5C8; margin: 0 0 8px 0; font-weight: 600; }
+.subtitle { color: #888; font-size: 13px; margin-bottom: 24px; }
+.legend { background: #1a2128; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; color: #a0a0a0; border-left: 3px solid #5BC5C8; }
+.legend strong { color: #d4d4d4; }
+.grid { display: grid; grid-template-columns: repeat(6, minmax(300px, 1fr)); gap: 16px; }
+.col { background: #1a2128; border: 1px solid #2a3138; border-radius: 10px; padding: 16px; position: relative; overflow: hidden; }
+.col.client { border: 2px solid #5BC5C8; background: #15242a; }
+.badge-client { position: absolute; top: 0; right: 0; background: #5BC5C8; color: #0f1419; font-weight: 700; font-size: 10px; padding: 4px 12px; border-radius: 0 8px 0 8px; letter-spacing: 1px; }
+.header { margin-bottom: 12px; }
+.brand { font-weight: 600; color: #5BC5C8; font-size: 14px; }
+.label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.main-img { background: #fff; border-radius: 6px; padding: 8px; margin-bottom: 12px; height: 220px; display: flex; align-items: center; justify-content: center; }
+.main-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; padding: 10px; background: #0f1419; border-radius: 6px; }
+.metrics > div { text-align: center; }
+.metrics .highlight { background: #5BC5C815; border-radius: 4px; padding: 2px; }
+.m-label { display: block; color: #888; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.m-val { display: block; color: #e0e0e0; font-weight: 600; font-size: 13px; }
+.highlight .m-val { color: #5BC5C8; font-size: 14px; }
+.rating-row { display: flex; align-items: center; gap: 6px; padding: 8px 10px; margin-bottom: 12px; background: #0f1419; border-radius: 6px; font-size: 12px; }
+.stars { color: #FFB100; letter-spacing: 1px; font-size: 14px; }
+.star-empty { color: #3a3f45; }
+.rating-val { color: #e0e0e0; font-weight: 600; }
+.review-count { color: #888; font-size: 11px; }
+.rating-empty { color: #666; font-style: italic; justify-content: center; font-size: 11px; }
+.row-label { color: #666; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 600; }
+.title-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.title-text { color: #d4d4d4; font-size: 12px; line-height: 1.4; }
+.bullets-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; min-height: 120px; }
+.bullets { list-style: none; padding: 0; margin: 0; }
+.bullets li { color: #b8b8b8; font-size: 11px; padding: 4px 0 4px 12px; position: relative; line-height: 1.4; }
+.bullets li::before { content: "-"; position: absolute; left: 0; color: #5BC5C8; }
+.bullets li.empty { color: #555; font-style: italic; }
+.sec-img-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.sec-img-box img { width: 100%; height: 180px; object-fit: contain; background: #fff; border-radius: 6px; padding: 6px; }
+.usp-strat { padding-top: 4px; }
+.usp-text { color: #d4d4d4; font-size: 11px; line-height: 1.5; }
+.tag-green { color: #4ade80; }
+.tag-warn { color: #e0a800; }
+.amazon-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding: 10px 14px; background: linear-gradient(180deg, #FFD257 0%, #F9B82E 100%); color: #111; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid #E69A1A; transition: all 0.15s ease; letter-spacing: 0.2px; }
+.amazon-btn:hover { background: linear-gradient(180deg, #FFDB6E 0%, #FFC043 100%); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(255,184,46,0.3); }
+.amazon-btn svg { flex-shrink: 0; }
+.proposal { margin-top: 40px; padding: 24px; background: #15242a; border: 2px solid #5BC5C8; border-radius: 12px; }
+.proposal h2 { color: #5BC5C8; margin: 0 0 16px 0; font-size: 22px; }
+.proposal-intro { color: #d4d4d4; margin-bottom: 20px; }
+.subsection { color: #5BC5C8; font-size: 16px; font-weight: 600; margin: 24px 0 8px 0; padding-top: 12px; }
+.subsection:first-of-type { margin-top: 4px; padding-top: 0; }
+.subsection-intro { color: #b8b8b8; font-size: 12px; margin-bottom: 14px; font-style: italic; }
+.mockup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.mockup-card { background: #1a2128; border-radius: 8px; padding: 12px; }
+.mockup-label { color: #5BC5C8; font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+.mockup-card img { width: 100%; border-radius: 6px; margin-bottom: 10px; cursor: zoom-in; }
+.mockup-desc { color: #b8b8b8; font-size: 12px; }
+.new-title-box { margin-top: 24px; padding: 16px; background: #1a2128; border-radius: 8px; }
+.new-title-box h3 { color: #5BC5C8; margin: 0 0 12px 0; font-size: 14px; }
+.compare-row { display: grid; grid-template-columns: 100px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2a3138; align-items: flex-start; }
+.compare-row:last-child { border-bottom: none; }
+.compare-row .rlabel { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding-top: 3px; }
+.compare-row .val { color: #d4d4d4; font-size: 12px; line-height: 1.5; }
+.compare-row .old { color: #e0a800; }
+.compare-row .new { color: #4ade80; font-weight: 500; }
+.footer { margin-top: 40px; padding: 20px; text-align: center; color: #666; font-size: 11px; border-top: 1px solid #2a3138; }
+.main-img img, .sec-img-box img, .mockup-card img { cursor: zoom-in; transition: transform 0.15s ease; }
+.main-img img:hover, .sec-img-box img:hover, .mockup-card img:hover { transform: scale(1.02); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; backdrop-filter: blur(4px); }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 60px rgba(0,0,0,0.6); background: #fff; }
+.lightbox-close { position: absolute; top: 24px; right: 24px; background: #1a2128; color: #fff; border: 1px solid #3a3f45; width: 44px; height: 44px; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.lightbox-close:hover { background: #2a3138; }
+.lightbox-caption { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #d4d4d4; background: rgba(26,33,40,0.9); padding: 10px 20px; border-radius: 6px; font-size: 13px; max-width: 80vw; text-align: center; }
+.dl-btn { position: fixed; top: 24px; right: 24px; z-index: 100; display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: linear-gradient(135deg, #5BC5C8 0%, #4aa8ab 100%); color: #0f1419; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid #5BC5C8; box-shadow: 0 4px 16px rgba(91,197,200,0.35); transition: all 0.2s ease; letter-spacing: 0.3px; }
+.dl-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(91,197,200,0.5); background: linear-gradient(135deg, #6ad3d6 0%, #56c2c5 100%); }
+.dl-btn svg { flex-shrink: 0; }
+.dl-btn .dl-count { background: rgba(15,20,25,0.25); padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+@media (max-width: 1800px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 1000px) { .grid { grid-template-columns: 1fr 1fr; } .mockup-grid { grid-template-columns: 1fr; } }
+</style>
+</head><body>
+
+<div class="container">
+  <h1>Listing Deep Dive -- IronMaxx vs Top 5 Competitors</h1>
+  <div class="subtitle">Keyword: "whey protein" &middot; DE &middot; 2026-05-16</div>
+  <div class="legend">
+    <strong>Wie zu lesen:</strong> KLIENT-Spalte links (blau umrandet). Daneben die 5 staerksten Page-1-Competitors. Vergleiche Main-Image, Rating/Reviews, EUR/PORTION, Titel, Bullets und die beste Secondary (USP-Slot). USP-Strategie-Zeile fasst zusammen was jedes Listing als Haupt-Verkaufsargument inszeniert.
+  </div>
+
+  <div class="grid">
+    
+    <div class="col client">
+      <div class="badge-client">KLIENT</div>
+      <div class="header">
+        <div class="brand">IronMaxx</div>
+        <div class="label">ironmaxx</div>
+      </div>
+      <div class="main-img"><img src="images/ironmaxx_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">15.99 EUR</span></div>
+        <div><span class="m-label">g</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/PORTION</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.3</span>
+          <span class="review-count">&middot; 470 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="IronMaxx 100% Whey Protein Pulver 500g - Vanille | Cremiger Eiweißshake mit BCAAs & EAAs | High Protein, Low Carb & zuckerarm | Ideal für Muskelaufbau & Fitness">IronMaxx 100% Whey Protein Pulver 500g - Vanille | Cremiger Eiweißshake mit BCAAs & EAAs | High Protein, Low Carb & zuck...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>HOCHWERTIGES MOLKENPROTEIN: 100% Whey Protein Pulver mit hohem Proteingehalt zur Unterstützung von Muskelaufbau & Erhalt der Muskelmasse</li><li>MIT BCAAs & EAAs: Essenzielle Aminosäuren & verzweigtkettige Aminosäuren für optimale Regeneration und Kraft beim Training</li><li>CREMIGER, LECKERER GESCHMACK: Erhältlich in zahlreichen Sorten wie Vanille, Schokolade, Erdbeere, Cookies & Cream u.v.m. – ideal als Shake oder im Müsli</li><li>LOW CARB & ZUCKERARM: Perfekt für Fitness, Diät & Sporternährung – unterstützt den Proteinbedarf ohne unnötige Kalorien</li><li>MADE IN GERMANY QUALITÄT: Hergestellt nach höchsten Standards, frei von Aspartam, leicht löslich & optimal für Muskeltraining, Kraftsport & Ausdauer</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/ironmaxx_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Trust-/Authority-Strategy: Awards (DLG Gold, Landesehrenpreis NRW) + 'Deutsche Marke' + Multi-Benefit-Wheel + harte Vergleichs-Tabelle. Fehlt: harte Wirkstoff-Zahlen pro Portion + Mensch im Bild.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B01H8RSKTK" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Myprotein</div>
+        <div class="label">comp1</div>
+      </div>
+      <div class="main-img"><img src="images/comp1_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">32.99 EUR</span></div>
+        <div><span class="m-label">g</span> <span class="m-val">30</span></div>
+        <div class="highlight"><span class="m-label">EUR/PORTION</span> <span class="m-val">1.0997</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;<span class="star-empty"></span></span>
+          <span class="rating-val">5.0</span>
+          <span class="review-count">&middot; 8 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Myprotein Impact Whey Protein Pulver | Natürliche Schokolade - 30 Portionen | Bis zu 23 g Whey-Protein pro Portion mit BCAAs | Unterstützt Muskelaufbau & schnellere Regeneration | Vegetarisch">Myprotein Impact Whey Protein Pulver | Natürliche Schokolade - 30 Portionen | Bis zu 23 g Whey-Protein pro Portion mit B...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>My Protein Impact Whey enthält bis zu 23 g Molkenprotein und nur 111 kcal pro Portion. Dieses Molkenproteinpulver wurde für optimale Regeneration und Höchstleistung entwickelt.</li><li>Mehr als nur Protein: Jede Portion enthält nur 2 g Fett, 2,1 g Kohlenhydrate und ganze 5 g natürlich vorkommende BCAAs – ein ausgewogenes Nährstoffprofil, das genauso hart arbeitet wie Sie und Ihnen h...</li><li>Einfach zu mischen: Unser Impact Whey mit natürlichem Schokoladengeschmack löst sich schnell und einfach auf und garantiert so jedes Mal einen leckeren und klumpenfreien Proteinshake.</li><li>Athleten vertrauen uns: Das bevorzugte Proteinpräparat für Sportler weltweit. Unabhängige Prüfer testen unser Proteinpulver auf verbotene Substanzen und Verunreinigungen – so garantieren wir unverglei...</li><li>Gebrauchsanweisung: 30 g (ca. 1 Messlöffel) mit 250 ml Wasser mischen, schütteln und verzehren. Einmal täglich, vor oder nach dem Training konsumieren</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp1_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Premium-Wissenschaft-Strategy: Informed Choice/Protein Doppel-Zertifikat + 20 Jahre Verfeinerung + Innovation-Leiter mit Gesicht. Wirkstoff (23g) + Flavour (40+) sekundaer. Targeting: Performance-Sportler.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0GRHK5HRV" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Bodylab24</div>
+        <div class="label">comp2</div>
+      </div>
+      <div class="main-img"><img src="images/comp2_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">68.99 EUR</span></div>
+        <div><span class="m-label">g</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/PORTION</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.2</span>
+          <span class="review-count">&middot; 742 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Bodylab24 Whey Protein Pulver, Cookies & Cream, 2kg">Bodylab24 Whey Protein Pulver, Cookies & Cream, 2kg</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>PREMIUM QUALITÄT Bodylab24 bringt das Beste aus Milch in deinen Shaker. Wertvolles Molkenproteinpulver versorgt dich mit wichtigen Eiweißbausteinen.</li><li>FÜR MUSKELN & FITNESS Whey ist das ideale Protein direkt im Anschluss an körperliche Belastungen in Form von Kraft- oder Ausdauertraining. Deine Proteinsynthese wird beschleunigt und dein Körper kann ...</li><li>HOHER PROTEINGEHALT Bis zu 80% Eiweiß. Enthält ultragefiltertes Whey Protein Konzentrat (schnell absorbierbar), Whey Protein Isolat und Whey Protein Hydrolysat.</li><li>PERFEKTE LÖSLICHKEIT Alle unsere Eiweißshakes sind perfekt löslich in Milch und Wasser und können dich beim Muskelaufbau unterstützen, da das Molkenprotein eine hohe biologische Verfügbarkeit hat.</li><li>OHNE ASPARTAM Frei von künstlichen Konservierungsstoffen und Aspartam. Außerdem wurde darauf geachtet, den Anteil an Kohlenhydraten und Fetten sehr gering zu halten.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp2_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Value-Power-Strategy: aggressive 'POWER UP!' Caps auf Main + 2kg-Bucket-Inszenierung + Best-Buy-Sticker + 80% Protein. Pro-Gramm-Oekonomie. Targeting: Volume-Kaeufer/Studenten.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B01GRIP4BI" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Myprotein</div>
+        <div class="label">comp3</div>
+      </div>
+      <div class="main-img"><img src="images/comp3_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">24.99 EUR</span></div>
+        <div><span class="m-label">g</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/PORTION</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;<span class="star-empty"></span></span>
+          <span class="rating-val">5.0</span>
+          <span class="review-count">&middot; 1 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Myprotein Impact Whey Isolat Proteinpulver - Vanille - 15 Portionen – bis zu 25g Eiweiß pro Portion, wenig Fett & Zucker, 90% Protein, Informed Choice zertifiziert, Vegetarisch.">Myprotein Impact Whey Isolat Proteinpulver - Vanille - 15 Portionen – bis zu 25g Eiweiß pro Portion, wenig Fett & Zucker...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>HOCHREINES : Mit 90% Proteingehalt und 26g Eiweiß pro 30g-Portion bietet Impact Whey Isolat außergewöhnliche Reinheit. Mikrofiltration entfernt mehr Fett und Laktose als herkömmliches Whey-Konzentrat ...</li><li>NATÜRLICH REICH AN BCAAs & GLUTAMIN: Jede Portion liefert 4,5g BCAAs sowie 3,6g Glutamin – essentielle Bausteine für Muskelproteinsynthese und Regeneration. Unterstützt aktiv die Muskelreparatur und E...</li><li>KALORIENARM & IDEAL FÜR DEFINITIONSPHASE: Mit nur ~103 kcal, weniger als 1g Kohlenhydraten und minimalem Fettanteil pro Portion perfekt für kalorienreduzierte Ernährung. Behalte deine Makros im Griff ...</li><li>EINFACHE ZUBEREITUNG, VIELSEITIG EINSETZBAR: 30g in 150–250ml Wasser oder Milch shaken. Als Isolat schnell absorbiert – ideal 30–60 Min. nach dem Training. Auch vielseitig als Backzutat für proteinrei...</li><li>INFORMED CHOICE ZERTIFIZIERT : Regelmäßig auf verbotene Substanzen getestet – perfekt auch für Wettkampfsportler. Myprotein garantiert höchste Qualitätsstandards durch unabhängige Prüfung.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp3_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Premium-Isolate-Strategy: gleicher Wissenschaft-Look wie comp1, aber dropt Flavour-Count von 40+ auf 20+ und schiebt 26g Protein (Isolat-Vorteil) nach vorn. Targeting: Cut/Diaet-Phase.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0GV4RYMRC" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">GymBeam</div>
+        <div class="label">comp4</div>
+      </div>
+      <div class="main-img"><img src="images/comp4_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">38.85 EUR</span></div>
+        <div><span class="m-label">g</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/PORTION</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.2</span>
+          <span class="review-count">&middot; 32 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Just Whey Protein Pulver – aus Weide-Kuhmilch, mit DigeZyme® für bessere Verdauung, Mehrkomponenten Eiweißpulver mit essentiellen Aminosäuren & BCAAs – GymBeam (1000 g, Cookies & Creme)">Just Whey Protein Pulver – aus Weide-Kuhmilch, mit DigeZyme® für bessere Verdauung, Mehrkomponenten Eiweißpulver mit ess...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>Hochwertiges Molkenproteinpulver: Entdecke Just Whey, unser Mehrkomponenten-Molkenproteinpulver. Es kombiniert Molkenkonzentrat, -isolat und -hydrolysat für eine optimale Ernährung.</li><li>Hoher Proteingehalt: Mit bis zu 74,8% Protein sorgt Just Whey dafür, dass du deine tägliche Proteinzufuhr problemlos erreichst und unterstützt dich beim Aufbau von Muskelmasse. Jede Portion liefert di...</li><li>Essentielle Aminosäuren: Just Whey bietet dir alle notwendigen Aminosäuren, einschließlich BCAAs, die für den Aufbau und die Erhaltung deiner Muskulatur unerlässlich sind.</li><li>Leicht verdauliches Whey-Protein: Just Whey zeichnet sich durch seine hohe Bioverfügbarkeit aus und ist leicht zu verdauen, was es zu einer idealen, schnell und effizient vom Körper aufnehmbaren Molke...</li><li>Enthält Vitamine und Mineralstoffe: Mit Just Whey bekommst du nicht nur Proteine, sondern auch ausgewählte Vitamine und Mineralstoffe - ein umfassendes Nahrungsergänzungsmittel für deine Gesundheit.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp4_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Holistic-Lifestyle-Strategy: Mehrkomponenten/3 Proteinquellen + Grass-Fed/Weidekuehe + Use-Case-Vielfalt (Backen/Smoothie/Pancakes). Mensch+Shaker in fast jedem Slot. Targeting: Health-bewusste Sportler.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0FFTD116K" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">GEN GERMAN ELITE NUTRITION</div>
+        <div class="label">comp5</div>
+      </div>
+      <div class="main-img"><img src="images/comp5_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">37.99 EUR</span></div>
+        <div><span class="m-label">g</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/PORTION</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.4</span>
+          <span class="review-count">&middot; 266 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Whey Protein Komplex - 1000 g (Vanille Ice Cream) - Mit Isolate Anteil - Instant lösliches Eiweiss Protein Pulver mit BCAA & EAA - German Elite Nutrition">Whey Protein Komplex - 1000 g (Vanille Ice Cream) - Mit Isolate Anteil - Instant lösliches Eiweiss Protein Pulver mit BC...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>PREISLEISTUNG: 1kg hochwertiges Whey Protein im optimalen Isolat - Konzentrat Mix. Freue dich auf einen besonders leckeren Geschmack & einer cremigen Konsistenz. Besonders hoher Proteingehalt mit ca. ...</li><li>PROTEIN KOMPLEX: Unser Whey Protein Complex kombiniert das Beste aus Whey Protein Konzentrat (WPC) und Isolat (WPI), bietet einen hohen Proteingehalt von 74%, ausgezeichnete Verwertbarkeit und hohe Bi...</li><li>LOW CARB BUT HIGH BCAA: Das German Elite Nutrition Whey Protein überzeugt mit hohem BCAA- und niedrigem Fett- und Carb-Anteil. Es fördert effektiv den Muskelaufbau, dank reichhaltiger essentieller Ami...</li><li>EINFACHE ANWENDUNG: Das Whey Protein von German Elite Nutrition löst sich ideal in Wasser und Milch und lässt sich mit dem beiliegenden Dosierlöffel ideal dosieren. 30 g Pulver (= 1 Portion) in 300 ml...</li><li>VON SPORTLERN FÜR SPORTLER: Unser Sortiment bei German Elite Nutrition bietet dir eine Vielzahl an Nahrungsergänzungsmitteln, hergestellt aus hochwertigen Rohstoffen in EU-zertifizierten Betrieben, di...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp5_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Bodybuilder-Premium-Strategy: schwarz-rote Hardcore-Aesthetik + WPC+WPI Komplex + Multi-Language-Label (international) + Bodybuilder/Gym-BG. 33 Servings Reichweite. Targeting: ernsthafte Lifter.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0CW9PPJGR" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+  </div>
+
+  
+
+  <div class="footer">ADLEVATE &middot; Listing Deep Dive &middot; 2026-05-16 &middot; benjamin@adlevate.de</div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <img id="lightboxImg" alt=""/>
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script>
+(function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbCap = document.getElementById('lightboxCaption');
+  const lbClose = document.getElementById('lightboxClose');
+  const sels = ['.main-img img', '.sec-img-box img', '.mockup-card img'];
+  document.querySelectorAll(sels.join(', ')).forEach(img => {
+    img.addEventListener('click', e => {
+      e.stopPropagation();
+      lbImg.src = img.src;
+      const col = img.closest('.col');
+      const brand = col ? col.querySelector('.brand').innerText : '';
+      const labelEl = col ? col.querySelector('.label') : null;
+      const label = labelEl ? labelEl.innerText : '';
+      const slotType = img.closest('.main-img') ? 'Main Image' :
+                       img.closest('.sec-img-box') ? 'Best Secondary (USP-Slot)' :
+                       img.closest('.mockup-card') ? (img.closest('.mockup-card').querySelector('.mockup-label').innerText) :
+                       '';
+      lbCap.innerText = brand ? `${brand} - ${label} - ${slotType}` : slotType;
+      lb.classList.add('active');
+    });
+  });
+  function close() { lb.classList.remove('active'); lbImg.src = ''; }
+  lb.addEventListener('click', close);
+  lbClose.addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
+</script>
+</body></html>
