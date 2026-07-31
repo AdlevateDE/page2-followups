@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Listing Deep Dive -- Go-Keto vs Top 5 Competitors</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1419; color: #d4d4d4; line-height: 1.5; font-size: 13px; }
+.container { max-width: 2400px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 28px; color: #5BC5C8; margin: 0 0 8px 0; font-weight: 600; }
+.subtitle { color: #888; font-size: 13px; margin-bottom: 24px; }
+.legend { background: #1a2128; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; color: #a0a0a0; border-left: 3px solid #5BC5C8; }
+.legend strong { color: #d4d4d4; }
+.grid { display: grid; grid-template-columns: repeat(6, minmax(300px, 1fr)); gap: 16px; }
+.col { background: #1a2128; border: 1px solid #2a3138; border-radius: 10px; padding: 16px; position: relative; overflow: hidden; }
+.col.client { border: 2px solid #5BC5C8; background: #15242a; }
+.badge-client { position: absolute; top: 0; right: 0; background: #5BC5C8; color: #0f1419; font-weight: 700; font-size: 10px; padding: 4px 12px; border-radius: 0 8px 0 8px; letter-spacing: 1px; }
+.header { margin-bottom: 12px; }
+.brand { font-weight: 600; color: #5BC5C8; font-size: 14px; }
+.label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.main-img { background: #fff; border-radius: 6px; padding: 8px; margin-bottom: 12px; height: 220px; display: flex; align-items: center; justify-content: center; }
+.main-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; padding: 10px; background: #0f1419; border-radius: 6px; }
+.metrics > div { text-align: center; }
+.metrics .highlight { background: #5BC5C815; border-radius: 4px; padding: 2px; }
+.m-label { display: block; color: #888; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.m-val { display: block; color: #e0e0e0; font-weight: 600; font-size: 13px; }
+.highlight .m-val { color: #5BC5C8; font-size: 14px; }
+.rating-row { display: flex; align-items: center; gap: 6px; padding: 8px 10px; margin-bottom: 12px; background: #0f1419; border-radius: 6px; font-size: 12px; }
+.stars { color: #FFB100; letter-spacing: 1px; font-size: 14px; }
+.star-empty { color: #3a3f45; }
+.rating-val { color: #e0e0e0; font-weight: 600; }
+.review-count { color: #888; font-size: 11px; }
+.rating-empty { color: #666; font-style: italic; justify-content: center; font-size: 11px; }
+.row-label { color: #666; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 600; }
+.title-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.title-text { color: #d4d4d4; font-size: 12px; line-height: 1.4; }
+.bullets-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; min-height: 120px; }
+.bullets { list-style: none; padding: 0; margin: 0; }
+.bullets li { color: #b8b8b8; font-size: 11px; padding: 4px 0 4px 12px; position: relative; line-height: 1.4; }
+.bullets li::before { content: "-"; position: absolute; left: 0; color: #5BC5C8; }
+.bullets li.empty { color: #555; font-style: italic; }
+.sec-img-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.sec-img-box img { width: 100%; height: 180px; object-fit: contain; background: #fff; border-radius: 6px; padding: 6px; }
+.usp-strat { padding-top: 4px; }
+.usp-text { color: #d4d4d4; font-size: 11px; line-height: 1.5; }
+.tag-green { color: #4ade80; }
+.tag-warn { color: #e0a800; }
+.amazon-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding: 10px 14px; background: linear-gradient(180deg, #FFD257 0%, #F9B82E 100%); color: #111; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid #E69A1A; transition: all 0.15s ease; letter-spacing: 0.2px; }
+.amazon-btn:hover { background: linear-gradient(180deg, #FFDB6E 0%, #FFC043 100%); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(255,184,46,0.3); }
+.amazon-btn svg { flex-shrink: 0; }
+.proposal { margin-top: 40px; padding: 24px; background: #15242a; border: 2px solid #5BC5C8; border-radius: 12px; }
+.proposal h2 { color: #5BC5C8; margin: 0 0 16px 0; font-size: 22px; }
+.proposal-intro { color: #d4d4d4; margin-bottom: 20px; }
+.subsection { color: #5BC5C8; font-size: 16px; font-weight: 600; margin: 24px 0 8px 0; padding-top: 12px; }
+.subsection:first-of-type { margin-top: 4px; padding-top: 0; }
+.subsection-intro { color: #b8b8b8; font-size: 12px; margin-bottom: 14px; font-style: italic; }
+.mockup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.mockup-card { background: #1a2128; border-radius: 8px; padding: 12px; }
+.mockup-label { color: #5BC5C8; font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+.mockup-card img { width: 100%; border-radius: 6px; margin-bottom: 10px; cursor: zoom-in; }
+.mockup-desc { color: #b8b8b8; font-size: 12px; }
+.new-title-box { margin-top: 24px; padding: 16px; background: #1a2128; border-radius: 8px; }
+.new-title-box h3 { color: #5BC5C8; margin: 0 0 12px 0; font-size: 14px; }
+.compare-row { display: grid; grid-template-columns: 100px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2a3138; align-items: flex-start; }
+.compare-row:last-child { border-bottom: none; }
+.compare-row .rlabel { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding-top: 3px; }
+.compare-row .val { color: #d4d4d4; font-size: 12px; line-height: 1.5; }
+.compare-row .old { color: #e0a800; }
+.compare-row .new { color: #4ade80; font-weight: 500; }
+.footer { margin-top: 40px; padding: 20px; text-align: center; color: #666; font-size: 11px; border-top: 1px solid #2a3138; }
+.main-img img, .sec-img-box img, .mockup-card img { cursor: zoom-in; transition: transform 0.15s ease; }
+.main-img img:hover, .sec-img-box img:hover, .mockup-card img:hover { transform: scale(1.02); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; backdrop-filter: blur(4px); }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 60px rgba(0,0,0,0.6); background: #fff; }
+.lightbox-close { position: absolute; top: 24px; right: 24px; background: #1a2128; color: #fff; border: 1px solid #3a3f45; width: 44px; height: 44px; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.lightbox-close:hover { background: #2a3138; }
+.lightbox-caption { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #d4d4d4; background: rgba(26,33,40,0.9); padding: 10px 20px; border-radius: 6px; font-size: 13px; max-width: 80vw; text-align: center; }
+.dl-btn { position: fixed; top: 24px; right: 24px; z-index: 100; display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: linear-gradient(135deg, #5BC5C8 0%, #4aa8ab 100%); color: #0f1419; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid #5BC5C8; box-shadow: 0 4px 16px rgba(91,197,200,0.35); transition: all 0.2s ease; letter-spacing: 0.3px; }
+.dl-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(91,197,200,0.5); background: linear-gradient(135deg, #6ad3d6 0%, #56c2c5 100%); }
+.dl-btn svg { flex-shrink: 0; }
+.dl-btn .dl-count { background: rgba(15,20,25,0.25); padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+@media (max-width: 1800px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 1000px) { .grid { grid-template-columns: 1fr 1fr; } .mockup-grid { grid-template-columns: 1fr; } }
+</style>
+</head><body>
+
+<a class="dl-btn" href="B08QDD6ZQF_mockups.zip" download title="Alle Vorschlagsbilder als ZIP herunterladen">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>
+  <span>Vorschlagsbilder</span>
+  <span class="dl-count">5&nbsp;Bilder &middot; ZIP</span>
+</a>
+
+<div class="container">
+  <h1>Listing Deep Dive -- Go-Keto vs Top 5 Competitors</h1>
+  <div class="subtitle">Keyword: "eiweiss pulver" &middot; DE &middot; 2026-07-04</div>
+  <div class="legend">
+    <strong>Wie zu lesen:</strong> KLIENT-Spalte links (blau umrandet). Daneben die 5 staerksten Page-1-Competitors. Vergleiche Main-Image, Rating/Reviews, EUR/PORTION, Titel, Bullets und die beste Secondary (USP-Slot). USP-Strategie-Zeile fasst zusammen was jedes Listing als Haupt-Verkaufsargument inszeniert.
+  </div>
+
+  <div class="grid">
+    
+    <div class="col client">
+      <div class="badge-client">KLIENT</div>
+      <div class="header">
+        <div class="brand">Go-Keto</div>
+        <div class="label">goketo</div>
+      </div>
+      <div class="main-img"><img src="images/goketo_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">OOS &middot; zuletzt 20,95</span></div>
+        <div><span class="m-label">400 g</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/PORTION</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">3.6</span>
+          <span class="review-count">&middot; 94 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Go-Keto VEGAN Protein Schoko mit MCT, 400g Pulver im praktischen Beutel - veganes Eiweißpulver aus Erbsenprotein & Reisprotein mit MCT, optimiertes Aminosäureprofil, zuckerfrei, laktosefrei">Go-Keto VEGAN Protein Schoko mit MCT, 400g Pulver im praktischen Beutel - veganes Eiweißpulver aus Erbsenprotein & Reisp...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>💪 GO KETO VEGAN MCT PROTEIN – OPTIMIERTE AMINOSÄUREN & KETO MCTs: Du lebst Keto, hast Dein Workout beendet und willst einen gesunden Protein Shake genießen? Mit unserem leckeren Go-Keto Eiweißpulver z...</li><li>🥥 GO-KETO QUALITÄT: Wir wollen Dir die hochwertigsten Produkte für Deinen Keto Plan bieten und achten deshalb auf höchste Qualität! Die Zutaten für unser Go Keto MCT Proteinpulver sind 100% vegan, lak...</li><li>😋 KETOFRIENDLY - BLEIB IN KETOSE: Unser eiweißreicher und nahrhafter Protein Keto Shake ist nicht nur köstlich, sondern auch besonders ketofreundlich, da er neben wichtigen Aminosäuren zusätzlich MCT ...</li><li>👍 EASY TO USE – BLEIB BULLETPROOF: Mit unserem Go-Keto Vegan Protein Shake bist Du während Deiner Keto Diät immer bestens mit wichtigen Nährstoffen versorgt. Nach dem Sport, zum Frühstück oder schnell...</li><li>✔️ WIR SIND FÜR DICH DA: Go-Keto begleitet Deine Keto-Reise – fachliche Beratung, Coaching, höchstreine ketogene Lebensmittel, hochpräzise zuverlässige Keto Messgeräte. ERFOLG: Werde Teil unserer akti...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/goketo_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Vegan+Keto-Nische mit MCT, aber visuell fast stumm: 4 von 7 Slots textfrei, Zahlen nur handschriftlich/englisch. Das einzige echte Differenzierungs-Asset (Keto-Makros: 0,1g Zucker) wird nirgends quantifiziert.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B08QDD6ZQF" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">inkospor</div>
+        <div class="label">inkospor</div>
+      </div>
+      <div class="main-img"><img src="images/inkospor_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">15.73 EUR</span></div>
+        <div><span class="m-label">400 g</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/PORTION</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.5</span>
+          <span class="review-count">&middot; 2.184 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="inkospor Active Pro 80 Proteinpulver Vanille | 80% Mehrkomponenten-Protein | 500 g Beutel | Whey, Casein & Eiprotein | Made in Germany">inkospor Active Pro 80 Proteinpulver Vanille | 80% Mehrkomponenten-Protein | 500 g Beutel | Whey, Casein & Eiprotein | M...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>80% MEHRKOMPONENTEN-PROTEIN – Pro 80 liefert 80 g Eiweiß pro 100 g aus einer einzigartigen Kombination aus Whey Konzentrat, Casein und Eiprotein. Die dreifache Proteinquelle sorgt für sofortige und la...</li><li>CREMIGER VANILLE-GESCHMACK – Klassisch, intensiv, klümpchenfrei. Rückstandslos löslich in 200–300 ml Milch oder Wasser – dein täglicher Protein-Shake morgens, mittags oder nach dem Sport.</li><li>20 PORTIONEN PRO BEUTEL – 500 g Pulver. Ideal für Muskelaufbau, Regeneration und zur leckeren Deckung des täglichen Eiweißbedarfs. Multifunktional als Shake, im Joghurt oder als Backzutat.</li><li>VIELSEITIG EINSETZBAR – Als Shake in Milch oder Wasser, im Joghurt, Porridge oder in Backrezepten. Pro 80 Vanille ist das Allround-Protein für jeden Sportler und jedes Ziel.</li><li>INKOSPOR – MADE IN GERMANY SEIT 1982 – Über 40 Jahre Sportnahrungsexpertise. Entwickelt von Sporternährungswissenschaftlern, bewährt in über 3.000 Premium-Fitnessstudios.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/inkospor_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">DACH-Authority-Play: seit 1982, 3000 Fitnessstudios, Portions-Stats + Zubereitungs-Steps. Benchmark fuer Trust ohne Testimonials - erklaert Pos 1 trotz Understatement-Design.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B002VAIU7W" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">ESN</div>
+        <div class="label">esn</div>
+      </div>
+      <div class="main-img"><img src="images/esn_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">44.90 EUR</span></div>
+        <div><span class="m-label">400 g</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/PORTION</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.4</span>
+          <span class="review-count">&middot; 9.379 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="ESN Designer Whey Protein Pulver, Vanilla, 1 kg">ESN Designer Whey Protein Pulver, Vanilla, 1 kg</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>EFFEKTIVE KOMBINATION: Whey Konzentrat und Whey Isolat sorgen in ihrer Kombination für ein gutes Aminosäurenprofil</li><li>SCHNELL RESORBIERBAR: Als eines der weltweit besten Molkenproteinmischungen sehr leicht verdaulich</li><li>HOHE BIOVERFÜGBARKEIT: Dank der kaltschonenden Herstellung bleiben alle Proteinfraktionen und Peptidketten intakt</li><li>VIELSEITIG EINSETZBAR: Das Designer Whey ist nicht nur als Whey Protein Shake, sondern auch zum Backen und Kochen geeignet</li><li>HERGESTELLT IN DEUTSCHLAND: Unsere Produkte werden natürlich in unserer hauseigenen deutschen Produktion in modernsten Anlagen nach höchsten Qualitätsstandards hergestellt</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/esn_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Marktfuehrer-Selbstbewusstsein: Rebrand-Story, Key-Facts-Pills mit EFSA-konformen Fussnoten, Made-for-Athletes-Identitaet. Benchmark fuer compliance-sichere Muskel-Claims.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0057DVWYI" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Optimum Nutrition</div>
+        <div class="label">optimum</div>
+      </div>
+      <div class="main-img"><img src="images/optimum_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">42.56 EUR</span></div>
+        <div><span class="m-label">400 g</span> <span class="m-val">29</span></div>
+        <div class="highlight"><span class="m-label">EUR/PORTION</span> <span class="m-val">1.4676</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;<span class="star-empty"></span></span>
+          <span class="rating-val">4.6</span>
+          <span class="review-count">&middot; 56.329 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Optimum Nutrition Gold Standard 100% Whey, Proteinpulver, Geschmack Double Rich Chocolate, 899g, 29 Portionen, Verpackung Kann Variieren">Optimum Nutrition Gold Standard 100% Whey, Proteinpulver, Geschmack Double Rich Chocolate, 899g, 29 Portionen, Verpackun...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>VERPACKUNG KANN VARIIEREN: Neuer Look, gleiche bewährte Qualität!</li><li>SCHNELL AUFGENOMMENES Molkenprotein mit Molkenproteinisolat als Hauptbestandteil hilft beim Muskelaufbau und unterstützt die Erholung* nach jeder Trainingseinheit</li><li>Die ON-Molkenproteinformel ist Informed Choice-zertifiziert, enthält natürlich vorkommende BCAAs und GLUTAMIN und ist ZUCKER- und fettarm</li><li>Erhältlich in einer VIELZAHL VON GRÖßEN und GESCHMACKSRICHTUNGEN: extra reichhaltige Schokolade, Bananencreme, Vanilleeis, geschmacksneutrales Proteinpulver und mehr</li><li>EINFACH & BEQUEM: Mischen Sie einen Messlöffel in 180-240 ml kaltes Wasser; am besten morgens oder/und während der 30 Minuten kurz vor oder unmittelbar nach dem Training genießen</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/optimum_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Global-Brand-Power: 24g-Claim direkt auf dem Main Image, McLaren-F1-Partnerschaft, Flavour-Range und Cross-Sell-Familie.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B002DYIZH6" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">betterprotein</div>
+        <div class="label">betterprotein</div>
+      </div>
+      <div class="main-img"><img src="images/betterprotein_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">29.99 EUR</span></div>
+        <div><span class="m-label">400 g</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/PORTION</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.3</span>
+          <span class="review-count">&middot; 1.868 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Whey Protein - Vanille 1 kg - Produziert in Deutschland aus regionaler Milch - BetterProtein® - Eiweißpulver zum Muskelaufbau und Abnehmen - Beutel">Whey Protein - Vanille 1 kg - Produziert in Deutschland aus regionaler Milch - BetterProtein® - Eiweißpulver zum Muskela...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>REGIONALES PRODUKT AUS DEUTSCHLAND: Wir verwenden für unser Whey Protein Milch von kleinen und mittelständischen Landwirten aus Norddeutschland und verarbeiten diese im Anschluss selber. Somit können ...</li><li>WARUM WHEY PROTEIN: Wer Muskeln aufbauen will, muss dem Muskelgewebe reichlich Nährstoffe zum Wachsen zur Verfügung stellen. Fehlt es also an den grundlegendsten Bausteinen, den Proteinen, die für den...</li><li>PREMIUM QUALITÄT: Whey Protein Eiweißpulver direkt vom Hersteller unter Einhaltung strenger deutscher Lebensmittelvorgaben und Qualitätsstandards (IFS, HACCP).</li><li>PRO PORTION: 23 g Whey Protein / 15,6 g EAAs / 2g Kohlenhydrate low carb & low fat / kein Aspartam / kein Soja / keine Konservierungsstoffe / keine Füllmittel / keine Geschmacksverstärker / kein Glute...</li><li>VERZEHREMPFEHLUNG: 30 g Pulver mit 200ml kaltem Wasser oder Milch in einem Mixer oder Shaker zubereiten und nach dem Sport / Training verzehren. Durch die Zusammensetzung hat das Protein eine perfekte...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/betterprotein_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Clean-Label + Regionalitaet: Made in Germany, Rohmilch-Supply-Chain-Infografik, Portions-Stats auf dem Main. Benchmark fuer Herkunfts-Trust im D2C-Stil.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B07G47NRH7" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Nutri +</div>
+        <div class="label">nutriplus</div>
+      </div>
+      <div class="main-img"><img src="images/nutriplus_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">32.99 EUR</span></div>
+        <div><span class="m-label">400 g</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/PORTION</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.1</span>
+          <span class="review-count">&middot; 1.062 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Nutri + Proteinpulver Banana Milk 1 kg - 78% Eiweiß Pulver - pflanzliches Protein Powder Milch-Banane Flavor - 6-Komponenten Eiweißpulver 1000 g aspartamfrei">Nutri + Proteinpulver Banana Milk 1 kg - 78% Eiweiß Pulver - pflanzliches Protein Powder Milch-Banane Flavor - 6-Kompone...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>✔️ EIWEIßSHAKE 1000g Banana Milk mit hohem Eiweißanteil (über 78% Proteine) - fördert das Muskelwachstum - 6-Komponenten Proteinshake mit allen essentiellen Aminosäuren - Protein mit hoher biologische...</li><li>✔️ QUALITÄT: Bananenshake ohne Aspartam, Farbstoff, Palmöl, Gelatine, Konservierungsstoff und Gentechnik - halal-geeignet - Mehrkomponentenprotein Mix - Bananenproteinpulver für die vegetarische Ernäh...</li><li>✔️ MUSKELAUFBAU: Fettarm und zuckerarm - ohne Zucker- und Salzzusatz - wasserlöslich - optimaler Proteindrink für eine kohlenhydratarme (Low-Carb) und fettarme Ernährung (Low-Fat) - für Männer und Fra...</li><li>✔️ LABORGEPRÜFT: Premiumqualität von Ernährungswissenschaftlern entwickelt - in Deutschland nach strengsten Qualitätsstandards produzierte Nahrungsergänzung / Sportnahrung - IFS Food und GMP - Einweg ...</li><li>✔️ MEHR ALS NUR EIN SHAKE: ideal auch zum Kochen / Kocheiweiß geeignet - wir empfehlen 1-2 Eiweißshakes mit Wasser täglich - idealerweise direkt nach dem Training einen Bananenprotein Drink trinken</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/nutriplus_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Direktester Vegan-Rivale: 7-Icon-Frei-von-Wheel, Warum-wir-Vergleichstabelle, Portions-Naehrwerte. Das Playbook, das goketo fuer den veganen Kaeufer schlagen muss.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B07D782171" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+  </div>
+
+  
+  <div class="proposal">
+    <h2>Vorschlag: Listing-Bildstrategie fuer Go-Keto</h2>
+    <div class="proposal-intro">Basierend auf der Competitor-Analyse: hier sind vorgeschlagene Listing-Verbesserungen, die exakt dem Pattern der Top-Seller folgen und Amazon-Guidelines respektieren.</div>
+
+    
+    <h3 class="subsection">Main Image Varianten (Image-to-Image, Amazon-compliant)</h3>
+    <div class="subsection-intro">
+      Dezenter Tag/Siegel am Produkt + Kapseln unten rechts -- exakt das Pattern das Top-Seller auf Page 1 nutzen. Hauptprodukt-Design bleibt unveraendert. 2 USP-Varianten zum A/B Testen.
+    </div>
+    <div class="mockup-grid">
+      
+      <div class="mockup-card">
+        <div class="mockup-label">Main 1 -- "Alternative: Anhaenger (Locktag)"</div>
+        <img src="images/main_mct.jpg"/>
+        <div class="mockup-desc">Kraft-Tag mit Schloss: MIT MCT / OHNE ZUCKERZUSATZ / VEGAN — haengt vollflaechig VOR dem Beutel. Trade-off: verdeckt Teil des Schriftzugs; Kordel minimal ueber Silhouette (im finalen Artwork einruecken).</div>
+      </div>
+      
+      <div class="mockup-card">
+        <div class="mockup-label">Main 2 -- "Empfehlung: On-Pack-Sticker"</div>
+        <img src="images/main_protein.jpg"/>
+        <div class="mockup-desc">Teal-Sticker auf dem Beutel: 20G+ PROTEIN / PRO PORTION / VEGAN + KETO. 100% Produkt-Ueberlappung, kein Floating — Amazon-konform (Permissive-Nische). Hinweis: aufgedrucktes Nr.1-Siegel im finalen Packaging-Artwork ersetzen.</div>
+      </div>
+      
+    </div>
+    
+
+    
+    <h3 class="subsection">Secondary-Image Mockups</h3>
+    <div class="mockup-grid">
+      
+      <div class="mockup-card">
+        <div class="mockup-label">slot2</div>
+        <img src="images/mockup_slot2.jpg"/>
+        <div class="mockup-desc"></div>
+      </div>
+      
+      <div class="mockup-card">
+        <div class="mockup-label">slot3</div>
+        <img src="images/mockup_slot3.jpg"/>
+        <div class="mockup-desc"></div>
+      </div>
+      
+      <div class="mockup-card">
+        <div class="mockup-label">slot5</div>
+        <img src="images/mockup_slot5.jpg"/>
+        <div class="mockup-desc"></div>
+      </div>
+      
+    </div>
+    
+
+    
+    <div class="new-title-box">
+      <h3>Title- &amp; Bullets-Empfehlung</h3>
+      
+      <div class="compare-row">
+        <div class="rlabel">Title alt</div>
+        <div class="val old">-</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Title neu</div>
+        <div class="val new">Veganes Eiweißpulver Schoko mit MCT – Keto Protein Pulver ohne Zuckerzusatz, über 20g Eiweiß pro Portion – laktosefrei, aus Erbsenprotein & Reisprotein, 400g Beutel</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Bullet 1</div>
+        <div class="val new">**VEGAN + KETO IN EINEM**: Pflanzliches Proteinpulver aus Erbsen- und Reisprotein mit MCT, entwickelt für eine ketogene und vegane Ernährung – nur 0,1 g Zucker pro 100 g.</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Bullet 2</div>
+        <div class="val new">**ÜBER 20 G PROTEIN PRO PORTION**: 62,9 g Eiweiß pro 100 g mit vollständigem Aminosäurenprofil und 12,2 g BCAAs pro 100 g – für Training und proteinreichen Alltag.</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Bullet 3</div>
+        <div class="val new">**SCHOKO-GESCHMACK OHNE LAKTOSE**: Cremiger Choco-Shake ohne Laktose und ohne Zuckerzusatz – 34 g Pulver (ca. 3 EL) in 300 ml Wasser oder Pflanzenmilch, 20 Sekunden schütteln, fertig.</div>
+      </div>
+      
+    </div>
+    
+  </div>
+  
+
+  <div class="footer">ADLEVATE &middot; Listing Deep Dive &middot; 2026-07-04 &middot; benjamin@adlevate.de</div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <img id="lightboxImg" alt=""/>
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script>
+(function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbCap = document.getElementById('lightboxCaption');
+  const lbClose = document.getElementById('lightboxClose');
+  const sels = ['.main-img img', '.sec-img-box img', '.mockup-card img'];
+  document.querySelectorAll(sels.join(', ')).forEach(img => {
+    img.addEventListener('click', e => {
+      e.stopPropagation();
+      lbImg.src = img.src;
+      const col = img.closest('.col');
+      const brand = col ? col.querySelector('.brand').innerText : '';
+      const labelEl = col ? col.querySelector('.label') : null;
+      const label = labelEl ? labelEl.innerText : '';
+      const slotType = img.closest('.main-img') ? 'Main Image' :
+                       img.closest('.sec-img-box') ? 'Best Secondary (USP-Slot)' :
+                       img.closest('.mockup-card') ? (img.closest('.mockup-card').querySelector('.mockup-label').innerText) :
+                       '';
+      lbCap.innerText = brand ? `${brand} - ${label} - ${slotType}` : slotType;
+      lb.classList.add('active');
+    });
+  });
+  function close() { lb.classList.remove('active'); lbImg.src = ''; }
+  lb.addEventListener('click', close);
+  lbClose.addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
+</script>
+</body></html>

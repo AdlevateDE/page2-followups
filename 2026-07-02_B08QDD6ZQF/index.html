@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Page-1 Audit Go-Keto / B08QDD6ZQF</title>
+<style>
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0f1419;
+  --bg-card:    #1a2332;
+  --bg-card-2:  #111823;
+  --border:     rgba(91,197,200,0.12);
+  --border-strong: rgba(91,197,200,0.35);
+  --teal:       #5BC5C8;
+  --teal-glow:  rgba(91,197,200,0.25);
+  --green:      #78e0a5;
+  --amber:      #e0c97a;
+  --red:        #e08a5a;
+  --text:       #e8eaed;
+  --text-muted: #8a939e;
+  --text-dim:   #5a6470;
+}
+
+body {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 10pt;
+  line-height: 1.5;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 16mm 18mm 14mm;
+  background: var(--bg);
+  page-break-after: always;
+}
+.page:last-child { page-break-after: auto; }
+
+/* ===== HEADER ===== */
+.brandbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.brandmark {
+  font-size: 11pt;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--teal);
+}
+.brandmark .dot { color: var(--text); font-weight: 300; }
+.date {
+  font-size: 8pt;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.accent-line {
+  width: 60px;
+  height: 3px;
+  background: var(--teal);
+  margin-bottom: 14px;
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding: 22px 0 14px;
+  margin-bottom: 22px;
+}
+.hero-label {
+  color: var(--teal);
+  font-size: 8pt;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.hero-number {
+  font-size: 38pt;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+.hero-number .unit {
+  font-size: 18pt;
+  color: var(--teal);
+  font-weight: 600;
+  margin-left: 4px;
+}
+.hero-sub {
+  color: var(--text-muted);
+  font-size: 10pt;
+  max-width: 85%;
+}
+.hero-sub strong { color: var(--text); font-weight: 600; }
+
+/* ===== META ROW ===== */
+.meta-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.meta-row .cell {
+  background: var(--bg-card-2);
+  padding: 10px 14px;
+}
+.meta-row .label {
+  color: var(--text-muted);
+  font-size: 7pt;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 3px;
+}
+.meta-row .value {
+  color: #ffffff;
+  font-size: 10pt;
+  font-weight: 600;
+}
+
+/* ===== SCENARIO ALERT ===== */
+.scenario {
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-2) 100%);
+  border-left: 3px solid #e08a5a;
+  padding: 14px 18px;
+  border-radius: 3px;
+  margin-bottom: 26px;
+}
+.scenario .headline {
+  font-size: 14pt;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+  letter-spacing: -0.2px;
+}
+.scenario .sub { color: var(--text-muted); font-size: 9.5pt; }
+
+/* ===== SECTION HEADING ===== */
+h2.section {
+  color: var(--teal);
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  padding-top: 4px;
+}
+
+/* ===== KPI GRID (SNAPSHOT) ===== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.kpi {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  position: relative;
+}
+.kpi .k-label {
+  font-size: 7pt;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+.kpi .k-value {
+  font-size: 16pt;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+}
+.kpi .k-value .u { font-size: 10pt; color: var(--text-muted); font-weight: 500; margin-left: 2px; }
+.kpi .k-sub {
+  font-size: 7.5pt;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.kpi .k-sub.ok { color: var(--green); }
+.kpi .k-sub.warn { color: var(--amber); }
+.kpi .k-sub.bad { color: var(--red); }
+
+/* ===== LEVERS ===== */
+.levers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+.lever {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--teal);
+  border-radius: 3px;
+  padding: 14px 14px 12px;
+}
+.lever .num {
+  font-size: 7pt;
+  font-weight: 700;
+  color: var(--teal);
+  letter-spacing: 1.5px;
+  margin-bottom: 4px;
+}
+.lever .title {
+  font-size: 11pt;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+.lever .desc {
+  font-size: 8.5pt;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+.lever .desc strong { color: var(--text); }
+
+/* ===== ATTACHMENT CARDS ===== */
+.attachments {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.attach {
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.15s;
+}
+.attach:hover { border-color: var(--teal); background: var(--bg-card-2); }
+.attach .icon {
+  font-size: 20pt;
+  color: var(--teal);
+  flex-shrink: 0;
+  line-height: 1;
+}
+.attach .title {
+  font-size: 10pt;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 3px;
+}
+.attach .sub {
+  font-size: 8pt;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+.attach .link-arrow {
+  font-size: 8pt;
+  color: var(--teal);
+  margin-top: 6px;
+  display: block;
+  font-weight: 600;
+}
+
+/* ===== BOTTOM BLOCK ===== */
+.bottom {
+  background: linear-gradient(135deg, rgba(91,197,200,0.08) 0%, rgba(91,197,200,0.02) 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  padding: 16px 18px 14px;
+  margin-bottom: 14px;
+}
+.bottom .hook {
+  color: #ffffff;
+  font-size: 11pt;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.bottom .body {
+  font-size: 9pt;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  line-height: 1.55;
+}
+.bottom .body strong { color: var(--teal); }
+.cta {
+  display: inline-block;
+  background: var(--teal);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 9.5pt;
+  padding: 8px 16px;
+  border-radius: 3px;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+}
+.fallback {
+  font-size: 8pt;
+  color: var(--text-dim);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+.fallback a { color: var(--teal); text-decoration: none; }
+
+/* ===== FOOTER ===== */
+.footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  font-size: 7pt;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="brandbar">
+    <div class="brandmark">ADLEVATE<span class="dot"> · </span>PAGE-1 AUDIT</div>
+    <div class="date">04.07.2026 &middot; v2</div>
+  </div>
+
+  <div class="accent-line"></div>
+
+  <div class="hero">
+    
+    <div class="hero-label">PROFIT-POTENZIAL &mdash; MITTLERES SZENARIO (MODELLRECHNUNG)</div>
+    <div class="hero-number">+660<span class="unit">&euro; / Monat</span></div>
+    <div class="hero-sub">
+      Rueckkehr auf <strong>Seite 1 Position 6</strong> fuer &ldquo;eiweiss pulver&rdquo; (im Mai wart ihr auf Pos. 24).
+      Bandbreite je nach Verkaufs-Basis: <strong>+270 bis +1.330 &euro;/Monat</strong> &mdash; Modellrechnung mit
+      FBA-Gebuehr 3,45 &euro; (Keepa-Produktdaten) und einer <strong>COGS-Annahme von 6,30 &euro;</strong>.
+      Eure echten Selbstkosten kennt nur ihr &mdash; im Dashboard sind COGS und FBA-Gebuehr einstellbar, alle Zahlen rechnen live nach.
+    </div>
+    
+  </div>
+
+  <div class="meta-row">
+    <div class="cell"><div class="label">ANSPRECHPARTNER</div><div class="value">Ben Nordemann</div></div>
+    <div class="cell"><div class="label">ASIN</div><div class="value">B08QDD6ZQF</div></div>
+    <div class="cell"><div class="label">KEYWORD</div><div class="value">eiweiss pulver</div></div>
+    <div class="cell"><div class="label">POSITION HEUTE</div><div class="value">nicht in Top-96 (04.07.)</div></div>
+  </div>
+
+  <div class="scenario">
+    <div class="headline">Im Mai Position 24 &mdash; heute &ldquo;Currently unavailable&rdquo;.</div>
+    <div class="sub">Keepa BuyBox-Historie: keine BuyBox 06.05.&ndash;09.06., erneut 21.06.&ndash;30.06., und seit 02.07. wieder kein kaufbares Angebot &mdash; rund 6 der letzten 9 Wochen nicht verfuegbar. Genau in dieser Zeit ist das Ranking von Position 24 aus den Top-96 gefallen (BSR 246.890 &rarr; 252.334 allein seit 02.07.). Jeder weitere OOS-Tag baut Ranking ab &mdash; der Relaunch entscheidet, wie schnell ihr zurueckkommt.</div>
+  </div>
+
+  <h2 class="section">Listing &amp; Markt — Snapshot</h2>
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="k-label">Letzter BuyBox-Preis</div>
+      <div class="k-value">20,95 €</div>
+      <div class="k-sub warn">52,38 &euro;/kg &mdash; Top-5: 30&ndash;47 &euro;/kg</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">BSR</div>
+      <div class="k-value">#252.334</div>
+      <div class="k-sub bad">-5,8% 90d-Trend, weiter fallend</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Reviews</div>
+      <div class="k-value">94<span class="u">&#9733;3.6</span></div>
+      <div class="k-sub bad">nur 37% 5&#9733; (Page-1: 61&ndash;78%)</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Listing-Health</div>
+      <div class="k-value">3<span class="u">/ 4</span></div>
+      <div class="k-sub warn">Solide</div>
+    </div>
+  </div>
+
+  <h2 class="section">Die 3 Hebel fuer Seite 1</h2>
+  <div class="levers">
+    <div class="lever">
+      <div class="num">HEBEL 01</div>
+      <div class="title">PPC</div>
+      <div class="desc">
+        
+        <strong>Single-Keyword-Kampagne</strong> (SKW) auf &ldquo;eiweiss pulver&rdquo;:
+        eine Exact-Kampagne mit Bid 1,05 € + ToS-Boost 50% (70% Budget),
+        eine Phrase-Kampagne fuer Harvesting (30% Budget) mit Cross-Negation.
+        Konzentriert dein Budget auf das Keyword, fuer das ihr bis vor Kurzem organisch gerankt habt — der schnellste Weg, das Ranking nach dem Relaunch zurueckzuholen.
+        
+      </div>
+    </div>
+    <div class="lever">
+      <div class="num">HEBEL 02</div>
+      <div class="title">Pricing</div>
+      <div class="desc">
+        
+          FBA-Gebuehr laut Keepa-Produktdaten <strong>3,45 &euro;</strong> (statt 4,50 &euro; Standard-Schaetzung), Referral 15% vom Preis.
+          Break-Even und Marge haengen an euren echten Selbstkosten &mdash; die kennt nur ihr:
+          im <strong>Dashboard</strong> COGS und FBA-Gebuehr auf eure Zahlen stellen, Break-Even und Optimal-Range rechnen live.
+          Empfehlung: Preis halten &mdash; pro kg seid ihr mit 52 &euro;/kg bereits Spitze im Top-Set.
+          Der strukturelle Hebel ist ein <strong>groesseres Gebinde</strong> (800g/1kg), das den &euro;/kg-Nachteil vs. ESN &amp; Co. schliesst.
+        
+      </div>
+    </div>
+    <div class="lever">
+      <div class="num">HEBEL 03</div>
+      <div class="title">Listing</div>
+      <div class="desc">
+        
+          &bull; <strong>Titel:</strong> &#34;Eiweisspulver&#34; in die ersten 50 Zeichen (aktuell erst ab Zeichen ~83) &mdash; staerkster On-Page-Ranking-Faktor.<br/>
+        &bull; <strong>Bullets:</strong> Zahlen nach vorn (22g Protein/Portion, zuckerfrei, laktosefrei) statt Story-Absaetze &mdash; alle Top-5 arbeiten mit CAPS-Headline + Fakten.<br/>
+        &bull; <strong>Reviews:</strong> 3,6&#9733; ist die groesste Conversion-Bremse (nur 37% 5-Sterne) &mdash; Review-Programm gehoert vor jeden PPC-Push.<br/>
+        
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section">Deep Dives &amp; Tools</h2>
+  <div class="attachments">
+    <a class="attach" href="B08QDD6ZQF_preissensitivitaet_v2.html">
+      <div class="icon">📊</div>
+      <div>
+        <div class="title">Preissensitivitaets-Analyse</div>
+        <div class="sub">Interaktives Tool &mdash; COGS, FBA-Gebuehr &amp; TACoS auf eure echten Zahlen stellen, Break-Even &amp; Optimal-Range rechnen live.</div>
+        <span class="link-arrow">→ Oeffnen (HTML)</span>
+      </div>
+    </a>
+    <a class="attach" href="B08QDD6ZQF_eiweiss_pulver_bulksheet_v2.xlsx">
+      <div class="icon">📥</div>
+      <div>
+        <div class="title">Ready-to-Upload Bulksheet</div>
+        <div class="sub">Single-Keyword-Kampagne (SKW): Exact + Phrase getrennt, Cross-Negation, 83 Negatives. Validiert (0 Fehler). Start nach Restock &mdash; Startdatum im Sheet anpassen.</div>
+        <span class="link-arrow">→ Downloaden (XLSX)</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="bottom">
+    <div class="hook">Du fragst dich, wie ich das on scale fuer dich herausfinden kann?</div>
+    <div class="body">
+      Ich baue Claude-Skills und Automationen fuer Amazon PPC &mdash; und nutze genau diese Systeme auch fuer meine eigenen Kunden.
+      Als Freelancer betreue ich immer parallel 5 Kunden. Aktuell sind <strong>2 Spots frei</strong>.
+    </div>
+    <a class="cta" href="https://calendly.com/kundenservice-adlevate/101">→ 15-Min Call buchen</a>
+    <div class="fallback">
+      Kein Bedarf? Kein Problem. Meine Skool-Community ist aktuell noch kostenlos &mdash; dort teile ich bereits einige der Skills + Automationen:
+      → <a href="https://skool.com/adlevate">skool.com/adlevate</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>ADLEVATE &middot; Benjamin Yueksel &middot; Ex-Amazon &middot; BAFA-akkreditiert</div>
+    <div>benjamin@adlevate.de</div>
+  </div>
+</div>
+
+</body>
+</html>
