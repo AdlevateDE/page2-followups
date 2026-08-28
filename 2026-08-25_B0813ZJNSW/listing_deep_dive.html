@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Listing Deep Dive -- Vitayes vs Top 5 Competitors</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1419; color: #d4d4d4; line-height: 1.5; font-size: 13px; }
+.container { max-width: 2400px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 28px; color: #5BC5C8; margin: 0 0 8px 0; font-weight: 600; }
+.subtitle { color: #888; font-size: 13px; margin-bottom: 24px; }
+.legend { background: #1a2128; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; color: #a0a0a0; border-left: 3px solid #5BC5C8; }
+.legend strong { color: #d4d4d4; }
+.grid { display: grid; grid-template-columns: repeat(6, minmax(300px, 1fr)); gap: 16px; }
+.col { background: #1a2128; border: 1px solid #2a3138; border-radius: 10px; padding: 16px; position: relative; overflow: hidden; }
+.col.client { border: 2px solid #5BC5C8; background: #15242a; }
+.badge-client { position: absolute; top: 0; right: 0; background: #5BC5C8; color: #0f1419; font-weight: 700; font-size: 10px; padding: 4px 12px; border-radius: 0 8px 0 8px; letter-spacing: 1px; }
+.header { margin-bottom: 12px; }
+.brand { font-weight: 600; color: #5BC5C8; font-size: 14px; }
+.label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.main-img { background: #fff; border-radius: 6px; padding: 8px; margin-bottom: 12px; height: 220px; display: flex; align-items: center; justify-content: center; }
+.main-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; padding: 10px; background: #0f1419; border-radius: 6px; }
+.metrics > div { text-align: center; }
+.metrics .highlight { background: #5BC5C815; border-radius: 4px; padding: 2px; }
+.m-label { display: block; color: #888; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.m-val { display: block; color: #e0e0e0; font-weight: 600; font-size: 13px; }
+.highlight .m-val { color: #5BC5C8; font-size: 14px; }
+.rating-row { display: flex; align-items: center; gap: 6px; padding: 8px 10px; margin-bottom: 12px; background: #0f1419; border-radius: 6px; font-size: 12px; }
+.stars { color: #FFB100; letter-spacing: 1px; font-size: 14px; }
+.star-empty { color: #3a3f45; }
+.rating-val { color: #e0e0e0; font-weight: 600; }
+.review-count { color: #888; font-size: 11px; }
+.rating-empty { color: #666; font-style: italic; justify-content: center; font-size: 11px; }
+.row-label { color: #666; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 600; }
+.title-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.title-text { color: #d4d4d4; font-size: 12px; line-height: 1.4; }
+.bullets-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; min-height: 120px; }
+.bullets { list-style: none; padding: 0; margin: 0; }
+.bullets li { color: #b8b8b8; font-size: 11px; padding: 4px 0 4px 12px; position: relative; line-height: 1.4; }
+.bullets li::before { content: "-"; position: absolute; left: 0; color: #5BC5C8; }
+.bullets li.empty { color: #555; font-style: italic; }
+.sec-img-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.sec-img-box img { width: 100%; height: 180px; object-fit: contain; background: #fff; border-radius: 6px; padding: 6px; }
+.usp-strat { padding-top: 4px; }
+.usp-text { color: #d4d4d4; font-size: 11px; line-height: 1.5; }
+.tag-green { color: #4ade80; }
+.tag-warn { color: #e0a800; }
+.amazon-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding: 10px 14px; background: linear-gradient(180deg, #FFD257 0%, #F9B82E 100%); color: #111; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid #E69A1A; transition: all 0.15s ease; letter-spacing: 0.2px; }
+.amazon-btn:hover { background: linear-gradient(180deg, #FFDB6E 0%, #FFC043 100%); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(255,184,46,0.3); }
+.amazon-btn svg { flex-shrink: 0; }
+.proposal { margin-top: 40px; padding: 24px; background: #15242a; border: 2px solid #5BC5C8; border-radius: 12px; }
+.proposal h2 { color: #5BC5C8; margin: 0 0 16px 0; font-size: 22px; }
+.proposal-intro { color: #d4d4d4; margin-bottom: 20px; }
+.subsection { color: #5BC5C8; font-size: 16px; font-weight: 600; margin: 24px 0 8px 0; padding-top: 12px; }
+.subsection:first-of-type { margin-top: 4px; padding-top: 0; }
+.subsection-intro { color: #b8b8b8; font-size: 12px; margin-bottom: 14px; font-style: italic; }
+.mockup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.mockup-card { background: #1a2128; border-radius: 8px; padding: 12px; }
+.mockup-label { color: #5BC5C8; font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+.mockup-card img { width: 100%; border-radius: 6px; margin-bottom: 10px; cursor: zoom-in; }
+.mockup-desc { color: #b8b8b8; font-size: 12px; }
+.new-title-box { margin-top: 24px; padding: 16px; background: #1a2128; border-radius: 8px; }
+.new-title-box h3 { color: #5BC5C8; margin: 0 0 12px 0; font-size: 14px; }
+.compare-row { display: grid; grid-template-columns: 100px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2a3138; align-items: flex-start; }
+.compare-row:last-child { border-bottom: none; }
+.compare-row .rlabel { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding-top: 3px; }
+.compare-row .val { color: #d4d4d4; font-size: 12px; line-height: 1.5; }
+.compare-row .old { color: #e0a800; }
+.compare-row .new { color: #4ade80; font-weight: 500; }
+.footer { margin-top: 40px; padding: 20px; text-align: center; color: #666; font-size: 11px; border-top: 1px solid #2a3138; }
+.main-img img, .sec-img-box img, .mockup-card img { cursor: zoom-in; transition: transform 0.15s ease; }
+.main-img img:hover, .sec-img-box img:hover, .mockup-card img:hover { transform: scale(1.02); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; backdrop-filter: blur(4px); }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 60px rgba(0,0,0,0.6); background: #fff; }
+.lightbox-close { position: absolute; top: 24px; right: 24px; background: #1a2128; color: #fff; border: 1px solid #3a3f45; width: 44px; height: 44px; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.lightbox-close:hover { background: #2a3138; }
+.lightbox-caption { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #d4d4d4; background: rgba(26,33,40,0.9); padding: 10px 20px; border-radius: 6px; font-size: 13px; max-width: 80vw; text-align: center; }
+.dl-btn { position: fixed; top: 24px; right: 24px; z-index: 100; display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: linear-gradient(135deg, #5BC5C8 0%, #4aa8ab 100%); color: #0f1419; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid #5BC5C8; box-shadow: 0 4px 16px rgba(91,197,200,0.35); transition: all 0.2s ease; letter-spacing: 0.3px; }
+.dl-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(91,197,200,0.5); background: linear-gradient(135deg, #6ad3d6 0%, #56c2c5 100%); }
+.dl-btn svg { flex-shrink: 0; }
+.dl-btn .dl-count { background: rgba(15,20,25,0.25); padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+@media (max-width: 1800px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 1000px) { .grid { grid-template-columns: 1fr 1fr; } .mockup-grid { grid-template-columns: 1fr; } }
+</style>
+</head><body>
+
+<a class="dl-btn" href="B0813ZJNSW_mockups.zip" download title="Alle Vorschlagsbilder als ZIP herunterladen">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>
+  <span>Vorschlagsbilder</span>
+  <span class="dl-count">6&nbsp;Bilder &middot; ZIP</span>
+</a>
+
+<div class="container">
+  <h1>Listing Deep Dive -- Vitayes vs Top 5 Competitors</h1>
+  <div class="subtitle">Keyword: "vitamin c serum" &middot; DE &middot; 2026-08-25</div>
+  <div class="legend">
+    <strong>Wie zu lesen:</strong> KLIENT-Spalte links (blau umrandet). Daneben die 5 staerksten Page-1-Competitors. Vergleiche Main-Image, Rating/Reviews, EUR/ML, Titel, Bullets und die beste Secondary (USP-Slot). USP-Strategie-Zeile fasst zusammen was jedes Listing als Haupt-Verkaufsargument inszeniert.
+  </div>
+
+  <div class="grid">
+    
+    <div class="col client">
+      <div class="badge-client">KLIENT</div>
+      <div class="header">
+        <div class="brand">Vitayes</div>
+        <div class="label">vitayes</div>
+      </div>
+      <div class="main-img"><img src="images/vitayes_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">22.90 EUR</span></div>
+        <div><span class="m-label">30 ml</span> <span class="m-val">30</span></div>
+        <div class="highlight"><span class="m-label">EUR/ML</span> <span class="m-val">0.7633</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.4</span>
+          <span class="review-count">&middot; 493 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Vitayes Perfector 10% Vitamin C Serum mit Hyaluronsäure - Hochdosiertes Anti-Aging Serum für Gesicht - Gegen Pigmentflecken, Falten & Hautunreinheiten - Vegan, 30 ml">Vitayes Perfector 10% Vitamin C Serum mit Hyaluronsäure - Hochdosiertes Anti-Aging Serum für Gesicht - Gegen Pigmentflec...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>Strahlende & verjüngte Haut: Das Vitayes Perfector Vitamin C Serum mit hochdosiertem Vitamin C und Hyaluronsäure reduziert feine Linien, Falten und Pigmentflecken – für ein ebenmäßiges, strahlendes Ha...</li><li>Hochwirksame Anti-Aging Formel: Vitamin C regt die Kollagenproduktion an und stärkt die Hautstruktur, während Hyaluronsäure Feuchtigkeit spendet und den Teint sichtbar glättet</li><li>Gegen Pigmentflecken & Hautunreinheiten: Das Antioxidans-Serum wirkt aufhellend und reduziert Hyperpigmentierung, Sonnenflecken und Hautunreinheiten – ideal auch nach UV-Belastung oder Stress</li><li>Leichte Textur für alle Hauttypen: Das Serum zieht schnell ein und eignet sich für Gesicht, Hals und Dekolleté. Sanft zur Haut, ohne Alkohol, Parabene, Farbstoffe oder Silikone – perfekt für tägliche ...</li><li>Verschönere deinen Alltag mit Vitayes: Unsere veganen, tierversuchsfrei hergestellten Produkte kombinieren Natur und moderne Technologie, um deiner Haut die besten Ergebnisse zu bieten – entwickelt un...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/vitayes_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Trust-/Herkunfts-Play (Made in Germany, dermatest, Original-Claim) mit generischem Glow-Benefit - ohne quantifizierte Beweise, Wirkstoff-System-Story und Anwendungskontext.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0813ZJNSW" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Soena</div>
+        <div class="label">comp1</div>
+      </div>
+      <div class="main-img"><img src="images/comp1_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">17.99 EUR</span></div>
+        <div><span class="m-label">30 ml</span> <span class="m-val">50</span></div>
+        <div class="highlight"><span class="m-label">EUR/ML</span> <span class="m-val">0.3598</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;<span class="star-empty"></span></span>
+          <span class="rating-val">4.7</span>
+          <span class="review-count">&middot; 3.050 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Bio-Vitamin C Serum Hochdosiert • Die 3 besten Vitamin-C-Formen + 4 Power Wirkstoffe: Hyaluronsäure, Betaine, Allantoin Panthenol • Serum Gesicht 100% natürlich, Vegan">Bio-Vitamin C Serum Hochdosiert • Die 3 besten Vitamin-C-Formen + 4 Power Wirkstoffe: Hyaluronsäure, Betaine, Allantoin ...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>Mit 3 hochwirksamen Vitamin C Formen: 1. [ 3-O-Ethyl Ascorbic Acid ] Fördert die Kollagenbildung, hellt Pigmentflecken auf & sorgt für ein ebenmäßiges Hautbild. 2. [ Sodium Ascorbyl Phosphate ] Stärkt...</li><li>FREI VON UNNÖTIGEN INHALTSSTOFFEN - Wir von Soena Naturals verzichten bewusst auf unnötige und bedenkliche Inhaltsstoffe. Deshalb aus Überzeugung: OHNE DUFTSTOFFE, OHNE ALKOHOL, OHNE PEGs, OHNE PAREBE...</li><li>BIO - VEGAN - OHNE TIERVERSUCHE -Wir haben es uns zur Herzensangelegenheit gemacht, 100% transparente, nachhaltige und tierversuchsfreie Naturprodukte zu kreieren. Das Serum ist kombinierbar mit Ihrer...</li><li>NACHHALTIGKEIT - Wir verwenden RECYCELBARE GLASFLASCHEN | NACHHALTIGE VERPACKUNGSMATERIALIEN (FSC Zertifiziert) | VERMEIDEN BEIPACKZETTEL | Schützen die Inhaltsstoffe durch LICHTGESCHÜTZTES BRAUNGLAS</li><li>100% SOENA NATURALS ZUFRIEDENHEITSVERSPRECHEN – Bei Unzufriedenheit erhalten Sie Ihren vollen Kaufpreis erstattet.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp1_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Natural-Science-Story: 3 natuerliche Vitamin-C-Formen + Wirkstoffe-statt-Fuellstoffe; jeder Slot argumentiert Formel-Ueberlegenheit im Kraft-Naturlook.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0FNRT8LDS" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">ARENCIA</div>
+        <div class="label">comp2</div>
+      </div>
+      <div class="main-img"><img src="images/comp2_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">14.44 EUR</span></div>
+        <div><span class="m-label">30 ml</span> <span class="m-val">29.9</span></div>
+        <div class="highlight"><span class="m-label">EUR/ML</span> <span class="m-val">0.4829</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.2</span>
+          <span class="review-count">&middot; 2.968 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Arencia Vitamin C Booster Shot Serum mit Glutathion, Niacinamid und Vitamin E für strahlende Haut, 29,9 ml">Arencia Vitamin C Booster Shot Serum mit Glutathion, Niacinamid und Vitamin E für strahlende Haut, 29,9 ml</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>【Pure & Stable Vitamin C Complex】 Hilft sichtbar die Hautstruktur zu verfeinern und einen gesund aussehenden Ton zu unterstützen.</li><li>Verbessert das Aussehen von Mattheit: revitalisiert müde aussehende Haut für ein erfrischtes Aussehen.</li><li>NIACINAMID SUPPORT - Hilft, Geschmeidigkeit und Komfort zu erhalten und gleichzeitig die natürliche Barriere der Haut zu unterstützen.</li><li>Antioxidantien-Pflege: Glutathion und Vitamin E tragen dazu bei, die Haut vor alltäglichen Umweltbelastungen zu schützen.</li><li>Leichte Hydratation: Zieht schnell ein, ohne Klebrigkeit – ideal für Schichten unter Feuchtigkeitscreme oder Sonnencreme.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp2_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">K-Beauty Clinical Minimalism: monochrome Lime-Aesthetik, 0.00-Irritation, Hautschichten-Mechanismus, Studie mit Prozentzahlen.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0FX418XT8" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Geek & Gorgeous</div>
+        <div class="label">comp3</div>
+      </div>
+      <div class="main-img"><img src="images/comp3_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">22.56 EUR</span></div>
+        <div><span class="m-label">30 ml</span> <span class="m-val">30</span></div>
+        <div class="highlight"><span class="m-label">EUR/ML</span> <span class="m-val">0.7520</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.4</span>
+          <span class="review-count">&middot; 2.973 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Geek & Gorgeous - C-Glow - 15% Vitamin C + Ferulic acid & Vitamin E Serum, protects against environmental damage, boosts collagen & evens skin tone - all skin types, Duo Pack 30ml x 2">Geek & Gorgeous - C-Glow - 15% Vitamin C + Ferulic acid & Vitamin E Serum, protects against environmental damage, boosts...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>15% PURE VITAMIN C (ASCORBIC ACID): A lightweight serum that provides antioxidant protection against environmental damage, boosts collagen production, and evens out the skin tone.</li><li>ENHANCED ANTIOXIDANT FORMULA: Enriched with ferulic acid and vitamin E to provide additional antioxidant benefits and promote an even skin tone.</li><li>LIGHT, WATER-LIKE TEXTURE: Suitable for all skin types, except highly sensitive or redness-prone skin, due to its low pH (~3-3.4) and high concentration of pure acids.</li><li>CLINICALLY PROVEN EFFECTIVENESS: Supports healthy, firm, and glowing skin with visible improvements in texture and tone.</li><li>FREE FROM HARMFUL ADDITIVES: Cruelty-free, vegan, fragrance- & essential oil free, gluten-free, malassezia-safe, pregnancy-safe.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp3_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Radikale Transparenz: 15% + pH auf der Box, INCI/Directions als Bilder - informativ, visuell schwaechstes Listing.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0FBS9W7Z2" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Garnier</div>
+        <div class="label">comp4</div>
+      </div>
+      <div class="main-img"><img src="images/comp4_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">11.75 EUR</span></div>
+        <div><span class="m-label">30 ml</span> <span class="m-val">30</span></div>
+        <div class="highlight"><span class="m-label">EUR/ML</span> <span class="m-val">0.3917</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.2</span>
+          <span class="review-count">&middot; 25.360 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Garnier Vitamin C Serum gegen Pigmentflecken, Gesichtsserum mit 4 Prozent Vitamin C, Niacinamid, Salicylsäure und Melasyl, strahlender Glow Booster, Hautpflege für alle Hauttypen, 1 x 30 ml">Garnier Vitamin C Serum gegen Pigmentflecken, Gesichtsserum mit 4 Prozent Vitamin C, Niacinamid, Salicylsäure und Melasy...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>GLOW BOOSTER FÜR DIE HAUT: Das Vitamin C+ Glow Booster Serum sorgt zuverlässig für einen sichtbar ebenmäßigeren Teint und bringt die Haut wieder wunderschön zum Strahlen, für ein vitales Aussehen.</li><li>SERUM MIT SYNERGIEEFFEKTEN: Der hochwirksame Wirkstoffkomplex mit 4 Prozent Niacinamid, Vitamin C, Salicylsäure und Melasyl schützt die Gesichtshaut intensiv und pflegt sie absolut nachhaltig.</li><li>ANTIOXIDATIVE PFLEGEKRAFT: Die starke antioxidative Wirkung von Vitamin C schützt die Haut zuverlässig vor schädlichen Umwelteinflüssen und regt gleichzeitig spürbar die hauteigene Kollagenproduktion ...</li><li>DUNKLE FLECKEN WERDEN GEMILDERT: Der Inhaltsstoff Melasyl fängt nachweislich überschüssiges Melanin ab und verbessert das Erscheinungsbild vorhandener Pigmentflecken deutlich sichtbar und langanhalten...</li><li>LIEFERUMFANG: 1 x Garnier SkinActive Vitamin C Brightening Serum gegen Pigmentflecken, Inhalt: 30 ml. Das hochwirksame Gesichtsserum pflegt die Haut nachhaltig und sorgt für mehr Ausstrahlung.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp4_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Mass-Brand Speed-Proof: Ergebnisse in 3/6 Tagen, klare Formel-Prozente, Anwendungs- und Texture-Shots in konsequentem Gelb.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B09BD7L35V" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">COSRX</div>
+        <div class="label">comp5</div>
+      </div>
+      <div class="main-img"><img src="images/comp5_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">18.99 EUR</span></div>
+        <div><span class="m-label">30 ml</span> <span class="m-val">20</span></div>
+        <div class="highlight"><span class="m-label">EUR/ML</span> <span class="m-val">0.9495</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.4</span>
+          <span class="review-count">&middot; 779 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="COSRX Advanced Pure Vitamin C 23% Serum für einen strahlenden Teint, 20ml">COSRX Advanced Pure Vitamin C 23% Serum für einen strahlenden Teint, 20ml</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>[Einzigartiger Duft? Nicht mehr vorhanden] Mit einer verbesserten, fortschrittlichen Formel für die tägliche Anwendung – jetzt ohne den einzigartigen Duft, bei gleichbleibender ursprünglicher Konzentr...</li><li>[Leichtes, nicht klebriges Vitamin-C-Booster-Serum] Bekämpft erste Anzeichen der Hautalterung und verleiht der Haut mehr Ausstrahlung – mit einem feuchtigkeitsspendenden Finish.</li><li>[Antioxidative Synergie] Ein antioxidatives Netzwerk hilft dabei, freie Radikale zu neutralisieren – gemeinsam mit Vitamin C! Reines Vitamin C + Super Vitamin E + Glutathion</li><li>[Dermatologisch wirksame Inhaltsstoffe] Reines Vitamin C (Ascorbinsäure) unterstützt eine jugendlich strahlende Haut. Super Vitamin E (Tocotrienol) hilft, Anzeichen der Hautalterung zu bekämpfen und v...</li><li>[Anwendung] Vor der Anwendung 1–2 Mal schütteln und 2–3 Tropfen ein- bis zweimal täglich auftragen. Für die Anwendung am Tag anschließend Sonnenschutz mit LSF 30+ verwenden. Kann auch unter den Augen ...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/comp5_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Potenz-Leadership: 23% als Hero-Zahl in jedem Slot, klinische Prozent-Beweise, Antioxidantien-Synergie in Gold/Schwarz-Premium.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0FWQGLTQV" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+  </div>
+
+  
+  <div class="proposal">
+    
+<h2 style="color:#5BC5C8; font-size:14px; letter-spacing:2.5px; text-transform:uppercase; margin:40px 0 14px;">Review-Insights: 78 Rezensionen ausgewertet (alle 24 kritischen gelesen)</h2>
+<div style="background:#1a2332; border:1px solid rgba(91,197,200,0.35); border-radius:6px; padding:18px 22px; margin-bottom:18px;">
+  <div style="overflow-x:auto;">
+  <table style="width:100%; border-collapse:collapse; font-size:13px; color:#e8eaed;">
+    <tr style="color:#8a939e; text-transform:uppercase; font-size:11px; letter-spacing:1px; text-align:left;">
+      <th style="padding:8px 10px; border-bottom:1px solid rgba(91,197,200,0.2);">Thema (1&ndash;3&#9733;)</th>
+      <th style="padding:8px 10px; border-bottom:1px solid rgba(91,197,200,0.2);">Nennungen</th>
+      <th style="padding:8px 10px; border-bottom:1px solid rgba(91,197,200,0.2);">O-Ton</th>
+      <th style="padding:8px 10px; border-bottom:1px solid rgba(91,197,200,0.2);">Listing-Aktion</th>
+    </tr>
+    <tr><td style="padding:8px 10px; font-weight:700;">Klebrigkeit / Konsistenz</td><td style="padding:8px 10px;">~9 (auch in 4&#9733;)</td><td style="padding:8px 10px; color:#8a939e;">&bdquo;fühlt sich 2&ndash;3 Stunden klebrig an&ldquo;</td><td style="padding:8px 10px;">Anwendungs-Slot: &bdquo;3 Tropfen genügen&ldquo; &mdash; Überdosierung ist die Klebrig-Ursache</td></tr>
+    <tr><td style="padding:8px 10px; font-weight:700;">Keine Wirkung auf Pigmentflecken</td><td style="padding:8px 10px;">~7</td><td style="padding:8px 10px; color:#8a939e;">&bdquo;braune Flecken sehen genauso aus&ldquo;</td><td style="padding:8px 10px;">Erwartungsmanagement: &bdquo;sichtbare Ergebnisse nach 4&ndash;8 Wochen&ldquo; + dermatest-Messwerte als Beweis</td></tr>
+    <tr><td style="padding:8px 10px; font-weight:700;">Unverträglichkeit / Allergie</td><td style="padding:8px 10px;">~5</td><td style="padding:8px 10px; color:#8a939e;">&bdquo;Gesicht schwillt an, juckt&ldquo;</td><td style="padding:8px 10px;">INCI-Transparenz-Slide + Patch-Test-Hinweis + &bdquo;auch für empfindliche Haut&ldquo; (VoC aus 4&#9733;)</td></tr>
+    <tr><td style="padding:8px 10px; font-weight:700;">Preis-Leistung</td><td style="padding:8px 10px;">3</td><td style="padding:8px 10px; color:#8a939e;">&bdquo;günstigere, effektivere Alternativen&ldquo;</td><td style="padding:8px 10px;">Ergiebigkeits-Framing: 30&nbsp;ml &#8776; 2&ndash;3 Monate &#8594; ~0,25&nbsp;&euro;/Tag (kontert Soena 0,36&nbsp;&euro;/ml)</td></tr>
+    <tr><td style="padding:8px 10px; font-weight:700;">Geruch / Parfüm</td><td style="padding:8px 10px;">3 (polarisiert)</td><td style="padding:8px 10px; color:#8a939e;">&bdquo;stark parfümiert&ldquo; vs. &bdquo;toller Duft&ldquo; (5&#9733;)</td><td style="padding:8px 10px;">Langfrist-Thema: parfümfreie Rezeptur prüfen (Soena wirbt mit &bdquo;Unscented&ldquo;)</td></tr>
+    <tr><td style="padding:8px 10px; font-weight:700;">QC: leere Flasche / Glaspipette gebrochen</td><td style="padding:8px 10px;">3</td><td style="padding:8px 10px; color:#8a939e;">&bdquo;Flasche komplett leer&ldquo;</td><td style="padding:8px 10px;">Kein Listing-Thema &mdash; Fulfillment/QC-Check (Ops-Hinweis an Vitayes)</td></tr>
+  </table>
+  </div>
+  <div style="margin-top:14px; font-size:13px; color:#e8eaed; line-height:1.6;">
+    <strong style="color:#5BC5C8;">Voice of Customer aus 54 positiven Reviews (für Bullets/Bild-Headlines nutzen):</strong>
+    &bdquo;zieht schnell ein&ldquo; (häufigstes Lob) &middot; &bdquo;weiche, geschmeidige Haut&ldquo; &middot; &bdquo;sehr ergiebig &mdash; wenige Tropfen reichen&ldquo; &middot; &bdquo;auch für empfindliche Haut&ldquo; &middot; &bdquo;pigmentierte Haut nach Monaten deutlich heller&ldquo; &middot; starke Repeat-Purchase-Signale (&bdquo;kaufe seit Jahren nach&ldquo;).
+    <br/><span style="color:#8a939e;">Quelle: Amazon.de Rezensionen B0813ZJNSW, Auswertung 25.08.2026 (78 zugängliche Reviews: 7&times;1&#9733;, 8&times;2&#9733;, 9&times;3&#9733;, 24&times;4&#9733;, 30&times;5&#9733;). Themen-Zählung inkl. Mehrfachnennungen in 4&#9733;-Reviews.</span>
+  </div>
+</div>
+<h2>Vorschlag: Listing-Bildstrategie fuer Vitayes</h2>
+    <div class="proposal-intro">Basierend auf der Competitor-Analyse: hier sind vorgeschlagene Listing-Verbesserungen, die exakt dem Pattern der Top-Seller folgen und Amazon-Guidelines respektieren.</div>
+
+    
+    <h3 class="subsection">Main Image Varianten (Image-to-Image, Amazon-compliant)</h3>
+    <div class="subsection-intro">
+      Dezenter Tag/Siegel am Produkt + Kapseln unten rechts -- exakt das Pattern das Top-Seller auf Page 1 nutzen. Hauptprodukt-Design bleibt unveraendert. 3 USP-Varianten zum A/B Testen.
+    </div>
+    <div class="mockup-grid">
+      
+      <div class="mockup-card">
+        <div class="mockup-label">Main 1 -- "V1"</div>
+        <img src="images/main_v1.jpg"/>
+        <div class="mockup-desc">Dezenter Tag am Produkt + Kapseln unten rechts. Amazon-kompliant.</div>
+      </div>
+      
+      <div class="mockup-card">
+        <div class="mockup-label">Main 2 -- "V2"</div>
+        <img src="images/main_v2.jpg"/>
+        <div class="mockup-desc">Dezenter Tag am Produkt + Kapseln unten rechts. Amazon-kompliant.</div>
+      </div>
+      
+      <div class="mockup-card">
+        <div class="mockup-label">Main 3 -- "V3"</div>
+        <img src="images/main_v3.jpg"/>
+        <div class="mockup-desc">Dezenter Tag am Produkt + Kapseln unten rechts. Amazon-kompliant.</div>
+      </div>
+      
+    </div>
+    
+
+    
+    <h3 class="subsection">Secondary-Image Mockups</h3>
+    <div class="mockup-grid">
+      
+      <div class="mockup-card">
+        <div class="mockup-label">slot4</div>
+        <img src="images/mockup_slot4.jpg"/>
+        <div class="mockup-desc"></div>
+      </div>
+      
+      <div class="mockup-card">
+        <div class="mockup-label">slot6</div>
+        <img src="images/mockup_slot6.jpg"/>
+        <div class="mockup-desc"></div>
+      </div>
+      
+      <div class="mockup-card">
+        <div class="mockup-label">slot7</div>
+        <img src="images/mockup_slot7.jpg"/>
+        <div class="mockup-desc"></div>
+      </div>
+      
+    </div>
+    
+
+    
+    <div class="new-title-box">
+      <h3>Title- &amp; Bullets-Empfehlung</h3>
+      
+      <div class="compare-row">
+        <div class="rlabel">Title alt</div>
+        <div class="val old">-</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Title neu</div>
+        <div class="val new">Vitayes Perfector Vitamin C Serum Hochdosiert 10% mit Hyaluronsäure – Dermatest Sehr Gut, Vegan, Made in Germany – gegen Pigmentflecken, Falten & fahle Haut – 30 ml</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Bullet 1</div>
+        <div class="val new">**10% STABILISIERTES VITAMIN C + HYALURONSAEURE** — Die Kombination mildert das Erscheinungsbild von Pigmentflecken und feinen Linien und spendet intensive Feuchtigkeit fuer einen sichtbar frischen Glow.</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Bullet 2</div>
+        <div class="val new">**KLINISCH GETESTET – DERMATEST "SEHR GUT"** — Dermatologisch geprueft und mit Sehr gut bewertet; sanfte Rezeptur fuer die taegliche Anwendung morgens vor Ihrer Pflegecreme.</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Bullet 3</div>
+        <div class="val new">**MADE IN GERMANY, VEGAN & TIERVERSUCHSFREI** — Originalrezeptur, hergestellt in Deutschland nach GMP-Standard – ohne Tierversuche, fuer alle Hauttypen geeignet.</div>
+      </div>
+      
+    </div>
+    
+  </div>
+  
+
+  <div class="footer">ADLEVATE &middot; Listing Deep Dive &middot; 2026-08-25 &middot; benjamin@adlevate.de</div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <img id="lightboxImg" alt=""/>
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script>
+(function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbCap = document.getElementById('lightboxCaption');
+  const lbClose = document.getElementById('lightboxClose');
+  const sels = ['.main-img img', '.sec-img-box img', '.mockup-card img'];
+  document.querySelectorAll(sels.join(', ')).forEach(img => {
+    img.addEventListener('click', e => {
+      e.stopPropagation();
+      lbImg.src = img.src;
+      const col = img.closest('.col');
+      const brand = col ? col.querySelector('.brand').innerText : '';
+      const labelEl = col ? col.querySelector('.label') : null;
+      const label = labelEl ? labelEl.innerText : '';
+      const slotType = img.closest('.main-img') ? 'Main Image' :
+                       img.closest('.sec-img-box') ? 'Best Secondary (USP-Slot)' :
+                       img.closest('.mockup-card') ? (img.closest('.mockup-card').querySelector('.mockup-label').innerText) :
+                       '';
+      lbCap.innerText = brand ? `${brand} - ${label} - ${slotType}` : slotType;
+      lb.classList.add('active');
+    });
+  });
+  function close() { lb.classList.remove('active'); lbImg.src = ''; }
+  lb.addEventListener('click', close);
+  lbClose.addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
+</script>
+</body></html>
