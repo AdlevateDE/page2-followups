@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Sichtbarkeits-Audit  / B09LVCGHJX</title>
+<style>
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0f1419;
+  --bg-card:    #1a2332;
+  --bg-card-2:  #111823;
+  --border:     rgba(91,197,200,0.12);
+  --border-strong: rgba(91,197,200,0.35);
+  --teal:       #5BC5C8;
+  --teal-glow:  rgba(91,197,200,0.25);
+  --green:      #78e0a5;
+  --amber:      #e0c97a;
+  --red:        #e08a5a;
+  --text:       #e8eaed;
+  --text-muted: #8a939e;
+  --text-dim:   #5a6470;
+}
+
+body {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 10pt;
+  line-height: 1.5;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 16mm 18mm 14mm;
+  background: var(--bg);
+  page-break-after: always;
+}
+.page:last-child { page-break-after: auto; }
+
+/* ===== HEADER ===== */
+.brandbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.brandmark {
+  font-size: 11pt;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--teal);
+}
+.brandmark .dot { color: var(--text); font-weight: 300; }
+.date {
+  font-size: 8pt;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.accent-line {
+  width: 60px;
+  height: 3px;
+  background: var(--teal);
+  margin-bottom: 14px;
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding: 22px 0 14px;
+  margin-bottom: 22px;
+}
+.hero-label {
+  color: var(--teal);
+  font-size: 8pt;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.hero-number {
+  font-size: 38pt;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+.hero-number .unit {
+  font-size: 18pt;
+  color: var(--teal);
+  font-weight: 600;
+  margin-left: 4px;
+}
+.hero-sub {
+  color: var(--text-muted);
+  font-size: 10pt;
+  max-width: 85%;
+}
+.hero-sub strong { color: var(--text); font-weight: 600; }
+
+/* ===== META ROW ===== */
+.meta-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.meta-row .cell {
+  background: var(--bg-card-2);
+  padding: 10px 14px;
+}
+.meta-row .label {
+  color: var(--text-muted);
+  font-size: 7pt;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 3px;
+}
+.meta-row .value {
+  color: #ffffff;
+  font-size: 10pt;
+  font-weight: 600;
+}
+
+/* ===== SCENARIO ALERT ===== */
+.scenario {
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-2) 100%);
+  border-left: 3px solid ;
+  padding: 14px 18px;
+  border-radius: 3px;
+  margin-bottom: 26px;
+}
+.scenario .headline {
+  font-size: 14pt;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+  letter-spacing: -0.2px;
+}
+.scenario .sub { color: var(--text-muted); font-size: 9.5pt; }
+
+/* ===== SECTION HEADING ===== */
+h2.section {
+  color: var(--teal);
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  padding-top: 4px;
+}
+
+/* ===== KPI GRID (SNAPSHOT) ===== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.kpi {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  position: relative;
+}
+.kpi .k-label {
+  font-size: 7pt;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+.kpi .k-value {
+  font-size: 16pt;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+}
+.kpi .k-value .u { font-size: 10pt; color: var(--text-muted); font-weight: 500; margin-left: 2px; }
+.kpi .k-sub {
+  font-size: 7.5pt;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.kpi .k-sub.ok { color: var(--green); }
+.kpi .k-sub.warn { color: var(--amber); }
+.kpi .k-sub.bad { color: var(--red); }
+
+/* ===== LEVERS ===== */
+.levers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+.lever {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--teal);
+  border-radius: 3px;
+  padding: 14px 14px 12px;
+}
+.lever .num {
+  font-size: 7pt;
+  font-weight: 700;
+  color: var(--teal);
+  letter-spacing: 1.5px;
+  margin-bottom: 4px;
+}
+.lever .title {
+  font-size: 11pt;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+.lever .desc {
+  font-size: 8.5pt;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+.lever .desc strong { color: var(--text); }
+
+/* ===== ATTACHMENT CARDS ===== */
+.attachments {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.attach {
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.15s;
+}
+.attach:hover { border-color: var(--teal); background: var(--bg-card-2); }
+.attach .icon {
+  font-size: 20pt;
+  color: var(--teal);
+  flex-shrink: 0;
+  line-height: 1;
+}
+.attach .title {
+  font-size: 10pt;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 3px;
+}
+.attach .sub {
+  font-size: 8pt;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+.attach .link-arrow {
+  font-size: 8pt;
+  color: var(--teal);
+  margin-top: 6px;
+  display: block;
+  font-weight: 600;
+}
+
+/* ===== BOTTOM BLOCK ===== */
+.bottom {
+  background: linear-gradient(135deg, rgba(91,197,200,0.08) 0%, rgba(91,197,200,0.02) 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  padding: 16px 18px 14px;
+  margin-bottom: 14px;
+}
+.bottom .hook {
+  color: #ffffff;
+  font-size: 11pt;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.bottom .body {
+  font-size: 9pt;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  line-height: 1.55;
+}
+.bottom .body strong { color: var(--teal); }
+.cta {
+  display: inline-block;
+  background: var(--teal);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 9.5pt;
+  padding: 8px 16px;
+  border-radius: 3px;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+}
+.fallback {
+  font-size: 8pt;
+  color: var(--text-dim);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+.fallback a { color: var(--teal); text-decoration: none; }
+
+/* ===== FOOTER ===== */
+.footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  font-size: 7pt;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+}
+
+.kwtable { width:100%; border-collapse:collapse; margin:14px 0 6px; font-size:12.5px; }
+.kwtable th { text-align:left; padding:8px 10px; color:var(--text-dim); font-weight:600;
+  font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; border-bottom:1px solid var(--border-strong); }
+.kwtable td { padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text); }
+.kwtable .c { text-align:center; }
+.kwtable tr.win td { background:rgba(120,224,165,0.07); }
+.kwtable tr.win td strong { color:var(--green); }
+.kwtable tr.lose td strong { color:var(--red); }
+.kwtable tr.thin td { color:var(--text-muted); }
+.tnote { font-size:11px; line-height:1.65; color:var(--text-muted); padding:10px 12px;
+  background:var(--bg-card-2); border-left:2px solid var(--border-strong); border-radius:3px; margin-bottom:6px; }
+.assumptions { font-size:11px; line-height:1.7; color:var(--text-muted); padding:12px 14px;
+  background:var(--bg-card-2); border:1px dashed var(--border-strong); border-radius:4px; margin:18px 0; }
+.assumptions strong { color:var(--text); }
+.lever .hint { display:block; margin-top:10px; padding:8px 10px; background:rgba(91,197,200,0.06);
+  border-left:2px solid var(--teal); border-radius:3px; font-size:11.5px; color:var(--text-muted); }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="brandbar">
+    <div class="brandmark">ADLEVATE<span class="dot"> &middot; </span>SICHTBARKEITS-AUDIT</div>
+    <div class="date">23.09.2026</div>
+  </div>
+
+  <div class="accent-line"></div>
+
+  <div class="hero">
+    <div class="hero-label">LIVE GEMESSEN AM 23.09.2026 &middot; ORGANISCHE SERP, AMAZON.DE</div>
+    <div class="hero-number">77<span class="unit" style="margin:0 14px">&rarr;</span>10</div>
+    <div class="hero-sub">
+      Dieselbe ASIN. Dasselbe Keyword. <strong>Ein Wort Unterschied.</strong><br/>
+      &bdquo;kinderwunsch vitamine&ldquo; &rarr; Platz&nbsp;77. &nbsp; &bdquo;kinderwunsch vitamine <strong>mann</strong>&ldquo; &rarr; Platz&nbsp;10.
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="cell"><div class="label">ANSPRECHPARTNER</div><div class="value">Johann</div></div>
+    <div class="cell"><div class="label">ASIN</div><div class="value">B09LVCGHJX</div></div>
+    <div class="cell"><div class="label">GEPR&Uuml;FTE KEYWORDS</div><div class="value">12</div></div>
+    <div class="cell"><div class="label">MARKTPLATZ</div><div class="value">amazon.de</div></div>
+  </div>
+
+  <div class="scenario">
+    <div class="headline">Euer Ranking ist nicht das Problem.</div>
+    <div class="sub">Auf allen vier M&auml;nner-Keywords mit echtem Marktvolumen steht ihr auf Seite&nbsp;1. Ihr werdet gesehen.</div>
+  </div>
+
+  <h2 class="section">Was wir gemessen haben</h2>
+  <table class="kwtable">
+    <thead>
+      <tr><th>Keyword</th><th class="c">Eure Position</th><th class="c">Marktbreite</th><th class="c">Gro&szlig;marken in Top&nbsp;10</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr class="win">
+        <td>kinderwunsch vitamine mann</td>
+        <td class="c"><strong>Platz 10</strong></td>
+        <td class="c">breit (94)</td>
+        <td class="c">6 / 10</td>
+      </tr>
+      
+      <tr class="win">
+        <td>kinderwunsch mann</td>
+        <td class="c"><strong>Platz 9</strong></td>
+        <td class="c">mittel (86)</td>
+        <td class="c">5 / 10</td>
+      </tr>
+      
+      <tr class="win">
+        <td>fruchtbarkeit mann</td>
+        <td class="c"><strong>Platz 12</strong></td>
+        <td class="c">breit (93)</td>
+        <td class="c">6 / 10</td>
+      </tr>
+      
+      <tr class="win">
+        <td>kinderwunsch nahrungsergänzung mann</td>
+        <td class="c"><strong>Platz 9</strong></td>
+        <td class="c">mittel (59)</td>
+        <td class="c">5 / 10</td>
+      </tr>
+      
+      <tr class="thin">
+        <td>spermienbildung</td>
+        <td class="c"><strong>Platz 1</strong></td>
+        <td class="c">dünn (34)</td>
+        <td class="c">2 / 10</td>
+      </tr>
+      
+      <tr class="thin">
+        <td>babyplanung mann</td>
+        <td class="c"><strong>Platz 19</strong></td>
+        <td class="c">dünn (21)</td>
+        <td class="c">4 / 10</td>
+      </tr>
+      
+      <tr class="lose">
+        <td>kinderwunsch vitamine  (Frauen-Suche)</td>
+        <td class="c"><strong>Platz 77</strong></td>
+        <td class="c">breit (93)</td>
+        <td class="c">7 / 10</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <div class="tnote">
+    &bdquo;Marktbreite&ldquo; = Anzahl eigenst&auml;ndiger organischer Treffer, die Amazon zu dem Begriff &uuml;berhaupt ausspielt.
+    Ein Begriff mit 34&nbsp;Treffern ist ein leeres Regal &mdash; ein Platz&nbsp;1 dort bringt keinen Umsatz.
+    Ein Begriff mit 94&nbsp;Treffern, auf dem tetesept, Bayer und Orthomol stehen, ist ein echter Markt.
+    <strong>Das Suchvolumen selbst k&ouml;nnen wir ohne euren Brand-Analytics-Zugang nicht messen &mdash; wir sch&auml;tzen es auch nicht.</strong>
+  </div>
+
+  <h2 class="section">Listing &amp; Markt &mdash; Snapshot</h2>
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="k-label">Aktueller Preis</div>
+      <div class="k-value">19,98 €</div>
+      <div class="k-sub">0,67 € pro Tag</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">BSR Drogerie</div>
+      <div class="k-value">#37.084</div>
+      <div class="k-sub ok">14,4&nbsp;% besser als 90-Tage-Median</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Bewertung</div>
+      <div class="k-value">3,9<span class="u">&#9733;</span></div>
+      <div class="k-sub bad">M&auml;nner-Fertility-Median: 4,4&#9733;</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Bewertungen</div>
+      <div class="k-value">158</div>
+      <div class="k-sub">Top-10-Median: 250</div>
+    </div>
+  </div>
+
+  <h2 class="section">Die 3 Hebel</h2>
+  <div class="levers">
+    <div class="lever">
+      <div class="num">HEBEL 01</div>
+      <div class="title">PPC &mdash; Budget auf die richtige Suchintention</div>
+      <div class="desc">
+        Seite&nbsp;1 f&uuml;r &bdquo;kinderwunsch vitamine&ldquo; besteht zu <strong>69&nbsp;%</strong> aus Frauen- und
+        Schwangerschaftsprodukten (Femi&nbsp;Baby, Folio, Elevit, Hey&nbsp;Mama). Jeder Klick, den ihr dort kauft,
+        ist zum gro&szlig;en Teil eine Frau, die ein Produkt f&uuml;r sich sucht.<br/><br/>
+        Das beiliegende Bulksheet setzt euer Budget stattdessen auf das <strong>M&auml;nner-Cluster</strong> &mdash;
+        Exact&nbsp;+&nbsp;Phrase auf &bdquo;kinderwunsch vitamine mann&ldquo;, mit den Frauen-Begriffen
+        (fols&auml;ure, schwangerschaft, mama, prenatal, femibion &hellip;) als Negativ-Liste.<br/>
+        <span class="hint">Nebenbefund, ohne Gegenleistung: Auf einen Suchbegriff zu <em>bieten</em> ist
+        werberechtlich etwas anderes, als eine Aussage im Listing zu <em>treffen</em>. Es gibt Begriffe,
+        die ihr bespielen d&uuml;rft, obwohl ihr sie nie ins Listing schreiben d&uuml;rftet.</span>
+      </div>
+    </div>
+    <div class="lever">
+      <div class="num">HEBEL 02</div>
+      <div class="title">Pricing &mdash; ihr liegt 2&nbsp;Cent vor einer Geb&uuml;hrenklippe</div>
+      <div class="desc">
+        Euer Preis: <strong>19,98 €</strong>. Die Schwelle f&uuml;r Amazons
+        Niedrigpreis-Versand liegt bei <strong>20,00&nbsp;&euro;</strong>.<br/><br/>
+        Solange ihr darunter bleibt, zahlt ihr <strong>3,08 €</strong> Versandgeb&uuml;hr.
+        Ab 20,01&nbsp;&euro; sind es <strong>3,43 €</strong> &mdash; und ab dem 15.&nbsp;Oktober
+        verliert ihr zus&auml;tzlich die Befreiung vom Weihnachts-Aufschlag.<br/><br/>
+        Eine Preiserh&ouml;hung auf 20,98&nbsp;&euro; br&auml;chte <strong>1,00&nbsp;&euro;</strong> mehr Umsatz,
+        kostet aber <strong>0,50 €</strong> zus&auml;tzliche Geb&uuml;hren. Die H&auml;lfte des
+        Aufschlags ist weg, bevor sie bei euch ankommt.<br/><br/>
+        Break-Even bei den unten offengelegten Annahmen: <strong>12,73 €</strong>.
+        Im Rechner k&ouml;nnt ihr eure echten Werte einsetzen.
+      </div>
+    </div>
+    <div class="lever">
+      <div class="num">HEBEL 03</div>
+      <div class="title">Listing &mdash; Premium A+ ist seit 2026 kostenlos</div>
+      <div class="desc">
+        Ihr habt <strong>Basic A+ mit 4&nbsp;Modulen</strong>. Premium A+ war fr&uuml;her an Auflagen gekn&uuml;pft &mdash;
+        seit 2026 ist es f&uuml;r <strong>jeden Markeninhaber in Seller Central frei</strong>, ohne Antrag,
+        ohne Kosten.<br/><br/>
+        Premium erlaubt <strong>7 Module statt 5</strong>, volle Breite (1464&nbsp;px statt 970),
+        Vergleichstabellen, Hotspots und Video. Amazon selbst beziffert Basic A+ mit bis zu
+        <strong>+8&nbsp;%</strong> und Premium mit bis zu <strong>+20&nbsp;%</strong> Umsatz.<br/><br/>
+        In unserer Stichprobe von 15 Supplement-Wettbewerbern nutzen 9 bereits Premium &mdash;
+        aber <strong>0 von 15</strong> nutzen Video oder Hotspots. Das teuerste Feature liegt in der
+        ganzen Kategorie brach.<br/>
+        <span class="hint">Pr&uuml;fen dauert 30&nbsp;Sekunden: Seller Central &rarr; Marken &rarr; A+-Inhaltsmanager.
+        Steht dort der Button &bdquo;Premium A+ erstellen&ldquo;, ist es freigeschaltet.</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section">Was ihr mitbekommt</h2>
+  <div class="attachments">
+    <a class="attach" href="listing_deep_dive.html">
+      <div class="icon">&#128269;</div>
+      <div>
+        <div class="title">Listing Deep Dive &mdash; ihr gegen die Top&nbsp;5</div>
+        <div class="sub">Bild-f&uuml;r-Bild-Vergleich mit tetesept, Folio, MascuPRO, Orthomol und Hey&nbsp;Papa.
+          Wo deren Bildstrecke Argumente bringt, die eure nicht bringt &mdash; plus konkrete Bildvorschl&auml;ge.</div>
+        <span class="link-arrow">&rarr; &Ouml;ffnen (HTML)</span>
+      </div>
+    </a>
+    <a class="attach" href="B09LVCGHJX_preissensitivitaet.html">
+      <div class="icon">&#128202;</div>
+      <div>
+        <div class="title">Preissensitivit&auml;ts-Rechner</div>
+        <div class="sub">Interaktiv. Setzt eure echten Selbstkosten und euren Umsatzsteuersatz ein &mdash;
+          Marge, Break-Even und die 20-&euro;-Klippe rechnen sich live neu.</div>
+        <span class="link-arrow">&rarr; &Ouml;ffnen (HTML)</span>
+      </div>
+    </a>
+    <a class="attach" href="B09LVCGHJX_kinderwunsch_vitamine_mann_bulksheet.xlsx">
+      <div class="icon">&#128229;</div>
+      <div>
+        <div class="title">Kampagnen-Bulksheet</div>
+        <div class="sub">Exact + Phrase auf das M&auml;nner-Cluster, Cross-Negation, 29 nischengepr&uuml;fte
+          Frauen-Negatives. Eine Zelle fehlt: eure SKU (Spalte&nbsp;Q). Dann direkt hochladbar.</div>
+        <span class="link-arrow">&rarr; Herunterladen (XLSX)</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="assumptions">
+    <strong>Offengelegte Annahmen.</strong>
+    Selbstkosten <strong>5,00 €</strong> pro Einheit &mdash; das ist <em>unsere Sch&auml;tzung</em>, nicht eure Zahl;
+    im Rechner &auml;nderbar.
+    Umsatzsteuer <strong>7&nbsp;%</strong> angenommen (feste Nahrungserg&auml;nzung in Kapselform, KN&nbsp;2106) &mdash; umschaltbar.
+    Werbekostenanteil <strong>15&nbsp;%</strong> vom Umsatz.
+    Versandgeb&uuml;hr aus der von Keepa gemeldeten Amazon-Geb&uuml;hr (3,08 €), Verkaufsgeb&uuml;hr 15&nbsp;%
+    laut aktueller Amazon-Geb&uuml;hrentabelle.
+    <em>Wir haben keinen Zugriff auf euer Verk&auml;uferkonto &mdash; alles oben stammt aus &ouml;ffentlich sichtbaren Daten.</em>
+  </div>
+
+  <div class="bottom">
+    <div class="hook">Das hier behaltet ihr, egal ob wir zusammenarbeiten.</div>
+    <div class="body">
+      Gebaut habe ich das in wenigen Stunden, weil f&uuml;r genau solche Analysen bei mir eigene Automationen
+      laufen &mdash; dieselben, die ich f&uuml;r meine Kunden nutze. Deshalb kostet euch das nichts.<br/><br/>
+      Beim Durchgehen ist mir noch etwas aufgefallen, das <strong>nicht</strong> in diesem Dokument steht:
+      eine plausible Erkl&auml;rung f&uuml;r eure 3,9&#9733; &mdash; und sie hat nichts mit der
+      Rezeptur zu tun. Daf&uuml;r brauche ich 20&nbsp;Minuten, kein Deck.
+    </div>
+    <a class="cta" href="https://calendly.com/kundenservice-adlevate/101">&rarr; 20-Min Call buchen</a>
+    <div class="fallback">
+      Kein Bedarf? Auch gut. Meine Skool-Community ist aktuell noch kostenlos &mdash;
+      dort liegen einige der Automationen offen:
+      &rarr; <a href="https://skool.com/adlevate">skool.com/adlevate</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>ADLEVATE &middot; Benjamin Y&uuml;ksel &middot; Ex-Amazon &middot; BAFA-akkreditiert</div>
+    <div>benjamin@adlevate.de</div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Listing Deep Dive -- JoviTea vs Top 5 Wettbewerber</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1419; color: #d4d4d4; line-height: 1.5; font-size: 13px; }
+.container { max-width: 2400px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 28px; color: #5BC5C8; margin: 0 0 8px 0; font-weight: 600; }
+.subtitle { color: #888; font-size: 13px; margin-bottom: 24px; }
+.legend { background: #1a2128; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; color: #a0a0a0; border-left: 3px solid #5BC5C8; }
+.legend strong { color: #d4d4d4; }
+.grid { display: grid; grid-template-columns: repeat(6, minmax(300px, 1fr)); gap: 16px; }
+.col { background: #1a2128; border: 1px solid #2a3138; border-radius: 10px; padding: 16px; position: relative; overflow: hidden; }
+.col.client { border: 2px solid #5BC5C8; background: #15242a; }
+.badge-client { position: absolute; top: 0; right: 0; background: #5BC5C8; color: #0f1419; font-weight: 700; font-size: 10px; padding: 4px 12px; border-radius: 0 8px 0 8px; letter-spacing: 1px; }
+.header { margin-bottom: 12px; }
+.brand { font-weight: 600; color: #5BC5C8; font-size: 14px; }
+.label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.main-img { background: #fff; border-radius: 6px; padding: 8px; margin-bottom: 12px; height: 220px; display: flex; align-items: center; justify-content: center; }
+.main-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; padding: 10px; background: #0f1419; border-radius: 6px; }
+.metrics > div { text-align: center; }
+.metrics .highlight { background: #5BC5C815; border-radius: 4px; padding: 2px; }
+.m-label { display: block; color: #888; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.m-val { display: block; color: #e0e0e0; font-weight: 600; font-size: 13px; }
+.highlight .m-val { color: #5BC5C8; font-size: 14px; }
+.rating-row { display: flex; align-items: center; gap: 6px; padding: 8px 10px; margin-bottom: 12px; background: #0f1419; border-radius: 6px; font-size: 12px; }
+.stars { color: #FFB100; letter-spacing: 1px; font-size: 14px; }
+.star-empty { color: #3a3f45; }
+.rating-val { color: #e0e0e0; font-weight: 600; }
+.review-count { color: #888; font-size: 11px; }
+.rating-empty { color: #666; font-style: italic; justify-content: center; font-size: 11px; }
+.row-label { color: #666; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 600; }
+.title-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.title-text { color: #d4d4d4; font-size: 12px; line-height: 1.4; }
+.bullets-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; min-height: 120px; }
+.bullets { list-style: none; padding: 0; margin: 0; }
+.bullets li { color: #b8b8b8; font-size: 11px; padding: 4px 0 4px 12px; position: relative; line-height: 1.4; }
+.bullets li::before { content: "-"; position: absolute; left: 0; color: #5BC5C8; }
+.bullets li.empty { color: #555; font-style: italic; }
+.sec-img-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.sec-img-box img { width: 100%; height: 180px; object-fit: contain; background: #fff; border-radius: 6px; padding: 6px; }
+.usp-strat { padding-top: 4px; }
+.usp-text { color: #d4d4d4; font-size: 11px; line-height: 1.5; }
+.tag-green { color: #4ade80; }
+.tag-warn { color: #e0a800; }
+.amazon-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding: 10px 14px; background: linear-gradient(180deg, #FFD257 0%, #F9B82E 100%); color: #111; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid #E69A1A; transition: all 0.15s ease; letter-spacing: 0.2px; }
+.amazon-btn:hover { background: linear-gradient(180deg, #FFDB6E 0%, #FFC043 100%); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(255,184,46,0.3); }
+.amazon-btn svg { flex-shrink: 0; }
+.proposal { margin-top: 40px; padding: 24px; background: #15242a; border: 2px solid #5BC5C8; border-radius: 12px; }
+.proposal h2 { color: #5BC5C8; margin: 0 0 16px 0; font-size: 22px; }
+.proposal-intro { color: #d4d4d4; margin-bottom: 20px; }
+.subsection { color: #5BC5C8; font-size: 16px; font-weight: 600; margin: 24px 0 8px 0; padding-top: 12px; }
+.subsection:first-of-type { margin-top: 4px; padding-top: 0; }
+.subsection-intro { color: #b8b8b8; font-size: 12px; margin-bottom: 14px; font-style: italic; }
+.mockup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.mockup-card { background: #1a2128; border-radius: 8px; padding: 12px; }
+.mockup-label { color: #5BC5C8; font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+.mockup-card img { width: 100%; border-radius: 6px; margin-bottom: 10px; cursor: zoom-in; }
+.mockup-desc { color: #b8b8b8; font-size: 12px; }
+.new-title-box { margin-top: 24px; padding: 16px; background: #1a2128; border-radius: 8px; }
+.new-title-box h3 { color: #5BC5C8; margin: 0 0 12px 0; font-size: 14px; }
+.compare-row { display: grid; grid-template-columns: 100px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2a3138; align-items: flex-start; }
+.compare-row:last-child { border-bottom: none; }
+.compare-row .rlabel { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding-top: 3px; }
+.compare-row .val { color: #d4d4d4; font-size: 12px; line-height: 1.5; }
+.compare-row .old { color: #e0a800; }
+.compare-row .new { color: #4ade80; font-weight: 500; }
+.footer { margin-top: 40px; padding: 20px; text-align: center; color: #666; font-size: 11px; border-top: 1px solid #2a3138; }
+.main-img img, .sec-img-box img, .mockup-card img { cursor: zoom-in; transition: transform 0.15s ease; }
+.main-img img:hover, .sec-img-box img:hover, .mockup-card img:hover { transform: scale(1.02); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; backdrop-filter: blur(4px); }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 60px rgba(0,0,0,0.6); background: #fff; }
+.lightbox-close { position: absolute; top: 24px; right: 24px; background: #1a2128; color: #fff; border: 1px solid #3a3f45; width: 44px; height: 44px; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.lightbox-close:hover { background: #2a3138; }
+.lightbox-caption { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #d4d4d4; background: rgba(26,33,40,0.9); padding: 10px 20px; border-radius: 6px; font-size: 13px; max-width: 80vw; text-align: center; }
+.dl-btn { position: fixed; top: 24px; right: 24px; z-index: 100; display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: linear-gradient(135deg, #5BC5C8 0%, #4aa8ab 100%); color: #0f1419; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid #5BC5C8; box-shadow: 0 4px 16px rgba(91,197,200,0.35); transition: all 0.2s ease; letter-spacing: 0.3px; }
+.dl-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(91,197,200,0.5); background: linear-gradient(135deg, #6ad3d6 0%, #56c2c5 100%); }
+.dl-btn svg { flex-shrink: 0; }
+.dl-btn .dl-count { background: rgba(15,20,25,0.25); padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+@media (max-width: 1800px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 1000px) { .grid { grid-template-columns: 1fr 1fr; } .mockup-grid { grid-template-columns: 1fr; } }
+</style>
+</head><body>
+
+<div class="container">
+  <h1>Listing Deep Dive -- JoviTea vs Top 5 Wettbewerber</h1>
+  <div class="subtitle">Keyword: "kinderwunsch vitamine mann" &middot; amazon.de &middot; 2026-09-23</div>
+  <div class="legend">
+    <strong>Wie zu lesen:</strong> EUER LISTING-Spalte links (blau umrandet). Daneben die 5 stärksten Page-1-Wettbewerber. Vergleicht Hauptbild, Rating/Reviews, EUR/KAPSEL, Titel, Bullets und die beste Nebenbild (USP-Slot). USP-Strategie-Zeile fasst zusammen, was jedes Listing als Haupt-Verkaufsargument inszeniert.
+  </div>
+
+  <div class="grid">
+    
+    <div class="col client">
+      <div class="badge-client">EUER LISTING</div>
+      <div class="header">
+        <div class="brand">JoviTea</div>
+        <div class="label">jovitea</div>
+      </div>
+      <div class="main-img"><img src="images/jovitea_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">19.98 EUR</span></div>
+        <div><span class="m-label">Kapseln</span> <span class="m-val">90</span></div>
+        <div class="highlight"><span class="m-label">EUR/KAPSEL</span> <span class="m-val">0.2220</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">3.9</span>
+          <span class="review-count">&middot; 158 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="JoviTea® Papatraum Kinderwunsch Mann Kapseln 90 Stück, Spermienbildung">JoviTea® Papatraum Kinderwunsch Mann Kapseln 90 Stück, Spermienbildung</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>💪 KINDERWUNSCH IST AUCH MÄNNERSACHE: Nahrungsergänzungsmittel mit ausgewählten Vitaminen, Mineralstoffen und weiteren Inhaltsstoffen – entwickelt für Männer mit Kinderwunsch.</li><li>👍 MIT ZINK UND SELEN: Zink trägt zu einer normalen Fruchtbarkeit und einer normalen Reproduktion sowie zur Erhaltung eines normalen Testosteronspiegels im Blut bei. Selen trägt zu einer normalen Sperm...</li><li>💊 12 SORGFÄLTIG AUSGEWÄHLTE INHALTSSTOFFE: Enthält unter anderem Vitamin C, Vitamin E, Vitamin D, Vitamin B6, Vitamin B12, Folsäure, Zink, Selen, L-Arginin, L-Carnitin, Ginseng und Maca.</li><li>👍 EINNAHME: Täglich drei Kapseln vorzugsweise zu einer Mahlzeit mit ausreichend Flüssigkeit einnehmen.</li><li>🍀 QUALITÄT: Vegan, ohne Gentechnik und ohne künstliche Zusatzstoffe. Unabhängig laborgeprüft und in Deutschland unter Einhaltung gesetzlicher Standards hergestellt. Lose abgefüllt statt im Blister für...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/jovitea_img02.jpg" alt="Nebenbild"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Dominante USP-Strategie: siehe Listing. <br/><span class="tag-warn">Hinweis: Ohne Visual-Audit wurde kein individueller Tag zugewiesen.</span></div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B09LVCGHJX" target="_blank" rel="noopener noreferrer" title="Auf Amazon öffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon öffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">tetesept</div>
+        <div class="label">tetesept</div>
+      </div>
+      <div class="main-img"><img src="images/tetesept_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">26.95 EUR</span></div>
+        <div><span class="m-label">Kapseln</span> <span class="m-val">84</span></div>
+        <div class="highlight"><span class="m-label">EUR/KAPSEL</span> <span class="m-val">0.3208</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.4</span>
+          <span class="review-count">&middot; 126 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="tetesept Fertil Expert Babyplanung MEN, Nahrungsergänzung, 84 Tabletten">tetesept Fertil Expert Babyplanung MEN, Nahrungsergänzung, 84 Tabletten</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>Für die Familienplanung: Bei einem der spannendsten Kapitel im Leben unterstützen die Fertilitätskapseln von tetesept Fertil Expert mit speziell ausgewählten Nährstoffen für den Mann.</li><li>Hochdosierte Nährstoff-Kombination: Mit Zink, Selen, L-Arginin, L-Carnitin, Q10 und Lycopin sorgen die Tabletten für eine umfassende Versorgung mit allen wichtigen Mikronährstoffen.</li><li>Männliche Fertilität: Zink trägt zu einer normalen Fruchtbarkeit bei und unterstützt die Erhaltung eines normalen Testosteron-Spiegels im Blut. Dank Selen wird eine normale Spermabildung unterstützt.</li><li>Für 12 Wochen: Die Kinderwunsch Tabletten mit veganer Rezeptur werden 1 x täglich unzerkaut mit ausreichend Flüssigkeit eingenommen. Sie sind laktose- und glutenfrei.</li><li>Lieferumfang: 1 x 84 Tabletten tetesept Fertil Expert Babyplanung MEN, Kinderwunsch Vitamine für den Mann in praktischer 12 Wochen Packung, vegan und ohne Laktose oder Gluten.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/tetesept_img02.jpg" alt="Nebenbild"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Pharma-Glaubwürdigkeit (Merz-Konzern) plus die 12-Wochen-Packung als Kur-Versprechen, getragen von Paar-Emotion bis hin zum Schwangerschaftstest-Moment.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0DBM51KFP" target="_blank" rel="noopener noreferrer" title="Auf Amazon öffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon öffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Folio</div>
+        <div class="label">folio</div>
+      </div>
+      <div class="main-img"><img src="images/folio_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">14.79 EUR</span></div>
+        <div><span class="m-label">Kapseln</span> <span class="m-val">30</span></div>
+        <div class="highlight"><span class="m-label">EUR/KAPSEL</span> <span class="m-val">0.4930</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.4</span>
+          <span class="review-count">&middot; 1.873 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Folio fertil men Nahrungsergänzungsmittel – 30 Tabletten – Zink, Selen & Vitamine für Männer mit Kinderwunsch – unterstützt Fruchtbarkeit, Spermienbildung & Testosteronspiegel">Folio fertil men Nahrungsergänzungsmittel – 30 Tabletten – Zink, Selen & Vitamine für Männer mit Kinderwunsch – unterstü...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>FÜR DEINEN WEG ZUR VATERROLLE: Speziell entwickelte Mikronährstoff-Kombination zur gezielten Ergänzung der Ernährung in der Kinderwunschphase – unterstützt dich optimal bei der Vorbereitung auf eine S...</li><li>ZINK FÜR FRUCHTBARKEIT & TESTOSTERON: Zink trägt zu einer normalen Fruchtbarkeit und Fortpflanzung sowie zur Erhaltung eines normalen Testosteronspiegels im Blut bei</li><li>SELEN FÜR DIE SPERMIENBILDUNG: Selen unterstützt die normale Bildung der Spermien und trägt zusätzlich zu einer normalen Funktion des Immunsystems bei</li><li>ENERGIE & ZELLSCHUTZ: Vitamine B2,C, und Zink tragen zu einem normalen Energiestoffwechsel bei und helfen zusammen mit Vitamin E und Selen, die Zellen vor oxidativem Stress zu schützen</li><li>EINFACH & ALLTAGSTAUGLICH: Nur 1 Tablette täglich – vegetarisch, glutenfrei sowie frei von Laktose, Fruktose, Farb- und Aromastoffen, hergestellt in Deutschland</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/folio_img02.jpg" alt="Nebenbild"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Page-1 Positionierung -- USP-Details im Dashboard-Bild sichtbar.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B07JFWML4Y" target="_blank" rel="noopener noreferrer" title="Auf Amazon öffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon öffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">MascuPRO</div>
+        <div class="label">mascupro</div>
+      </div>
+      <div class="main-img"><img src="images/mascupro_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">24.99 EUR</span></div>
+        <div><span class="m-label">Kapseln</span> <span class="m-val">60</span></div>
+        <div class="highlight"><span class="m-label">EUR/KAPSEL</span> <span class="m-val">0.4165</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.0</span>
+          <span class="review-count">&middot; 2.390 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="MascuPRO Fertil | 18 Inhaltsstoffe | Zink, Selen, Aminosäuren L-Carnitin, L- Arginin & Q10 | vegan | 60 Kapseln">MascuPRO Fertil | 18 Inhaltsstoffe | Zink, Selen, Aminosäuren L-Carnitin, L- Arginin & Q10 | vegan | 60 Kapseln</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>Ausgewählte Inhaltsstoffe: Zink trägt zu einer normalen Fruchtbarkeit und einer normalen Reproduktion bei. Selen trägt zu einer normalen Spermienbildung bei. Mit 18 Inhaltsstoffen Folsäure, Lycopin, Q...</li><li>60 Kapseln für 30 Tage: Nur zwei kleine, weiche Kapseln pro Tag. Unsere Kapseln sind absolut geruchs-und geschmacksneutral. Die Einnahme ist sehr einfach.</li><li>100 % vegan: Komplett vegan und ohne Zusatz von Magnesiumstearat und mikrokristalliner Cellulose. Wir verwenden nur hochwertige Rohstoffe.</li><li>Clever kombiniert: Für Eure Partnerin gibt es BabyFORTE. Du kannst keine Kapseln schlucken? Kein Problem: Einfach die Kapselhüllen trennen und den Inhalt ins Getränk mischen.</li><li>Deine Zufriedenheit steht an erster Stelle: Du sollst mit unseren Produkten rundum zufrieden sein. Bei Fragen steht Dir unser freundlicher und diskreter Kundenservice jederzeit zur Verfügung – individ...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/mascupro_img02.jpg" alt="Nebenbild"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Page-1 Positionierung -- USP-Details im Dashboard-Bild sichtbar.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0722QVSL9" target="_blank" rel="noopener noreferrer" title="Auf Amazon öffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon öffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Orthomol</div>
+        <div class="label">orthomol</div>
+      </div>
+      <div class="main-img"><img src="images/orthomol_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">47.68 EUR</span></div>
+        <div><span class="m-label">Kapseln</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/KAPSEL</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.5</span>
+          <span class="review-count">&middot; 650 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Orthomol Fertil plus: Nahrungsergänzung für Männer mit Kinderwunsch, mit Zink für normale Fruchtbarkeit¹ & Selen für normale Spermabildung¹, plus L-Carnitin, Q10 & Omega-3, 30 Tagesportionen">Orthomol Fertil plus: Nahrungsergänzung für Männer mit Kinderwunsch, mit Zink für normale Fruchtbarkeit¹ & Selen für nor...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>FÜR MÄNNER MIT KINDERWUNSCH: Orthomol Fertil plus liefert eine abgestimmte Mikronährstoff-Kombination, die Deine tägliche Ernährung in der Kinderwunschzeit gezielt ergänzt</li><li>FRUCHTBARKEIT & SPERMIEN¹: Mit Zink für normale Fruchtbarkeit und Fortpflanzung sowie zur Aufrechterhaltung eines normalen Testosteron-Serumspiegels und Selen für eine normale Spermabildung</li><li>PLUS L-CARNITIN, Q10 & OMEGA-3: Enthält zusätzlich L-Carnitin, Coenzym Q10 sowie Omega-3-Fettsäuren (EPA und DHA), die das Mikronährstoffprofil sinnvoll abrunden</li><li>EINFACH IN DEN ALLTAG INTEGRIERBAR: 1 Beutel pro Tag mit 3 Tabletten und 1 Kapsel – am besten zu oder nach einer Mahlzeit einnehmen, auf Wunsch flexibel über den Tag verteilt</li><li>FÜR DEINE ROUTINE GEEIGNET: Lactose- und glutenfrei, mit zertifizierter Qualität – ideal, wenn Du in der Kinderwunschphase auf eine durchdachte, gut verträgliche Ergänzung achten möchtest</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/orthomol_img02.jpg" alt="Nebenbild"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Page-1 Positionierung -- USP-Details im Dashboard-Bild sichtbar.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B001AAWSEA" target="_blank" rel="noopener noreferrer" title="Auf Amazon öffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon öffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Nature Love</div>
+        <div class="label">heypapa</div>
+      </div>
+      <div class="main-img"><img src="images/heypapa_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">27.99 EUR</span></div>
+        <div><span class="m-label">Kapseln</span> <span class="m-val">120</span></div>
+        <div class="highlight"><span class="m-label">EUR/KAPSEL</span> <span class="m-val">0.2332</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.4</span>
+          <span class="review-count">&middot; 204 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Nature Love Hey Papa® Kapseln - 120 Kapseln - 12 Inhaltsstoffe: Folsäure, Maca, Selen, Zink, L-Arginin, L-Carnitin, Q10, Vitamin C, B6, B12, D3 und E - vegan und laborgeprüft">Nature Love Hey Papa® Kapseln - 120 Kapseln - 12 Inhaltsstoffe: Folsäure, Maca, Selen, Zink, L-Arginin, L-Carnitin, Q10,...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>VIELFÄLTIGE VERSTÄRKUNG: 2 Kapseln täglich liefern 12 sorgfältig ausgewählte Inhaltsstoffe, darunter Maca, Q10, Folsäure, Selen und Zink.* Und bei 120 hoch bioverfügbaren Kapseln bist du über 2 Monate...</li><li>HOCHDOSIERT & VEGAN: Unsere hochdosierten Kapseln wurden von unseren Expert:innen genau für dich entwickelt. Zudem sind alle Zutaten vegan, einschließlich unserem Vitamin D. Und das ganz ohne unnötige...</li><li>NATURE LOVE QUALITÄT: Nichts liegt uns mehr am Herzen als dein Wohlbefinden. Deshalb prüfen wir jede einzelne Charge und legen die Prüfberichte für dich offen. Die Untersuchungsbescheinigung findest d...</li><li>WITH LOOOVE: Schon mal darüber nachgedacht, dass dein Körper, dein ganzes Wesen natürlich ist? Und hey, es gibt doch nichts Schöneres, als genau das an sich selbst zu lieben, oder? Daher achten wir au...</li><li>Wie du weißt, verzichten wir wann immer möglich auf Farbstoffe und Aromen. Daher kann es sein, dass das Aussehen unserer Kapseln schon mal abweicht oder sich mit der Zeit verändert. Das ist aber kein ...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/heypapa_img02.jpg" alt="Nebenbild"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Page-1 Positionierung -- USP-Details im Dashboard-Bild sichtbar.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0BMB361Q1" target="_blank" rel="noopener noreferrer" title="Auf Amazon öffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon öffnen</span>
+      </a>
+    </div>
+    
+  </div>
+
+  
+
+  <div class="footer">ADLEVATE &middot; Listing Deep Dive &middot; 2026-09-23 &middot; benjamin@adlevate.de</div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <img id="lightboxImg" alt=""/>
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script>
+(function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbCap = document.getElementById('lightboxCaption');
+  const lbClose = document.getElementById('lightboxClose');
+  const sels = ['.main-img img', '.sec-img-box img', '.mockup-card img'];
+  document.querySelectorAll(sels.join(', ')).forEach(img => {
+    img.addEventListener('click', e => {
+      e.stopPropagation();
+      lbImg.src = img.src;
+      const col = img.closest('.col');
+      const brand = col ? col.querySelector('.brand').innerText : '';
+      const labelEl = col ? col.querySelector('.label') : null;
+      const label = labelEl ? labelEl.innerText : '';
+      const slotType = img.closest('.main-img') ? 'Main Image' :
+                       img.closest('.sec-img-box') ? 'Best Nebenbild (USP-Slot)' :
+                       img.closest('.mockup-card') ? (img.closest('.mockup-card').querySelector('.mockup-label').innerText) :
+                       '';
+      lbCap.innerText = brand ? `${brand} - ${label} - ${slotType}` : slotType;
+      lb.classList.add('active');
+    });
+  });
+  function close() { lb.classList.remove('active'); lbImg.src = ''; }
+  lb.addEventListener('click', close);
+  lbClose.addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
+</script>
+</body></html>
