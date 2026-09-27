@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Listing Deep Dive -- Perform+ vs Top 5 Competitors</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; background: #0f1419; color: #d4d4d4; line-height: 1.5; font-size: 13px; }
+.container { max-width: 2400px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 28px; color: #5BC5C8; margin: 0 0 8px 0; font-weight: 600; }
+.subtitle { color: #888; font-size: 13px; margin-bottom: 24px; }
+.legend { background: #1a2128; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; color: #a0a0a0; border-left: 3px solid #5BC5C8; }
+.legend strong { color: #d4d4d4; }
+.grid { display: grid; grid-template-columns: repeat(6, minmax(300px, 1fr)); gap: 16px; }
+.col { background: #1a2128; border: 1px solid #2a3138; border-radius: 10px; padding: 16px; position: relative; overflow: hidden; }
+.col.client { border: 2px solid #5BC5C8; background: #15242a; }
+.badge-client { position: absolute; top: 0; right: 0; background: #5BC5C8; color: #0f1419; font-weight: 700; font-size: 10px; padding: 4px 12px; border-radius: 0 8px 0 8px; letter-spacing: 1px; }
+.header { margin-bottom: 12px; }
+.brand { font-weight: 600; color: #5BC5C8; font-size: 14px; }
+.label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.main-img { background: #fff; border-radius: 6px; padding: 8px; margin-bottom: 12px; height: 220px; display: flex; align-items: center; justify-content: center; }
+.main-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; padding: 10px; background: #0f1419; border-radius: 6px; }
+.metrics > div { text-align: center; }
+.metrics .highlight { background: #5BC5C815; border-radius: 4px; padding: 2px; }
+.m-label { display: block; color: #888; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.m-val { display: block; color: #e0e0e0; font-weight: 600; font-size: 13px; }
+.highlight .m-val { color: #5BC5C8; font-size: 14px; }
+.rating-row { display: flex; align-items: center; gap: 6px; padding: 8px 10px; margin-bottom: 12px; background: #0f1419; border-radius: 6px; font-size: 12px; }
+.stars { color: #FFB100; letter-spacing: 1px; font-size: 14px; }
+.star-empty { color: #3a3f45; }
+.rating-val { color: #e0e0e0; font-weight: 600; }
+.review-count { color: #888; font-size: 11px; }
+.rating-empty { color: #666; font-style: italic; justify-content: center; font-size: 11px; }
+.row-label { color: #666; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 600; }
+.title-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.title-text { color: #d4d4d4; font-size: 12px; line-height: 1.4; }
+.bullets-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; min-height: 120px; }
+.bullets { list-style: none; padding: 0; margin: 0; }
+.bullets li { color: #b8b8b8; font-size: 11px; padding: 4px 0 4px 12px; position: relative; line-height: 1.4; }
+.bullets li::before { content: "-"; position: absolute; left: 0; color: #5BC5C8; }
+.bullets li.empty { color: #555; font-style: italic; }
+.sec-img-box { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #2a3138; }
+.sec-img-box img { width: 100%; height: 180px; object-fit: contain; background: #fff; border-radius: 6px; padding: 6px; }
+.usp-strat { padding-top: 4px; }
+.usp-text { color: #d4d4d4; font-size: 11px; line-height: 1.5; }
+.tag-green { color: #4ade80; }
+.tag-warn { color: #e0a800; }
+.amazon-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding: 10px 14px; background: linear-gradient(180deg, #FFD257 0%, #F9B82E 100%); color: #111; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid #E69A1A; transition: all 0.15s ease; letter-spacing: 0.2px; }
+.amazon-btn:hover { background: linear-gradient(180deg, #FFDB6E 0%, #FFC043 100%); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(255,184,46,0.3); }
+.amazon-btn svg { flex-shrink: 0; }
+.proposal { margin-top: 40px; padding: 24px; background: #15242a; border: 2px solid #5BC5C8; border-radius: 12px; }
+.proposal h2 { color: #5BC5C8; margin: 0 0 16px 0; font-size: 22px; }
+.proposal-intro { color: #d4d4d4; margin-bottom: 20px; }
+.subsection { color: #5BC5C8; font-size: 16px; font-weight: 600; margin: 24px 0 8px 0; padding-top: 12px; }
+.subsection:first-of-type { margin-top: 4px; padding-top: 0; }
+.subsection-intro { color: #b8b8b8; font-size: 12px; margin-bottom: 14px; font-style: italic; }
+.mockup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.mockup-card { background: #1a2128; border-radius: 8px; padding: 12px; }
+.mockup-label { color: #5BC5C8; font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+.mockup-card img { width: 100%; border-radius: 6px; margin-bottom: 10px; cursor: zoom-in; }
+.mockup-desc { color: #b8b8b8; font-size: 12px; }
+.new-title-box { margin-top: 24px; padding: 16px; background: #1a2128; border-radius: 8px; }
+.new-title-box h3 { color: #5BC5C8; margin: 0 0 12px 0; font-size: 14px; }
+.compare-row { display: grid; grid-template-columns: 100px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid #2a3138; align-items: flex-start; }
+.compare-row:last-child { border-bottom: none; }
+.compare-row .rlabel { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding-top: 3px; }
+.compare-row .val { color: #d4d4d4; font-size: 12px; line-height: 1.5; }
+.compare-row .old { color: #e0a800; }
+.compare-row .new { color: #4ade80; font-weight: 500; }
+.footer { margin-top: 40px; padding: 20px; text-align: center; color: #666; font-size: 11px; border-top: 1px solid #2a3138; }
+.main-img img, .sec-img-box img, .mockup-card img { cursor: zoom-in; transition: transform 0.15s ease; }
+.main-img img:hover, .sec-img-box img:hover, .mockup-card img:hover { transform: scale(1.02); }
+.lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; backdrop-filter: blur(4px); }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 60px rgba(0,0,0,0.6); background: #fff; }
+.lightbox-close { position: absolute; top: 24px; right: 24px; background: #1a2128; color: #fff; border: 1px solid #3a3f45; width: 44px; height: 44px; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.lightbox-close:hover { background: #2a3138; }
+.lightbox-caption { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #d4d4d4; background: rgba(26,33,40,0.9); padding: 10px 20px; border-radius: 6px; font-size: 13px; max-width: 80vw; text-align: center; }
+.dl-btn { position: fixed; top: 24px; right: 24px; z-index: 100; display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: linear-gradient(135deg, #5BC5C8 0%, #4aa8ab 100%); color: #0f1419; border-radius: 10px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid #5BC5C8; box-shadow: 0 4px 16px rgba(91,197,200,0.35); transition: all 0.2s ease; letter-spacing: 0.3px; }
+.dl-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(91,197,200,0.5); background: linear-gradient(135deg, #6ad3d6 0%, #56c2c5 100%); }
+.dl-btn svg { flex-shrink: 0; }
+.dl-btn .dl-count { background: rgba(15,20,25,0.25); padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+@media (max-width: 1800px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 1000px) { .grid { grid-template-columns: 1fr 1fr; } .mockup-grid { grid-template-columns: 1fr; } }
+</style>
+</head><body>
+
+<a class="dl-btn" href="B0HG9XMGMC_mockups.zip" download title="Alle Vorschlagsbilder als ZIP herunterladen">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>
+  <span>Vorschlagsbilder</span>
+  <span class="dl-count">5&nbsp;Bilder &middot; ZIP</span>
+</a>
+
+<div class="container">
+  <h1>Listing Deep Dive -- Perform+ vs Top 5 Competitors</h1>
+  <div class="subtitle">Keyword: "elektrolyte pulver zuckerfrei" &middot; amazon.de &middot; 2026-09-26</div>
+  <div class="legend">
+    <strong>Wie zu lesen:</strong> KLIENT-Spalte links (blau umrandet). Daneben die 5 staerksten Page-1-Competitors. Vergleiche Main-Image, Rating/Reviews, EUR/STICK, Titel, Bullets und die beste Secondary (USP-Slot). USP-Strategie-Zeile fasst zusammen was jedes Listing als Haupt-Verkaufsargument inszeniert.
+  </div>
+
+  <div class="grid">
+    
+    <div class="col client">
+      <div class="badge-client">KLIENT</div>
+      <div class="header">
+        <div class="brand">Perform+</div>
+        <div class="label">perform</div>
+      </div>
+      <div class="main-img"><img src="images/perform_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">24.99 EUR</span></div>
+        <div><span class="m-label">Sticks</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/STICK</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;<span class="star-empty"></span></span>
+          <span class="rating-val">5.0</span>
+          <span class="review-count">&middot; 1 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="PERFORM+ Hydration Elektrolyte Pulver – 24 Sticks, 5 Vitamine, zuckerfrei">PERFORM+ Hydration Elektrolyte Pulver – 24 Sticks, 5 Vitamine, zuckerfrei</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>ELEKTROLYTE FÜR SPORT & DEINEN AKTIVEN ALLTAG – wichtige Mineralstoffe und Elektrolyte wie Natrium, Kalium, Calcium, Magnesium und Zink in einem praktischen Drink Mix – ideal beim Sport, auf Reisen, i...</li><li>400 MG NATRIUM + 300 MG KALIUM PRO STICK – Jeder 6-g-Portionsstick liefert eine gezielt zusammengestellte Mineralstoffkombination mit 400 mg Natrium, 300 mg Kalium, 104 mg Calcium, 20 mg Magnesium und...</li><li>5 VITAMINE FÜR ENERGIE & LEISTUNGSFÄHIGKEIT – Mit Vitamin C, B3, B5, B6 und B12. Die enthaltenen Vitamine B3, B5, B6, B12 und Vitamin C tragen zu einem normalen Energiestoffwechsel und zur Verringerun...</li><li>ZERO SUGAR & NUR 10 KCAL – 0 g Zucker und lediglich 10 kcal pro Portionsstick. Eine leichte Alternative zu klassischen zuckerhaltigen Sportgetränken – einfach mit Wasser mischen und genießen.</li><li>24 PRAKTISCHE PORTIONSSTICKS – Ein Stick enthält 6 g Pulver und wird einfach in 500–750 ml Wasser aufgelöst. Die einzeln portionierten Sticks passen in Sporttasche, Handgepäck oder Rucksack und sind d...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/perform_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Sport-Ästhetik in Schwarz-Orange mit Stick-Format und der einzigen Vitaminformel im Feld — aber die Strategie bleibt unerzählt: englische Texte, ein fremdes Markendesign in Bild 3, und kein einziges Bild, das Menge, Zubereitung oder Mitnahme zeigt.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0HG9XMGMC" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">7 elements</div>
+        <div class="label">elektrolytepur</div>
+      </div>
+      <div class="main-img"><img src="images/elektrolytepur_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">14.95 EUR</span></div>
+        <div><span class="m-label">Sticks</span> <span class="m-val">30</span></div>
+        <div class="highlight"><span class="m-label">EUR/STICK</span> <span class="m-val">0.4983</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.5</span>
+          <span class="review-count">&middot; 627 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Elektrolyte PUR - 210g (30 Portionen) - Ohne Zucker & Süßungsmittel, KETO">Elektrolyte PUR - 210g (30 Portionen) - Ohne Zucker & Süßungsmittel, KETO</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>✅ ELEKTROLYTE PUR: Ganze 1835 mg Elektrolyte ohne Zucker, ohne Süßungsmittel und ohne Aromen. Deine Elektrolyte, ganz ohne Schnick-Schnack!</li><li>✅ MAGNESIUM, CALCIUM, KALIUM, NATRIUM, CHLORID: Für Sportler und Gesundheitsbewusste. Geeignet für Keto / Paleo Diäten. Natürlich vegan, glutenfrei, laktosefrei & koffeinfrei.</li><li>✅ LABORGEPRÜFT: Selbstverständlich werden deine Elektrolyte PUR regelmäßig in einem unabhängigen Labor in Deutschland getestet, um eine gleichbleibend hohe Qualität zu garantieren.</li><li>✅ MINERALSTOFFE: Magnesium, Calcium und Kalium in Citrat- und Lactatform – für eine gezielte und ausgewogene Elektrolytversorgung!</li><li>✅ GUTES BRAUCHT ZEIT: Auf Grund er natürlichen Beschaffenheit der Inhaltsstoffe benötigt das Pulver unter gründlichem Rühren bis zu 2 min. Zeit, um sich vollständig aufzulösen.</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/elektrolytepur_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Puristen-Strategie mit dreifacher Wiederholung: „Ohne Zucker und ohne Süßstoff“ steht auf dem Deckel, auf dem Etikett und in einem eigenen Bild. Dazu sauber befußnotete Gesundheitsaussagen und ein vollständiges Laborzertifikat.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0GVPQ3FPG" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Raab Vitalfood</div>
+        <div class="label">raab</div>
+      </div>
+      <div class="main-img"><img src="images/raab_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">21.43 EUR</span></div>
+        <div><span class="m-label">Sticks</span> <span class="m-val">?</span></div>
+        <div class="highlight"><span class="m-label">EUR/STICK</span> <span class="m-val">-</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.5</span>
+          <span class="review-count">&middot; 871 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Raab® Elektrolyte Pur (320 g) - Ohne Zucker & Süßungsmittel">Raab® Elektrolyte Pur (320 g) - Ohne Zucker & Süßungsmittel</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>✓ 100% REINHEIT OHNE ZUSÄTZE – Unser Elektrolyte Pur Pulver verzichtet konsequent auf Zucker, künstliche Süßstoffe, Aromen oder Farbstoffe. Sie erhalten die reine Kraft der Mineralstoffe – ideal für S...</li><li>🥛MINERALSALZE AUS DEUTSCHLAND – Alle enthaltenen Mineralsalze und die Mischung werden nach höchsten Qualitätsstandards in Deutschland hergestellt.</li><li>⚖️ ELEKTROLYT-GLEICHGEWICHT – Magnesium trägt zum Elektrolytgleichgewicht sowie zur Verringerung von Müdigkeit und Ermüdung bei.</li><li>+ UNTERSTÜTZUNG FÜR MUSKELN & NERVEN – Perfekt abgestimmte Kombination aus Magnesium und Kalium - unterstützt Ihre Muskelfunktion und trägt zu einer normalen Funktion des Nervensystems bei. Perfekt na...</li><li>🥤 GESCHMACKSNEUTRAL & VIELSEITIG – Dank der neutralen Rezeptur können Sie das Pulver flexibel in Wasser, Saftschorlen, Protein-Shakes oder Smoothies mischen, ohne den Geschmack zu verfälschen. Perfekt...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/raab_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Traditionsmarke seit 1989, die die Abwesenheit zum Produktnamen macht — „Pur“ ist der Claim. Verkauft über deutsche Herstellung, IFS-Zertifizierung und volle Etikettentransparenz statt über Sportlichkeit.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0FBH1NLP1" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">sanotact</div>
+        <div class="label">sanotact</div>
+      </div>
+      <div class="main-img"><img src="images/sanotact_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">8.40 EUR</span></div>
+        <div><span class="m-label">Sticks</span> <span class="m-val">50</span></div>
+        <div class="highlight"><span class="m-label">EUR/STICK</span> <span class="m-val">0.1680</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.4</span>
+          <span class="review-count">&middot; 5.091 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="sanotact Elektrolyte Plus 50 Stück – Großpackung für Festival, Sport & Hochzeit Gastgeschenk – Elektrolyte Pulver für den Party Urlaub Zubehör & Training">sanotact Elektrolyte Plus 50 Stück – Großpackung für Festival, Sport & Hochzeit Gastgeschenk – Elektrolyte Pulver für de...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>GROßPACKUNG – 50 SACHETS FÜR MEHR FLEXIBILITÄT - Mehr Inhalt, mehr Möglichkeiten: Unsere 50er Großpackung eignet sich ideal für Gruppen, Vorratskäufer oder Vielverwender. Ob Festival-Crew, Sportteam o...</li><li>VIELSEITIG EINSETZBAR – FÜR JEDE GELEGENHEIT - Ob Festival Zubehör, Hochzeit Gastgeschenk oder Notfallkörbchen Hochzeit – unser Elektrolyte-Produkt ist dein verlässlicher Begleiter. Praktisch, kompakt...</li><li>SPORTLICH. SMART. STARK. - Ideal für intensive Belastungen wie Marathon, Triathlon, Radrennen oder Fussball Training. Unterstützt dein Training effektiv – vom Bambini Fussball Training bis zum Fussbal...</li><li>URLAUB MUST-HAVE & PARTY GADGET - Perfekt für deinen Sommerurlaub oder die nächste Party: Unsere Elektrolyte liefern Power bei Sonne, Tanz & Drinks. Ob Party Urlaub Zubehör oder Party Urlaub Gadget – ...</li><li>ENTWICKLUNG & QUALITÄT AUS DEUTSCHLAND - Hergestellt nach höchsten Standards und Sicherheit – entwickelt von Ernährungsexperten. Unsere Elektrolyte punkten durch geprüfte Qualität und höchste Sicherhe...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/sanotact_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Anlass- statt Inhaltsstoff-Strategie: Sport, Party, Reise, Hitze. Kategorie-Bestseller bei 0,17 € pro Portion, gestützt auf Kölner Liste und Megamarsch-Partnerschaft — thematisiert Süßungsmittel bewusst nie.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0FCSDXSTM" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">Vit4ever</div>
+        <div class="label">vit4ever</div>
+      </div>
+      <div class="main-img"><img src="images/vit4ever_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">14.99 EUR</span></div>
+        <div><span class="m-label">Sticks</span> <span class="m-val">40</span></div>
+        <div class="highlight"><span class="m-label">EUR/STICK</span> <span class="m-val">0.3748</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;<span class="star-empty">&#9734;</span></span>
+          <span class="rating-val">4.3</span>
+          <span class="review-count">&middot; 263 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="vit4ever Elektrolyte Pulver ohne Zucker - Orange - 200 g - 40 Portionen">vit4ever Elektrolyte Pulver ohne Zucker - Orange - 200 g - 40 Portionen</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>ZERO ZUCKER & 5 ELEKTROLYTE: Zuckerfreies Elektrolyte Pulver mit Chlorid, Kalium, Natrium, Calcium und Magnesium. Die ausgewogene Hydration Formula liefert 5 wichtige Mineralstoffe pro Portion und übe...</li><li>HOCHDOSIERT MIT 1.194 MG MINERALSTOFFEN: Eine Portion mit 5 g liefert 321 mg Chlorid, 300 mg Kalium, 208 mg Natrium, 185 mg Calcium und 180 mg Magnesium. Praktisch portionierbar mit dem enthaltenen Me...</li><li>40 PORTIONEN & EINFACHE ZUBEREITUNG: 200 g Elektrolyte Pulver ergeben 40 Portionen à 5 g. Einfach einen Messlöffel in ca. 200 bis 250 ml kaltes Wasser einrühren. Ideal für eine schnelle und unkomplizi...</li><li>VEGAN & ZUCKERFREI: Die vit4ever Electrolyte Hydration Formula ist 100 % vegan und kommt ohne Zucker aus. Mit leckerem Zitronengeschmack und guter Löslichkeit für eine unkomplizierte Einnahme im Allta...</li><li>LABORGEPRÜFTE DEUTSCHE MARKENQUALITÄT: Seit 2016 steht vit4ever für hochwertige Nahrungsergänzungsmittel. Unsere Produkte werden mit sorgfältig ausgewählten Rohstoffen formuliert, in ausgewählten EU-B...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/vit4ever_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Transparenz als Waffe: deklariert Sucralose offen in einem eigenen Bild und rankt trotzdem oben, weil mg-Tabellen, sechs Ausschluss-Siegel, Laborsiegel und ein Sechs-Sprachen-Label mehr Vertrauen erzeugen als jeder Weglass-Claim.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0DQDW4B7L" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+    <div class="col ">
+      
+      <div class="header">
+        <div class="brand">PRIME ELEMENTS</div>
+        <div class="label">newcomer</div>
+      </div>
+      <div class="main-img"><img src="images/newcomer_img01.jpg" alt="Main"/></div>
+      <div class="metrics">
+        <div><span class="m-label">Preis</span> <span class="m-val">9.95 EUR</span></div>
+        <div><span class="m-label">Sticks</span> <span class="m-val">50</span></div>
+        <div class="highlight"><span class="m-label">EUR/STICK</span> <span class="m-val">0.1990</span></div>
+      </div>
+      
+        <div class="rating-row">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;<span class="star-empty"></span></span>
+          <span class="rating-val">4.7</span>
+          <span class="review-count">&middot; 50 Reviews</span>
+        </div>
+      
+      <div class="title-box">
+        <div class="row-label">TITEL</div>
+        <div class="title-text" title="Elektrolyte Pur ohne Zucker und Süßungsmittel | 50 Portionen mit je 1850 MG | Elektrolyte Pulver für Sportler bei Flüssigkeitsverlust | 240g">Elektrolyte Pur ohne Zucker und Süßungsmittel | 50 Portionen mit je 1850 MG | Elektrolyte Pulver für Sportler bei Flüssi...</div>
+      </div>
+      <div class="bullets-box">
+        <div class="row-label">BULLETS</div>
+        <ul class="bullets">
+          <li>✅NATÜRLICHER GESCHMACK: Eine leicht saure Note des Magnesiumcitrats und der natürlich salzige Geschmack von Natrium und Kalium.</li><li>✅ GUTES BRAUCHT ZEIT: Durch die natürliche Beschaffenheit der Inhaltsstoffe braucht das Pulver beim gründlichen Rühren bis zu 2 Minuten, um sich aufzulösen.</li><li>✅HOHE BIOVERFÜGBARKEIT: Durch Magnesium & Kaliumsalze in organischer Citratform für schnelle Aufnahme und maximale Wirksamkeit!</li><li>✅ OPTIMALE REZEPTUR FÜR SPORTLER: Eine Wissenschaftlich fundierte Rezeptur ohne Zusatz von Calcium, da beim Sport primär Natrium, Magnesium, Kalium und Chlorid verbraucht werden – nicht jedoch Calcium...</li><li>✅HERSTELLUNG & ZUFRIEDENHEIT: Bei PRIME ELEMENTS findest du ein umfangreiches Sortiment an Nahrungsergänzungsmitteln, produzierst mit hochwertigen Rohstoffen in Deutschland. Deine Zufriedenheit steht ...</li>
+          
+        </ul>
+      </div>
+      <div class="sec-img-box">
+        <div class="row-label">BEST SECONDARY (USP-Slot)</div>
+        <img src="images/newcomer_img02.jpg" alt="Secondary"/>
+      </div>
+      <div class="usp-strat">
+        <div class="row-label">USP-STRATEGIE</div>
+        <div class="usp-text">Radikaler Minimalismus: weißer Beutel, drei Zutaten, 50 Portionen zu 0,20 €. Kompensiert die dünne Bewertungsbasis mit EFSA-belegten Aussagen und einem frischen Laborzertifikat von Dezember 2025.</div>
+      </div>
+      <a class="amazon-btn" href="https://www.amazon.de/dp/B0GZ379WJN" target="_blank" rel="noopener noreferrer" title="Auf Amazon oeffnen">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3l-1.41 1.41L18.17 10H3v2h15.17l-5.58 5.59L14 19l8-8-8-8z"/></svg>
+        <span>Auf Amazon oeffnen</span>
+      </a>
+    </div>
+    
+  </div>
+
+  
+  <div class="proposal">
+    <h2>Vorschlag: Listing-Bildstrategie fuer Perform+</h2>
+    <div class="proposal-intro">Der Titel bleibt. Er hat 73 von 75 erlaubten Zeichen, ist regelkonform und nennt mit „Sticks“ und „5 Vitamine“ bereits eure beiden echten Alleinstellungen. Der Hebel liegt nicht im Titel, sondern in der Bildstrecke: ihr habt drei Bilder, eure Wettbewerber vier bis zehn — und eines eurer drei zeigt ein fremdes Produkt. Die drei Vorlagen unten sind der Ausgangspunkt, nicht das fertige Ergebnis.</div>
+
+    
+    <h3 class="subsection">Main Image Varianten (Image-to-Image, Amazon-compliant)</h3>
+    <div class="subsection-intro">
+      Dezenter Tag/Siegel am Produkt + Kapseln unten rechts -- exakt das Pattern das Top-Seller auf Page 1 nutzen. Hauptprodukt-Design bleibt unveraendert. 2 USP-Varianten zum A/B Testen.
+    </div>
+    <div class="mockup-grid">
+      
+      <div class="mockup-card">
+        <div class="mockup-label">Main 1 -- "Hauptbild A — gedruckter Fakten-Tag"</div>
+        <img src="images/main_v1_tag.jpg"/>
+        <div class="mockup-desc">Runder Aufkleber oben auf dem Beutel mit den drei Zahlen, die euch vom Regal trennen: 24 Sticks, 5 Vitamine, 0 g Zucker. Wirkt wie aufgedruckt, nicht wie ein Werbebanner — das ist der Unterschied zwischen praxistauglich und Abmahnrisiko.</div>
+      </div>
+      
+      <div class="mockup-card">
+        <div class="mockup-label">Main 2 -- "Hauptbild B — Herkunfts-Siegel"</div>
+        <img src="images/main_v2_siegel.jpg"/>
+        <div class="mockup-desc">Rundes Siegel „In Deutschland entwickelt“. Vier eurer fünf Wettbewerber führen ein Vertrauenssignal im Hauptbild (IFS, Kölner Liste, Laborsiegel), ihr bisher keines.</div>
+      </div>
+      
+    </div>
+    
+
+    
+    <h3 class="subsection">Secondary-Image Mockups</h3>
+    <div class="mockup-grid">
+      
+      <div class="mockup-card">
+        <div class="mockup-label">Nebenbild 2 — Stick statt Messlöffel</div>
+        <img src="images/mockup_slot2.jpg"/>
+        <div class="mockup-desc">Euer einziger struktureller Vorteil, den bisher kein Bild zeigt. Vier von fünf Wettbewerbern brauchen einen Messlöffel; der einzige Stick-Wettbewerber zeigt seine Sticks als losen Zip-Beutel. Reise und Sporttasche besetzt niemand.</div>
+      </div>
+      
+      <div class="mockup-card">
+        <div class="mockup-label">Nebenbild 3 — was in einem Stick steckt</div>
+        <img src="images/mockup_slot3.jpg"/>
+        <div class="mockup-desc">Die Mengen groß und lesbar, plus die fünf Vitamine, die kein Wettbewerber im Feld hat. Die drei Fußnoten sind wörtlich die nach VO (EU) 432/2012 zugelassenen Formulierungen. ⛔ Vorbedingung: Vitamin B1 muss vorher in der Nährwertkennzeichnung geklärt werden.</div>
+      </div>
+      
+      <div class="mockup-card">
+        <div class="mockup-label">Nebenbild 4 — Zubereitung und Anlässe</div>
+        <img src="images/mockup_slot4.jpg"/>
+        <div class="mockup-desc">5 von 5 Wettbewerbern zeigen Flüssigkeit im Glas, ihr zeigt kein einziges Getränk. Dazu die drei Anlässe von eurer eigenen Verpackung. Bewusst ohne Frucht, solange die Geschmacksrichtung des DE-Artikels nicht gesichert ist.</div>
+      </div>
+      
+    </div>
+    
+
+    
+    <div class="new-title-box">
+      <h3>Title- &amp; Bullets-Empfehlung</h3>
+      
+      <div class="compare-row">
+        <div class="rlabel">Bullet 1</div>
+        <div class="val new">24 EINZELSTICKS STATT MESSLÖFFEL — ein Stick in 500–750 ml Wasser, aufreißen und einrühren. Passt in Sporttasche, Rucksack und Handgepäck.</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Bullet 2</div>
+        <div class="val new">ALS EINZIGES IM REGAL MIT 5 VITAMINEN — Vitamin C, Niacin, Pantothensäure, B6 und B12 tragen zu einem normalen Energiestoffwechsel und zur Verringerung von Müdigkeit und Ermüdung bei.</div>
+      </div>
+      
+      <div class="compare-row">
+        <div class="rlabel">Bullet 3</div>
+        <div class="val new">400 mg NATRIUM + 300 mg KALIUM PRO STICK — dazu Calcium, Magnesium und Zink. Magnesium trägt zur normalen Muskelfunktion bei.</div>
+      </div>
+      
+    </div>
+    
+  </div>
+  
+
+  <div class="footer">ADLEVATE &middot; Listing Deep Dive &middot; 2026-09-26 &middot; benjamin@adlevate.de</div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <img id="lightboxImg" alt=""/>
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script>
+(function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbCap = document.getElementById('lightboxCaption');
+  const lbClose = document.getElementById('lightboxClose');
+  const sels = ['.main-img img', '.sec-img-box img', '.mockup-card img'];
+  document.querySelectorAll(sels.join(', ')).forEach(img => {
+    img.addEventListener('click', e => {
+      e.stopPropagation();
+      lbImg.src = img.src;
+      const col = img.closest('.col');
+      const brand = col ? col.querySelector('.brand').innerText : '';
+      const labelEl = col ? col.querySelector('.label') : null;
+      const label = labelEl ? labelEl.innerText : '';
+      const slotType = img.closest('.main-img') ? 'Main Image' :
+                       img.closest('.sec-img-box') ? 'Best Secondary (USP-Slot)' :
+                       img.closest('.mockup-card') ? (img.closest('.mockup-card').querySelector('.mockup-label').innerText) :
+                       '';
+      lbCap.innerText = brand ? `${brand} - ${label} - ${slotType}` : slotType;
+      lb.classList.add('active');
+    });
+  });
+  function close() { lb.classList.remove('active'); lbImg.src = ''; }
+  lb.addEventListener('click', close);
+  lbClose.addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
+</script>
+</body></html>

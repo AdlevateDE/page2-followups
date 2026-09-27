@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Launch-Audit  / B0HG9XMGMC</title>
+<style>
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0f1419;
+  --bg-card:    #1a2332;
+  --bg-card-2:  #111823;
+  --border:     rgba(91,197,200,0.12);
+  --border-strong: rgba(91,197,200,0.35);
+  --teal:       #5BC5C8;
+  --teal-glow:  rgba(91,197,200,0.25);
+  --green:      #78e0a5;
+  --amber:      #e0c97a;
+  --red:        #e08a5a;
+  --text:       #e8eaed;
+  --text-muted: #8a939e;
+  --text-dim:   #5a6470;
+}
+
+body {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 10pt;
+  line-height: 1.5;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 16mm 18mm 14mm;
+  background: var(--bg);
+  page-break-after: always;
+}
+.page:last-child { page-break-after: auto; }
+
+/* ===== HEADER ===== */
+.brandbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.brandmark {
+  font-size: 11pt;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--teal);
+}
+.brandmark .dot { color: var(--text); font-weight: 300; }
+.date {
+  font-size: 8pt;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.accent-line {
+  width: 60px;
+  height: 3px;
+  background: var(--teal);
+  margin-bottom: 14px;
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding: 22px 0 14px;
+  margin-bottom: 22px;
+}
+.hero-label {
+  color: var(--teal);
+  font-size: 8pt;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.hero-number {
+  font-size: 38pt;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+.hero-number .unit {
+  font-size: 18pt;
+  color: var(--teal);
+  font-weight: 600;
+  margin-left: 4px;
+}
+.hero-sub {
+  color: var(--text-muted);
+  font-size: 10pt;
+  max-width: 85%;
+}
+.hero-sub strong { color: var(--text); font-weight: 600; }
+
+/* ===== META ROW ===== */
+.meta-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.meta-row .cell {
+  background: var(--bg-card-2);
+  padding: 10px 14px;
+}
+.meta-row .label {
+  color: var(--text-muted);
+  font-size: 7pt;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 3px;
+}
+.meta-row .value {
+  color: #ffffff;
+  font-size: 10pt;
+  font-weight: 600;
+}
+
+/* ===== SCENARIO ALERT ===== */
+.scenario {
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-2) 100%);
+  border-left: 3px solid ;
+  padding: 14px 18px;
+  border-radius: 3px;
+  margin-bottom: 26px;
+}
+.scenario .headline {
+  font-size: 14pt;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+  letter-spacing: -0.2px;
+}
+.scenario .sub { color: var(--text-muted); font-size: 9.5pt; }
+
+/* ===== SECTION HEADING ===== */
+h2.section {
+  color: var(--teal);
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  padding-top: 4px;
+}
+
+/* ===== KPI GRID (SNAPSHOT) ===== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.kpi {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  position: relative;
+}
+.kpi .k-label {
+  font-size: 7pt;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+.kpi .k-value {
+  font-size: 16pt;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+}
+.kpi .k-value .u { font-size: 10pt; color: var(--text-muted); font-weight: 500; margin-left: 2px; }
+.kpi .k-sub {
+  font-size: 7.5pt;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.kpi .k-sub.ok { color: var(--green); }
+.kpi .k-sub.warn { color: var(--amber); }
+.kpi .k-sub.bad { color: var(--red); }
+
+/* ===== LEVERS ===== */
+.levers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+.lever {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--teal);
+  border-radius: 3px;
+  padding: 14px 14px 12px;
+}
+.lever .num {
+  font-size: 7pt;
+  font-weight: 700;
+  color: var(--teal);
+  letter-spacing: 1.5px;
+  margin-bottom: 4px;
+}
+.lever .title {
+  font-size: 11pt;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+.lever .desc {
+  font-size: 8.5pt;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+.lever .desc strong { color: var(--text); }
+
+/* ===== ATTACHMENT CARDS ===== */
+.attachments {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.attach {
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.15s;
+}
+.attach:hover { border-color: var(--teal); background: var(--bg-card-2); }
+.attach .icon {
+  font-size: 20pt;
+  color: var(--teal);
+  flex-shrink: 0;
+  line-height: 1;
+}
+.attach .title {
+  font-size: 10pt;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 3px;
+}
+.attach .sub {
+  font-size: 8pt;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+.attach .link-arrow {
+  font-size: 8pt;
+  color: var(--teal);
+  margin-top: 6px;
+  display: block;
+  font-weight: 600;
+}
+
+/* ===== BOTTOM BLOCK ===== */
+.bottom {
+  background: linear-gradient(135deg, rgba(91,197,200,0.08) 0%, rgba(91,197,200,0.02) 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  padding: 16px 18px 14px;
+  margin-bottom: 14px;
+}
+.bottom .hook {
+  color: #ffffff;
+  font-size: 11pt;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.bottom .body {
+  font-size: 9pt;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  line-height: 1.55;
+}
+.bottom .body strong { color: var(--teal); }
+.cta {
+  display: inline-block;
+  background: var(--teal);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 9.5pt;
+  padding: 8px 16px;
+  border-radius: 3px;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+}
+.fallback {
+  font-size: 8pt;
+  color: var(--text-dim);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+.fallback a { color: var(--teal); text-decoration: none; }
+
+/* ===== FOOTER ===== */
+.footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  font-size: 7pt;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+}
+
+.kwtable { width:100%; border-collapse:collapse; margin:14px 0 6px; font-size:12.5px; }
+.kwtable th { text-align:left; padding:8px 10px; color:var(--text-dim); font-weight:600;
+  font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; border-bottom:1px solid var(--border-strong); }
+.kwtable td { padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text); }
+.kwtable .c { text-align:center; }
+.kwtable tr.win td { background:rgba(120,224,165,0.07); }
+.kwtable tr.win td strong { color:var(--green); }
+.kwtable tr.lose td strong { color:var(--red); }
+.kwtable tr.thin td { color:var(--text-muted); }
+.tnote { font-size:11px; line-height:1.65; color:var(--text-muted); padding:10px 12px;
+  background:var(--bg-card-2); border-left:2px solid var(--border-strong); border-radius:3px; margin-bottom:6px; }
+.assumptions { font-size:11px; line-height:1.7; color:var(--text-muted); padding:12px 14px;
+  background:var(--bg-card-2); border:1px dashed var(--border-strong); border-radius:4px; margin:18px 0; }
+.assumptions strong { color:var(--text); }
+.lever .hint { display:block; margin-top:10px; padding:8px 10px; background:rgba(91,197,200,0.06);
+  border-left:2px solid var(--teal); border-radius:3px; font-size:11.5px; color:var(--text-muted); }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="brandbar">
+    <div class="brandmark">ADLEVATE<span class="dot"> &middot; </span>LAUNCH-AUDIT</div>
+    <div class="date">25.09.2026</div>
+  </div>
+
+  <div class="accent-line"></div>
+
+  <div class="hero">
+    <div class="hero-label">PREIS PRO PORTION &middot; EUER REGAL, LIVE GEMESSEN AM 25.09.2026</div>
+    <div class="hero-number">1,04&nbsp;&euro;<span class="unit" style="margin:0 12px;font-size:.5em">gegen</span>0,17&nbsp;&euro;</div>
+    <div class="hero-sub">
+      Ihr seid das <strong>teuerste Produkt</strong> in eurem Regal &mdash; pro Portion
+      sechsmal so teuer wie der Kategorie-Bestseller.<br/>
+      Das ist kein Fehler. Aber mit <strong>einer Bewertung und drei Bildern</strong> ist es
+      im Moment nicht belegt.
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="cell"><div class="label">ANSPRECHPARTNER</div><div class="value">Bernhard</div></div>
+    <div class="cell"><div class="label">ASIN</div><div class="value">B0HG9XMGMC</div></div>
+    <div class="cell"><div class="label">ONLINE SEIT</div><div class="value">24.08.2026</div></div>
+    <div class="cell"><div class="label">GEPR&Uuml;FTE KEYWORDS</div><div class="value">10</div></div>
+  </div>
+
+  <div class="scenario">
+    <div class="headline">Vier Wochen Listing. Drei Baustellen.</div>
+    <div class="sub">Nichts davon ist ungew&ouml;hnlich f&uuml;r einen Launch &mdash; aber alle drei kosten euch gerade gleichzeitig Sichtbarkeit.</div>
+  </div>
+
+  <h2 class="section">Wo ihr heute steht</h2>
+  <table class="kwtable">
+    <thead>
+      <tr><th>Keyword</th><th class="c">Eure Position</th><th class="c">Marktbreite</th><th class="c">Bewertungen<br/>Median Top&nbsp;10</th></tr>
+    </thead>
+    <tbody>
+      
+      <tr class="win">
+        <td>elektrolyte pulver zuckerfrei</td>
+        <td class="c"><strong>Platz 38</strong></td>
+        <td class="c">breit (96)</td>
+        <td class="c">627</td>
+      </tr>
+      
+      <tr class="thin">
+        <td>hydration pulver</td>
+        <td class="c"><strong>Platz 57</strong></td>
+        <td class="c">breit (96)</td>
+        <td class="c">1.113</td>
+      </tr>
+      
+      <tr class="thin">
+        <td>elektrolyte sticks</td>
+        <td class="c"><strong>Platz 68</strong></td>
+        <td class="c">breit (96)</td>
+        <td class="c">170</td>
+      </tr>
+      
+      <tr class="thin">
+        <td>elektrolyte pulver sport</td>
+        <td class="c"><strong>Platz 84</strong></td>
+        <td class="c">breit (96)</td>
+        <td class="c">1.263</td>
+      </tr>
+      
+      <tr class="lose">
+        <td>elektrolyte pulver</td>
+        <td class="c"><strong>nicht gelistet</strong></td>
+        <td class="c">breit (95)</td>
+        <td class="c">953</td>
+      </tr>
+      
+      <tr class="lose">
+        <td>elektrolyte</td>
+        <td class="c"><strong>nicht gelistet</strong></td>
+        <td class="c">breit (96)</td>
+        <td class="c">733</td>
+      </tr>
+      
+    </tbody>
+  </table>
+  <div class="tnote">
+    Alles live gemessen, organisch, ohne Werbepl&auml;tze. Auf eurem eigenen Keyword
+    &bdquo;elektrolyte pulver&ldquo; wart ihr <strong>heute in keinem der 96 Treffer</strong> &mdash;
+    zweimal unabh&auml;ngig gepr&uuml;ft. Bei einem vier Wochen alten Listing ist das normal:
+    neue ASINs schwanken stark, und schon kurze Ausverkauf-Phasen werfen euch aus der Suche
+    (Keepa meldet f&uuml;r euch rund 6&nbsp;% Nicht-Verf&uuml;gbarkeit).
+    <strong>Das Suchvolumen selbst k&ouml;nnen wir ohne euren Brand-Analytics-Zugang nicht messen &mdash;
+    wir sch&auml;tzen es auch nicht.</strong>
+  </div>
+
+  <h2 class="section">Euer Regal &mdash; Preis pro Portion</h2>
+  <table class="kwtable">
+    <thead><tr><th>Produkt</th><th class="c">Packung</th><th class="c">Portionen</th><th class="c">&euro; / Portion</th><th class="c">Bewertungen</th></tr></thead>
+    <tbody>
+      
+      <tr class="lose"><td>PERFORM+ (ihr)</td><td class="c">24,99 €</td><td class="c">24 Sticks</td><td class="c"><strong>1,04 €</strong></td><td class="c">1</td></tr>
+      
+      <tr class=""><td>Elektrolyte PUR</td><td class="c">14,95 €</td><td class="c">30</td><td class="c"><strong>0,50 €</strong></td><td class="c">627</td></tr>
+      
+      <tr class=""><td>vit4ever</td><td class="c">14,99 €</td><td class="c">40</td><td class="c"><strong>0,38 €</strong></td><td class="c">263</td></tr>
+      
+      <tr class=""><td>Newcomer (50 Port.)</td><td class="c">9,95 €</td><td class="c">50</td><td class="c"><strong>0,20 €</strong></td><td class="c">50</td></tr>
+      
+      <tr class="win"><td>sanotact (Bestseller)</td><td class="c">8,40 €</td><td class="c">50</td><td class="c"><strong>0,17 €</strong></td><td class="c">5.091</td></tr>
+      
+    </tbody>
+  </table>
+  <div class="tnote">
+    Fair bleiben: euer Stick-Format ist bequemer als ein Beutel, den man abwiegen muss &mdash;
+    daf&uuml;r darf ein Aufschlag stehen. Die Frage ist nicht, ob ihr teurer sein d&uuml;rft,
+    sondern <strong>ob das Listing den Aufschlag gerade erkl&auml;rt</strong>. Mit drei Bildern
+    und ohne A+ tut es das nicht.
+  </div>
+
+  <h2 class="section">Was wir gefunden haben</h2>
+  <div class="levers">
+    <div class="lever">
+      <div class="num">BAUSTELLE 01</div>
+      <div class="title">Positionierung &mdash; ihr k&auml;mpft um ein Argument, das ihr nicht braucht</div>
+      <div class="desc">
+        Euer bestes Keyword ist <strong>&bdquo;elektrolyte pulver zuckerfrei&ldquo;</strong> &mdash;
+        Platz&nbsp;38, und das Feld ist das schw&auml;chste von allen gemessenen
+        (Median 627 Bewertungen, <strong>keine einzige Gro&szlig;marke</strong> in den Top&nbsp;10).
+        Dort werben allerdings 5 der Top&nbsp;6 mit &bdquo;ohne Zucker <strong>&amp; S&uuml;&szlig;ungsmittel</strong>&ldquo;.<br/><br/>
+        <strong>Diesen Frame solltet ihr nicht betreten.</strong> Zwei der f&uuml;nf st&auml;rksten
+        Wettbewerber gewinnen ohne ihn: vit4ever deklariert Sucralose <em>offen in einem eigenen
+        Bild</em> und rankt trotzdem oben. Und sanotact, der Kategorie-Bestseller mit
+        5.091&nbsp;Bewertungen, erw&auml;hnt S&uuml;&szlig;ungsmittel nirgends &mdash; der verkauft
+        &uuml;ber Anl&auml;sse, K&ouml;lner Liste und Geschmack.<br/><br/>
+        <strong>Ihr habt zwei Dinge exklusiv, und beide liegen brach:</strong><br/>
+        &bull; <strong>Vitamine.</strong> Kein einziger der f&uuml;nf hat welche &mdash; Raab nicht,
+        7&nbsp;elements nicht, vit4ever nicht, der Newcomer nicht; sanotact hat nur Magnesium.
+        Ihr habt C, B3, B5, B6, B12 plus Zink. Das ist der einzige Grund, der 1,04&nbsp;&euro;
+        gegen 0,17&nbsp;&euro; tr&auml;gt &mdash; und der einzige, der euch
+        <strong>zugelassene Gesundheitsaussagen erlaubt, die die anderen gar nicht machen d&uuml;rfen</strong>.<br/>
+        &bull; <strong>Das Stick-Format.</strong> Vier von f&uuml;nf brauchen einen Messl&ouml;ffel
+        und zeigen ihn auch. Der einzige Stick-Wettbewerber zeigt seine Sticks als losen
+        Zip-Beutel. <strong>Reise, Tasche, unterwegs</strong> besetzt niemand.
+      </div>
+    </div>
+    <div class="lever" style="border-color:var(--red)">
+      <div class="num" style="color:var(--red)">ZUERST ANSEHEN</div>
+      <div class="title">F&uuml;nf Fehler im Listing, die nichts mit Strategie zu tun haben</div>
+      <div class="desc">
+        Beim Durchsehen eurer drei Produktbilder sind uns diese Punkte aufgefallen.
+        Der erste ist der wichtigste:<br/><br/>
+        <strong>1. &bdquo;Erythrit&ldquo; in eurer Produktbeschreibung ist falsch.</strong>
+        Eure Verpackung nennt <em>zweimal</em> Sucralose &mdash; im Icon-Block
+        (&bdquo;Sweetened with Stevia &amp; Sucralose&ldquo;) und in der Zutatenliste.
+        Erythrit steht auf keinem eurer Bilder, und in der N&auml;hrwerttabelle fehlt die
+        Zeile &bdquo;mehrwertige Alkohole&ldquo;, die es bei Erythrit geben m&uuml;sste.
+        Das Etikett ist das rechtlich bindende Dokument &mdash; die Beschreibung widerspricht ihm.<br/><br/>
+        <strong>2. Vitamin B1 ist drin, steht aber nicht in der N&auml;hrwerttabelle.</strong>
+        Eure Zutatenliste f&uuml;hrt Thiaminhydrochlorid; deklariert sind nur C, B3, B5, B6, B12.<br/><br/>
+        <strong>3. Euer Hauptbild widerspricht sich selbst.</strong> Unten rechts steht
+        &bdquo;10&nbsp;g PER SACHET&ldquo;, dar&uuml;ber &bdquo;24&nbsp;x&nbsp;6&nbsp;g&ldquo;.
+        Gemeint waren vermutlich die 10&nbsp;kcal.<br/><br/>
+        <strong>4. Bild 3 zeigt ein fremdes Produkt.</strong> Dort stehen blaue
+        &bdquo;itawel Hydration Support&ldquo;-Sticks mit US-Kennzeichnung in f&uuml;nf
+        Geschmacksrichtungen &mdash; ein komplett anderes Markendesign als euer
+        schwarz-oranger Beutel. Von drei Bildern zeigt eines nicht euer Produkt.<br/><br/>
+        <strong>5. Alle drei Bilder sind rein englisch.</strong> Alle f&uuml;nf Wettbewerber
+        sind vollst&auml;ndig deutsch. Dazu: der Claim &bdquo;7&nbsp;Elektrolyte&ldquo; ist
+        visuell nicht belegt &mdash; eure R&uuml;ckseite nennt f&uuml;nf plus
+        &bdquo;&amp; more&ldquo;.
+      </div>
+    </div>
+    <div class="lever">
+      <div class="num">BAUSTELLE 02</div>
+      <div class="title">Listing-Substanz &mdash; ihr habt ein Drittel dessen, was das Regal hat</div>
+      <div class="desc">
+        <strong>3 Bilder.</strong> Eure f&uuml;nf Wettbewerber haben 4, 8, 8, 8 und 10.
+        Kein Video. <strong>Kein A+ Content.</strong><br/><br/>
+        A+ ist der gr&ouml;&szlig;te freie Hebel, den ihr gerade liegen lasst: Amazon beziffert
+        Basic A+ mit bis zu <strong>+8&nbsp;%</strong>, Premium A+ mit bis zu <strong>+20&nbsp;%</strong>
+        Umsatz. Premium war fr&uuml;her an Auflagen gekn&uuml;pft &mdash; seit 2026 ist es f&uuml;r
+        <strong>jeden Markeninhaber in Seller Central frei</strong>, ohne Antrag, ohne Kosten.<br/><br/>
+        Im beiliegenden Bildvergleich seht ihr Bild f&uuml;r Bild, welche Argumente die anderen
+        bringen und ihr nicht &mdash; plus drei fertige Bildvorlagen als Ausgangspunkt.<br/>
+        <span class="hint">Pr&uuml;fen dauert 30&nbsp;Sekunden: Seller Central &rarr; Marken &rarr;
+        A+-Inhaltsmanager. Steht dort der Button &bdquo;Premium A+ erstellen&ldquo;, ist es freigeschaltet.</span>
+      </div>
+    </div>
+    <div class="lever">
+      <div class="num">BAUSTELLE 03</div>
+      <div class="title">PPC &mdash; Budget auf das Keyword, wo ihr am n&auml;chsten dran seid</div>
+      <div class="desc">
+        Auf eurem Outreach-Keyword &bdquo;elektrolyte pulver&ldquo; k&auml;mpft ihr gegen
+        sanotact (5.091 Bewertungen) und Powerbar. Auf
+        <strong>&bdquo;elektrolyte pulver zuckerfrei&ldquo;</strong> gegen ein Feld ohne
+        einzige Gro&szlig;marke &mdash; und ihr steht dort schon auf 38.<br/><br/>
+        Das beiliegende Bulksheet setzt Exact&nbsp;+&nbsp;Phrase genau darauf, mit den
+        Begriffen der Gegenposition (&bdquo;ohne s&uuml;&szlig;ungsmittel&ldquo;, &bdquo;stevia-frei&ldquo;,
+        &bdquo;sucralose-frei&ldquo; &hellip;) als Negativliste &mdash; damit ihr nicht f&uuml;r Klicks
+        zahlt, die euer Produkt aus Prinzip ablehnen.<br/>
+        <span class="hint">Mit einer Bewertung ist PPC erstmal Sichtbarkeit, nicht Rentabilit&auml;t.
+        Rechnet in den ersten Wochen mit einem h&ouml;heren Werbekostenanteil als dem hier
+        angesetzten &mdash; das ist Launch-Kosten, kein Defekt.</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section">Was ihr mitbekommt</h2>
+  <div class="attachments">
+    <a class="attach" href="listing_deep_dive.html">
+      <div class="icon">&#128269;</div>
+      <div>
+        <div class="title">Bildvergleich &mdash; ihr gegen die Top&nbsp;5</div>
+        <div class="sub">Bild f&uuml;r Bild gegen Elektrolyte&nbsp;PUR, Raab, sanotact, vit4ever und einen
+          frischen Herausforderer mit 50&nbsp;Bewertungen. Plus drei fertige Bildvorlagen.</div>
+        <span class="link-arrow">&rarr; &Ouml;ffnen (HTML)</span>
+      </div>
+    </a>
+    <a class="attach" href="B0HG9XMGMC_preissensitivitaet.html">
+      <div class="icon">&#128202;</div>
+      <div>
+        <div class="title">Margen- und Preisrechner</div>
+        <div class="sub">Interaktiv. Setzt eure echten Selbstkosten, euren Umsatzsteuersatz und euren
+          Werbekostenanteil ein &mdash; Marge und Break-Even rechnen sich live neu.</div>
+        <span class="link-arrow">&rarr; &Ouml;ffnen (HTML)</span>
+      </div>
+    </a>
+    <a class="attach" href="B0HG9XMGMC_elektrolyte_pulver_zuckerfrei_bulksheet.xlsx">
+      <div class="icon">&#128229;</div>
+      <div>
+        <div class="title">Kampagnen-Bulksheet</div>
+        <div class="sub">Exact + Phrase auf &bdquo;elektrolyte pulver zuckerfrei&ldquo;, Cross-Negation,
+          33 nischengepr&uuml;fte Negatives. Eine Zelle fehlt: eure SKU (Spalte&nbsp;Q).</div>
+        <span class="link-arrow">&rarr; Herunterladen (XLSX)</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="assumptions">
+    <strong>Offengelegte Annahmen.</strong>
+    Selbstkosten <strong>5,50 €</strong> pro Packung &mdash; das ist <em>unsere Sch&auml;tzung</em>,
+    nicht eure Zahl; im Rechner &auml;nderbar. Damit ergibt sich eine Marge von
+    <strong>6,90 €</strong> (29,5&nbsp;% vom Netto) und ein Break-Even bei
+    <strong>14,12 €</strong>.
+    Umsatzsteuer <strong>7&nbsp;%</strong> angenommen &mdash; umschaltbar.
+    Werbekostenanteil <strong>15&nbsp;%</strong> vom Umsatz.
+    Versandgeb&uuml;hr <strong>3,46 €</strong> aus der von Amazon gemeldeten Geb&uuml;hr (via Keepa),
+    Verkaufsgeb&uuml;hr 15&nbsp;% laut aktueller Geb&uuml;hrentabelle.
+    <em>Wir haben keinen Zugriff auf euer Verk&auml;uferkonto &mdash; alles oben stammt aus
+    &ouml;ffentlich sichtbaren Daten.</em>
+  </div>
+
+  <div class="bottom">
+    <div class="hook">Das hier behaltet ihr, egal ob wir zusammenarbeiten.</div>
+    <div class="body">
+      Gebaut habe ich das in wenigen Stunden, weil f&uuml;r genau solche Analysen bei mir eigene
+      Automationen laufen &mdash; dieselben, die ich f&uuml;r meine Kunden nutze. Deshalb kostet
+      euch das nichts.<br/><br/>
+      Die eine Frage, die ich hier <strong>nicht</strong> beantworte: wie ihr eure
+      <strong>1,04&nbsp;&euro; pro Portion</strong> verteidigt, ohne in den Preiskampf gegen
+      0,17&nbsp;&euro; zu gehen. Die Vitamine sind der Ansatz &mdash; aber welche der
+      zugelassenen Aussagen ihr f&uuml;hrt, in welcher Reihenfolge, und was davon aufs
+      Hauptbild geh&ouml;rt, h&auml;ngt an ein paar Fragen an euch. Daf&uuml;r br&auml;uchte ich
+      20&nbsp;Minuten &mdash; kein Deck.
+    </div>
+    <a class="cta" href="https://calendly.com/kundenservice-adlevate/101">&rarr; 20-Min Call buchen</a>
+    <div class="fallback">
+      Kein Bedarf? Auch gut. Meine Skool-Community ist aktuell noch kostenlos &mdash;
+      dort liegen einige der Automationen offen:
+      &rarr; <a href="https://skool.com/adlevate">skool.com/adlevate</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>ADLEVATE &middot; Benjamin Y&uuml;ksel &middot; Ex-Amazon &middot; BAFA-akkreditiert</div>
+    <div>benjamin@adlevate.de</div>
+  </div>
+</div>
+
+</body>
+</html>
