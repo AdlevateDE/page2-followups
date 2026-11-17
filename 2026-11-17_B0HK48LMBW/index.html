@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Page-1 Audit Vimatee UG / B0HK48LMBW</title>
+<style>
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0f1419;
+  --bg-card:    #1a2332;
+  --bg-card-2:  #111823;
+  --border:     rgba(91,197,200,0.12);
+  --border-strong: rgba(91,197,200,0.35);
+  --teal:       #5BC5C8;
+  --teal-glow:  rgba(91,197,200,0.25);
+  --green:      #78e0a5;
+  --amber:      #e0c97a;
+  --red:        #e08a5a;
+  --text:       #e8eaed;
+  --text-muted: #8a939e;
+  --text-dim:   #5a6470;
+}
+
+body {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 10pt;
+  line-height: 1.5;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 16mm 18mm 14mm;
+  background: var(--bg);
+  page-break-after: always;
+}
+.page:last-child { page-break-after: auto; }
+
+/* ===== HEADER ===== */
+.brandbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.brandmark {
+  font-size: 11pt;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--teal);
+}
+.brandmark .dot { color: var(--text); font-weight: 300; }
+.date {
+  font-size: 8pt;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.accent-line {
+  width: 60px;
+  height: 3px;
+  background: var(--teal);
+  margin-bottom: 14px;
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding: 22px 0 14px;
+  margin-bottom: 22px;
+}
+.hero-label {
+  color: var(--teal);
+  font-size: 8pt;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.hero-number {
+  font-size: 38pt;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+.hero-number .unit {
+  font-size: 18pt;
+  color: var(--teal);
+  font-weight: 600;
+  margin-left: 4px;
+}
+.hero-sub {
+  color: var(--text-muted);
+  font-size: 10pt;
+  max-width: 85%;
+}
+.hero-sub strong { color: var(--text); font-weight: 600; }
+.hero-note {
+  color: var(--text-muted);
+  font-size: 8pt;
+  line-height: 1.45;
+  max-width: 85%;
+  margin-top: 6px;
+  opacity: 0.85;
+}
+
+/* ===== META ROW ===== */
+.meta-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.meta-row .cell {
+  background: var(--bg-card-2);
+  padding: 10px 14px;
+}
+.meta-row .label {
+  color: var(--text-muted);
+  font-size: 7pt;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 3px;
+}
+.meta-row .value {
+  color: #ffffff;
+  font-size: 10pt;
+  font-weight: 600;
+}
+
+/* ===== SCENARIO ALERT ===== */
+.scenario {
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-2) 100%);
+  border-left: 3px solid #e0c97a;
+  padding: 14px 18px;
+  border-radius: 3px;
+  margin-bottom: 26px;
+}
+.scenario .headline {
+  font-size: 14pt;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+  letter-spacing: -0.2px;
+}
+.scenario .sub { color: var(--text-muted); font-size: 9.5pt; }
+
+/* ===== SECTION HEADING ===== */
+h2.section {
+  color: var(--teal);
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  padding-top: 4px;
+}
+
+/* ===== KPI GRID (SNAPSHOT) ===== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.kpi {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  position: relative;
+}
+.kpi .k-label {
+  font-size: 7pt;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+.kpi .k-value {
+  font-size: 16pt;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+}
+.kpi .k-value .u { font-size: 10pt; color: var(--text-muted); font-weight: 500; margin-left: 2px; }
+.kpi .k-sub {
+  font-size: 7.5pt;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.kpi .k-sub.ok { color: var(--green); }
+.kpi .k-sub.warn { color: var(--amber); }
+.kpi .k-sub.bad { color: var(--red); }
+
+/* ===== LEVERS ===== */
+.levers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+.lever {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--teal);
+  border-radius: 3px;
+  padding: 14px 14px 12px;
+}
+.lever .num {
+  font-size: 7pt;
+  font-weight: 700;
+  color: var(--teal);
+  letter-spacing: 1.5px;
+  margin-bottom: 4px;
+}
+.lever .title {
+  font-size: 11pt;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+.lever .desc {
+  font-size: 8.5pt;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+.lever .desc strong { color: var(--text); }
+
+/* ===== ATTACHMENT CARDS ===== */
+.attachments {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.attach {
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.15s;
+}
+.attach:hover { border-color: var(--teal); background: var(--bg-card-2); }
+.attach .icon {
+  font-size: 20pt;
+  color: var(--teal);
+  flex-shrink: 0;
+  line-height: 1;
+}
+.attach .title {
+  font-size: 10pt;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 3px;
+}
+.attach .sub {
+  font-size: 8pt;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+.attach .link-arrow {
+  font-size: 8pt;
+  color: var(--teal);
+  margin-top: 6px;
+  display: block;
+  font-weight: 600;
+}
+
+/* ===== BOTTOM BLOCK ===== */
+.bottom {
+  background: linear-gradient(135deg, rgba(91,197,200,0.08) 0%, rgba(91,197,200,0.02) 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  padding: 16px 18px 14px;
+  margin-bottom: 14px;
+}
+.bottom .hook {
+  color: #ffffff;
+  font-size: 11pt;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.bottom .body {
+  font-size: 9pt;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  line-height: 1.55;
+}
+.bottom .body strong { color: var(--teal); }
+.cta {
+  display: inline-block;
+  background: var(--teal);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 9.5pt;
+  padding: 8px 16px;
+  border-radius: 3px;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+}
+.fallback {
+  font-size: 8pt;
+  color: var(--text-dim);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+.fallback a { color: var(--teal); text-decoration: none; }
+
+/* ===== FOOTER ===== */
+.footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  font-size: 7pt;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="brandbar">
+    <div class="brandmark">ADLEVATE<span class="dot"> · </span>PAGE-1 AUDIT</div>
+    <div class="date">17.11.2026</div>
+  </div>
+
+  <div class="accent-line"></div>
+
+  <div class="hero">
+    <div class="hero-label">DER WICHTIGSTE BEFUND</div>
+    <div class="hero-number">65 → 12<span class="unit">Platz bei „yerba mate“</span></div>
+    <div class="hero-sub">
+      Am 1.&nbsp;Oktober stand eure ASIN bei <strong>„yerba mate“</strong> auf Seite&nbsp;2. Heute steht sie auf
+      <strong>Seite&nbsp;1, Platz&nbsp;12</strong>, knapp sieben Wochen später und mit erst 4 Bewertungen.
+      Beim breiteren Suchbegriff <strong>„mate tee“</strong> taucht ihr dagegen erst auf
+      <strong>Seite&nbsp;2, Platz&nbsp;55</strong> auf.
+    </div>
+    <div class="hero-note">
+      Live gemessen am 17.11.2026 auf amazon.de: „yerba mate“ Seite&nbsp;1, Platz&nbsp;12
+      &middot; „yerba mate tee“ Seite&nbsp;1, Platz&nbsp;13
+      &middot; „mate tee“ Seite&nbsp;2, Platz&nbsp;55 (Sorte Zitrone).
+      Vergleichswert vom 01.10.2026: Platz&nbsp;65.
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="cell"><div class="label">ANSPRECHPARTNER</div><div class="value">Yasef Koyuncu</div></div>
+    <div class="cell"><div class="label">ASIN</div><div class="value">B0HK48LMBW</div></div>
+    <div class="cell"><div class="label">KEYWORD</div><div class="value">mate tee</div></div>
+    <div class="cell"><div class="label">POSITION HEUTE</div><div class="value">Seite 2, Platz 55</div></div>
+  </div>
+
+  <div class="scenario">
+    <div class="headline">Seite 1 bei „yerba mate“ habt ihr. Bei „mate tee“ fehlt sie noch.</div>
+    <div class="sub">Dort zeigt Amazon eure Sorte Zitrone, noch ohne Bewertung. Drei Hebel bringen euch auch bei diesem Suchbegriff nach vorn.</div>
+  </div>
+
+  <h2 class="section">Listing &amp; Markt: Snapshot</h2>
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="k-label">Rang in „Mate-Tee“</div>
+      <div class="k-value">#21</div>
+      <div class="k-sub ok">Gesamtrang 15.596 &middot; am 29.09. noch 58.600</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Aktueller Preis</div>
+      <div class="k-value">19,99 €</div>
+      <div class="k-sub warn">79,96&nbsp;&euro;/kg &middot; 250&nbsp;g in der Dose</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Bewertungen</div>
+      <div class="k-value">4<span class="u">&#9733;5,0</span></div>
+      <div class="k-sub bad">Top 10 „mate tee“: 53 bis 13.495</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Listing-Check</div>
+      <div class="k-value">4<span class="u">/ 4</span></div>
+      <div class="k-sub ok">Titel &middot; 5 Bullets &middot; A+ &middot; 7 Bilder</div>
+    </div>
+  </div>
+
+  <h2 class="section">Die 3 Hebel f&uuml;r Seite 1 bei „mate tee“</h2>
+  <div class="levers">
+    <div class="lever">
+      <div class="num">HEBEL 01</div>
+      <div class="title">PPC</div>
+      <div class="desc">
+        <strong>Single-Keyword-Kampagne</strong> auf „mate tee“: Exact mit Gebot 1,00 €
+        + 50&nbsp;% f&uuml;r die obersten Pl&auml;tze, Phrase zum Ernten neuer Suchbegriffe.
+        Beworben wird die Sorte Pur, sie hat eure meisten Bewertungen.<br/>
+        Ehrlich gesagt: Mit 4 Bewertungen kauft ihr zuerst Sichtbarkeit, noch keine Rentabilit&auml;t.
+        Deshalb Start mit 10&nbsp;&euro; am Tag.
+      </div>
+    </div>
+    <div class="lever">
+      <div class="num">HEBEL 02</div>
+      <div class="title">Pricing</div>
+      <div class="desc">
+        Amazon zeigt im Suchergebnis den Kilopreis. Bei „yerba mate“ ist eurer mit
+        <strong>79,96&nbsp;&euro;/kg</strong> der h&ouml;chste auf Seite&nbsp;1
+        (der n&auml;chste: 44,85&nbsp;&euro;/kg). Bei „mate tee“ stehen auf Platz
+        5, 6 und 12 Filterbeutel-Tees mit 103 bis 125&nbsp;&euro;/kg,
+        dort f&auml;llt euer Preis nicht auf. Euer Argument: rund 25&nbsp;Cent pro Tasse.
+      </div>
+    </div>
+    <div class="lever">
+      <div class="num">HEBEL 03</div>
+      <div class="title">Listing</div>
+      <div class="desc">
+        &bull; Die Basis stimmt: Keyword im Titel, 5 Bullets, A+, 7 Bilder.<br/>
+        &bull; Tippfehler im ersten Bullet: „Premium Qualtit&auml;t“.<br/>
+        &bull; Die L&uuml;cke sind die Bewertungen: „Bewertung anfordern“ in Seller Central und Amazon Vine.
+        Auf Seite&nbsp;1 bei „mate tee“ stehen auch Produkte mit 3 bis 4 Bewertungen.
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section">Deep Dives &amp; Tools</h2>
+  <div class="attachments">
+    <a class="attach" href="B0HK48LMBW_preissensitivitaet.html">
+      <div class="icon">📊</div>
+      <div>
+        <div class="title">Preis- &amp; Margenrechner</div>
+        <div class="sub">Einkaufspreis, FBA-Geb&uuml;hr, Umsatzsteuer und Werbeanteil einstellen, die Marge rechnet sich live. Startwerte sind Annahmen, keine Zahlen von euch.</div>
+        <span class="link-arrow">→ &Ouml;ffnen (HTML)</span>
+      </div>
+    </a>
+    <a class="attach" href="B0HK48LMBW_mate_tee_bulksheet.xlsx">
+      <div class="icon">📥</div>
+      <div>
+        <div class="title">Ready-to-Upload Bulksheet</div>
+        <div class="sub">SKW auf „mate tee“: Exact + Phrase als getrennte Kampagnen, Cross-Negation, 29 Negatives gegen Zubeh&ouml;r-, Getr&auml;nke- und Teebeutel-Suchen. Vor dem Upload nur eure SKU eintragen.</div>
+        <span class="link-arrow">→ Downloaden (XLSX)</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="bottom">
+    <div class="hook">Vier Sorten, und Amazon zeigt je nach Suchbegriff eine andere.</div>
+    <div class="body">
+      Die spannende Frage ist nicht dieser eine Suchbegriff, sondern: Welche Sorte geh&ouml;rt vor welche Suche,
+      und wo tr&auml;gt sich Werbung bei eurem Preis? Sonst zahlt ihr f&uuml;r Klicks von Leuten,
+      die eine 1-kg-T&uuml;te suchen. Ich baue Claude-Skills und Automationen f&uuml;r Amazon PPC und nutze sie
+      auch f&uuml;r meine eigenen Kunden.
+      Als Freelancer betreue ich immer parallel 5 Kunden. Aktuell sind <strong>2 Spots frei</strong>.
+    </div>
+    <a class="cta" href="https://calendly.com/kundenservice-adlevate/101">→ 20-Min-Call buchen</a>
+    <div class="fallback">
+      20 Minuten auf eure vier ASINs. Rechner und Kampagnen-Sheet behaltet ihr so oder so.<br/>
+      Kein Bedarf? Kein Problem. Meine Skool-Community ist aktuell noch kostenlos, dort teile ich bereits einige der Skills + Automationen:
+      → <a href="https://skool.com/adlevate">skool.com/adlevate</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>ADLEVATE &middot; Benjamin Y&uuml;ksel &middot; Ex-Amazon &middot; BAFA-akkreditiert</div>
+    <div>benjamin@adlevate.de</div>
+  </div>
+</div>
+
+</body>
+</html>
